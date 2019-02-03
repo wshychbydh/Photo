@@ -107,6 +107,11 @@ class PhotoDialog internal constructor(val params: Params) : Dialog(params.wrapp
       return this
     }
 
+    fun setDialogStyle(dialogStyle: Int): Builder {
+      params.dialogStyle = dialogStyle
+      return this
+    }
+
     fun build(): PhotoDialog {
       return PhotoDialog(params)
     }
