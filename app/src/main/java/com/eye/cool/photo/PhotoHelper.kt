@@ -28,7 +28,7 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
       TAKE_PHOTO -> {
         if (resultCode == SURE) {
           //拍照完成，进行图片裁切
-          uri = FileProviderUtil.uriFromFile(params.wrapper!!.context(), photoFile!!)
+          uri = FileProviderUtil.uriFromFile(params.wrapper.context(), photoFile!!)
           if (params.cutAble) {
             cut()
           } else {
@@ -55,15 +55,15 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
 
   override fun onTakePhoto() {
     //拍照指定的是缓存路径，18及以下需要权限，在manifest中已申明；19以上默认拥有权限
-    PermissionHelper.Builder(params.wrapper!!.context())
+    PermissionHelper.Builder(params.wrapper.context())
         .permissions(Permission.STORAGE)
         .permissionCallback {
           if (it) {
-            photoFile = File(LocalStorage.composePhotoImageFile(params.wrapper!!.context()))
-            PhotoUtil.takePhoto(params.wrapper!!, photoFile!!)
+            photoFile = File(LocalStorage.composePhotoImageFile(params.wrapper.context()))
+            PhotoUtil.takePhoto(params.wrapper, photoFile!!)
           } else {
             Toast.makeText(
-                params.wrapper!!.context(), params.wrapper!!.context()
+                params.wrapper.context(), params.wrapper.context()
                 .getString(R.string.permission_storage), Toast.LENGTH_SHORT
             ).show()
           }
@@ -76,14 +76,14 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
 
   override fun onSelectAlbum() {
     //选择相册需要读写权限
-    PermissionHelper.Builder(params.wrapper!!.context())
+    PermissionHelper.Builder(params.wrapper.context())
         .permissions(Permission.STORAGE)
         .permissionCallback {
           if (it) {
-            PhotoUtil.takeAlbum(params.wrapper!!)
+            PhotoUtil.takeAlbum(params.wrapper)
           } else {
             Toast.makeText(
-                params.wrapper!!.context(), params.wrapper!!.context()
+                params.wrapper.context(), params.wrapper.context()
                 .getString(R.string.permission_storage), Toast.LENGTH_SHORT
             ).show()
           }
@@ -101,12 +101,12 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUri : ${uri!!}")
     }
-    val fileUrl = FileProviderUtil.getPathFromUri(params.wrapper!!.context(), uri!!)
+    val fileUrl = FileProviderUtil.getPathFromUri(params.wrapper.context(), uri!!)
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUrl : $fileUrl")
     }
     if (fileUrl.isNullOrEmpty()) {
-      Toast.makeText(params.wrapper!!.context(), "Error path '${uri!!.path}'", Toast.LENGTH_SHORT).show()
+      Toast.makeText(params.wrapper.context(), "Error path '${uri!!.path}'", Toast.LENGTH_SHORT).show()
     } else {
       val convertUrl = convertUrl(fileUrl)
       if (BuildConfig.DEBUG) {
@@ -129,11 +129,11 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
    * @param uri
    */
   private fun cut() {
-    outputFile = File(LocalStorage.composeThumbFile(params.wrapper!!.context()))
+    outputFile = File(LocalStorage.composeThumbFile(params.wrapper.context()))
     outputFile!!.createNewFile()
-    PhotoUtil.cut(params.wrapper!!, this.uri!!, outputFile!!, params.outputX, params.outputY)
+    PhotoUtil.cut(params.wrapper, this.uri!!, outputFile!!, params.outputX, params.outputY)
     if (BuildConfig.DEBUG) {
-      Log.d(TAG, "cutFileUrl : ${FileProviderUtil.getPathFromUri(params.wrapper!!.context(), uri!!)}")
+      Log.d(TAG, "cutFileUrl : ${FileProviderUtil.getPathFromUri(params.wrapper.context(), uri!!)}")
     }
   }
 

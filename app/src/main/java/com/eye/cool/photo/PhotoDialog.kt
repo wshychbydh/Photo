@@ -13,7 +13,7 @@ import android.view.View
 /**
  * Created by cool on 18-3-9
  */
-class PhotoDialog internal constructor(val params: Params) : Dialog(params.wrapper!!.activity(), params.dialogStyle) {
+class PhotoDialog internal constructor(private val params: Params) : Dialog(params.wrapper.activity(), params.dialogStyle) {
 
   private var photoHelper: PhotoHelper = PhotoHelper(params)
   private var view: View? = null
@@ -54,7 +54,7 @@ class PhotoDialog internal constructor(val params: Params) : Dialog(params.wrapp
 
   class Builder {
 
-    private val params = Params()
+    private lateinit var params: Params
 
     constructor(supportFragment: Fragment) {
       params.wrapper = ContextWrapper(supportFragment)
@@ -118,7 +118,7 @@ class PhotoDialog internal constructor(val params: Params) : Dialog(params.wrapp
   }
 
   class Params {
-    var wrapper: ContextWrapper? = null
+    lateinit var wrapper: ContextWrapper
     var contentView: View? = null
     @LayoutRes
     var layoutResID: Int = -1
