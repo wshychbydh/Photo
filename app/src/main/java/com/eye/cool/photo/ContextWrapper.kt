@@ -3,7 +3,6 @@ package com.eye.cool.photo
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 
@@ -23,21 +22,19 @@ class ContextWrapper {
     this.activity = activity
   }
 
-  fun startActivityForResult(intent: Intent?, requestCode: Int, bundle: Bundle? = null) {
+  fun startActivityForResult(intent: Intent?, requestCode: Int) {
     when {
-      activity != null -> activity!!.startActivityForResult(intent, requestCode, bundle)
-      fragment != null -> fragment!!.startActivityForResult(intent, requestCode, bundle)
+      activity != null -> activity!!.startActivityForResult(intent, requestCode)
+      fragment != null -> fragment!!.startActivityForResult(intent, requestCode)
       else -> throw IllegalStateException("ContextWrapper init error")
     }
   }
 
   fun context(): Context {
-    return activity ?: fragment?.requireContext()
-    ?: throw IllegalStateException("ContextWrapper init error")
+    return activity ?: fragment?.context ?: throw IllegalStateException("ContextWrapper init error")
   }
 
   fun activity(): Activity {
-    return activity ?: fragment?.requireActivity()
-    ?: throw IllegalStateException("ContextWrapper init error")
+    return activity ?: fragment?.activity ?: throw IllegalStateException("ContextWrapper init error")
   }
 }
