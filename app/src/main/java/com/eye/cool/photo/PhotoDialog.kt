@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.support.annotation.LayoutRes
 import android.support.annotation.StyleRes
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -63,12 +62,6 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
 
     constructor(activity: AppCompatActivity) {
       params.wrapper = ContextWrapper(activity)
-    }
-
-    //弹框视图布局文件
-    fun setContentView(@LayoutRes layoutResID: Int): Builder {
-      params.layoutResID = layoutResID
-      return this
     }
 
     //弹框视图
@@ -139,8 +132,6 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
   class Params {
     lateinit var wrapper: ContextWrapper
     var contentView: View? = null
-    @LayoutRes
-    var layoutResID: Int = -1
     var cutAble = true
     var onPickedListener: ((fileUrl: String) -> Unit)? = null
     @StyleRes

@@ -30,7 +30,7 @@
 
 ```
     PhotoDialog.Builder(this)
-        .setContentView()             //设置对话框视图（可以不设置）
+        .setContentView()             //设置对话框视图（可以不设置），自定义View必须拥有setPhotoListener(IPhotoListener)方法
         .cutAble(cutAble)             //是否剪切图片，默认true
         .setDialogStyle()             //设置对话框的样式（可以不设置）
         .setAnimStyle()               //设置对话框的动画样式（可以不设置）

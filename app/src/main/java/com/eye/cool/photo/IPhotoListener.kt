@@ -3,7 +3,7 @@ package com.eye.cool.photo
 /**
  *Created by cool on 2018/6/12
  */
-internal interface IPhotoListener {
+interface IPhotoListener {
 
   /**
    * 拍照
