@@ -55,9 +55,15 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
 
   override fun onTakePhoto() {
     //拍照指定的是缓存路径，18及以下需要权限，在manifest中已申明；19以上默认拥有权限
-    PermissionHelper.Builder(params.wrapper.context())
+    val helper = PermissionHelper.Builder(params.wrapper.context())
         .permissions(Permission.STORAGE)
-        .permissionCallback {
+    if (params.rationale != null) {
+      helper.rationale(params.rationale!!)
+    }
+    if (params.rationaleSetting != null) {
+      helper.rationaleSetting(params.rationaleSetting!!)
+    }
+    helper.permissionCallback {
           if (it) {
             photoFile = File(LocalStorage.composePhotoImageFile(params.wrapper.context()))
             PhotoUtil.takePhoto(params.wrapper, photoFile!!)
@@ -131,7 +137,7 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
   private fun cut() {
     outputFile = File(LocalStorage.composeThumbFile(params.wrapper.context()))
     outputFile!!.createNewFile()
-    PhotoUtil.cut(params.wrapper, this.uri!!, outputFile!!, params.outputX, params.outputY)
+    PhotoUtil.cut(params.wrapper, this.uri!!, outputFile!!, params.outputW, params.outputH)
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "cutFileUrl : ${FileProviderUtil.getPathFromUri(params.wrapper.context(), uri!!)}")
     }

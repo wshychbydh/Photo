@@ -9,6 +9,7 @@ import android.support.annotation.StyleRes
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.eye.cool.permission.Rationale
 
 /**
  * Created by cool on 18-3-9
@@ -87,9 +88,9 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
     /**
      * 输出的图片大小
      */
-    fun setOutputXY(outputX: Int, outputY: Int): Builder {
-      params.outputX = outputX
-      params.outputY = outputY
+    fun setOutput(outputW: Int, outputH: Int): Builder {
+      params.outputW = outputW
+      params.outputH = outputH
       return this
     }
 
@@ -112,6 +113,16 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
       return this
     }
 
+    fun rationale(rationale: Rationale): Builder {
+      params.rationale = rationale
+      return this
+    }
+
+    fun rationaleSetting(rationaleSetting: Rationale): Builder {
+      params.rationaleSetting = rationaleSetting
+      return this
+    }
+
     fun build(): PhotoDialog {
       return PhotoDialog(params)
     }
@@ -128,9 +139,11 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
     var dialogStyle: Int = R.style.PhotoDialog
     @StyleRes
     var animStyle: Int = R.style.AnimBottom
-    var outputX = 300
-    var outputY = 300
+    var outputW = 300
+    var outputH = 300
     var xPos = 0
     var yPos = Resources.getSystem().displayMetrics.heightPixels
+    var rationale: Rationale? = null
+    var rationaleSetting: Rationale? = null
   }
 }

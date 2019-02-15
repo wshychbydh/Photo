@@ -30,14 +30,14 @@ internal object PhotoUtil {
     wrapper.startActivityForResult(intent, PhotoHelper.SELECT_ALBUM)
   }
 
-  fun cut(wrapper: ContextWrapper, uri: Uri, outputFile: File, outputX: Int = 300, outputY: Int = 300) {
+  fun cut(wrapper: ContextWrapper, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
     val intent = Intent("com.android.camera.action.CROP")
     FileProviderUtil.setIntentDataAndType(intent, "image/*", uri, true)
     intent.putExtra("crop", true)
     intent.putExtra("aspectX", 1)
-    intent.putExtra("aspectY", outputX.toFloat() / outputY.toFloat())
-    intent.putExtra("outputX", outputX)
-    intent.putExtra("outputY", outputY)
+    intent.putExtra("aspectY", outputW.toFloat() / outputH.toFloat())
+    intent.putExtra("outputW", outputW)
+    intent.putExtra("outputH", outputH)
     //return-data为true时直接返回bitmap，会很占内存，不建议
     //裁切后保存的URI，不属于我们向外共享的，所以可以使用file://类型的URI
     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outputFile))

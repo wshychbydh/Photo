@@ -30,12 +30,14 @@
 
 ```
     PhotoDialog.Builder(this)
-        .setContentView()   //设置对话框视图（可以不设置）
-        .cutAble(cutAble)   //是否剪切图片，默认true
-        .setDialogStyle()   //设置对话框的样式（可以不设置）
-        .setAnimStyle()     //设置对话框的动画样式（可以不设置）
-        .setOutputXY()      //设置输出图片大小（可以不设置）
-        .setCoordinate()    //设置对话框弹出的XY坐标（默认从底部）
+        .setContentView()             //设置对话框视图（可以不设置）
+        .cutAble(cutAble)             //是否剪切图片，默认true
+        .setDialogStyle()             //设置对话框的样式（可以不设置）
+        .setAnimStyle()               //设置对话框的动画样式（可以不设置）
+        .setOutput()                  //设置输出图片大小（可以不设置），ratio为outputW/outputH
+        .setCoordinate()              //设置对话框弹出的XY坐标（默认从底部）
+        .rationale(Rationale)         //自定义请求权限对话框（可以不设置）
+        .rationale(rationaleSetting)  //引导授权对话框（可以不设置）
         .setOnPickedListener { path-> //path为文件路径
             //当图片选择成功回调
         }.build()
