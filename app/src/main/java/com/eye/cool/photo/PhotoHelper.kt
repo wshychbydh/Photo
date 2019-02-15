@@ -55,15 +55,11 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
 
   override fun onTakePhoto() {
     //拍照指定的是缓存路径，18及以下需要权限，在manifest中已申明；19以上默认拥有权限
-    val helper = PermissionHelper.Builder(params.wrapper.context())
+    PermissionHelper.Builder(params.wrapper.context())
         .permissions(Permission.STORAGE)
-    if (params.rationale != null) {
-      helper.rationale(params.rationale!!)
-    }
-    if (params.rationaleSetting != null) {
-      helper.rationaleSetting(params.rationaleSetting!!)
-    }
-    helper.permissionCallback {
+        .rationale(params.rationale)
+        .rationaleSetting(params.rationaleSetting)
+        .permissionCallback {
           if (it) {
             photoFile = File(LocalStorage.composePhotoImageFile(params.wrapper.context()))
             PhotoUtil.takePhoto(params.wrapper, photoFile!!)
@@ -73,8 +69,7 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
                 .getString(R.string.permission_storage), Toast.LENGTH_SHORT
             ).show()
           }
-        }
-        .build()
+        }.build()
         .request()
 
     onClickListener?.invoke()

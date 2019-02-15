@@ -65,28 +65,32 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
       params.wrapper = ContextWrapper(activity)
     }
 
+    //弹框视图布局文件
     fun setContentView(@LayoutRes layoutResID: Int): Builder {
       params.layoutResID = layoutResID
       return this
     }
 
+    //弹框视图
     fun setContentView(view: View): Builder {
       params.contentView = view
       return this
     }
 
+    //图片选择后回调,UI线程
     fun setOnPickedListener(listener: (fileUrl: String) -> Unit): Builder {
       params.onPickedListener = listener
       return this
     }
 
+    //只是支持剪切，默认true
     fun cutAble(cutAble: Boolean): Builder {
       params.cutAble = cutAble
       return this
     }
 
     /**
-     * 输出的图片大小
+     * 输出的图片大小，默认300,300
      */
     fun setOutput(outputW: Int, outputH: Int): Builder {
       params.outputW = outputW
@@ -95,7 +99,7 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
     }
 
     /**
-     * 设置弹框显示的x，y坐标
+     * 设置弹框显示的x，y坐标，默认从屏幕最底部
      */
     fun setCoordinate(x: Int, y: Int): Builder {
       params.xPos = x
@@ -103,21 +107,25 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
       return this
     }
 
+    //弹出框动画样式，默认从底部弹出
     fun setAnimStyle(animStyle: Int): Builder {
       params.animStyle = animStyle
       return this
     }
 
+    //弹出框样式
     fun setDialogStyle(dialogStyle: Int): Builder {
       params.dialogStyle = dialogStyle
       return this
     }
 
+    //权限提示框
     fun rationale(rationale: Rationale): Builder {
       params.rationale = rationale
       return this
     }
 
+    //引导设置授权提示框
     fun rationaleSetting(rationaleSetting: Rationale): Builder {
       params.rationaleSetting = rationaleSetting
       return this
