@@ -56,6 +56,7 @@ internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListe
   override fun onTakePhoto() {
     //拍照指定的是缓存路径，18及以下需要权限，在manifest中已申明；19以上默认拥有权限
     PermissionHelper.Builder(params.wrapper.context())
+        .permission(Permission.CAMERA)
         .permissions(Permission.STORAGE)
         .rationale(params.rationale)
         .rationaleSetting(params.rationaleSetting)
