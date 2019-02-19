@@ -54,7 +54,7 @@ class PhotoDialog internal constructor(private val params: Params) : Dialog(para
 
   class Builder {
 
-    private lateinit var params: Params
+    private var params = Params()
 
     constructor(supportFragment: Fragment) {
       params.wrapper = ContextWrapper(supportFragment)
