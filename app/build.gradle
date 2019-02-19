@@ -17,5 +17,5 @@ android {
 dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.github.wshychbydh:Permission:1.0.3'
+    implementation 'com.github.wshychbydh:permission:1.0.3'
 }
