@@ -6,16 +6,23 @@ import android.util.Log
 import android.widget.Toast
 import com.eye.cool.permission.Permission
 import com.eye.cool.permission.PermissionHelper
+import com.eye.cool.photo.params.Params
+import com.eye.cool.photo.utils.FileProviderUtil
+import com.eye.cool.photo.utils.LocalStorage
+import com.eye.cool.photo.utils.PhotoUtil
 import java.io.File
 
 /**
  *Created by cool on 2018/6/12
+ *
+ *Provide picture operation
+ *If you don't need a dialog box, you can use it
  */
-class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListener {
+class PhotoHelper(private val params: Params) : IPhotoListener {
+
+  private val context = params.wrapper.context()
 
   private var onClickListener: (() -> Unit)? = null
-
-  private var uri: Uri? = null
   private var outputFile: File? = null
   private var photoFile: File? = null
 
@@ -27,67 +34,59 @@ class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListener {
     when (requestCode) {
       TAKE_PHOTO -> {
         if (resultCode == SURE) {
-          //拍照完成，进行图片裁切
-          uri = FileProviderUtil.uriFromFile(params.wrapper.context(), photoFile!!)
-          if (params.cutAble) {
-            cut()
+          val uri = FileProviderUtil.uriFromFile(context, photoFile ?: return)
+          if (params.imageParams.cutAble) {
+            //After the photo is taken, crop the picture
+            cut(uri)
           } else {
-            onPhotoReady()
+            onPhotoReady(uri)
           }
         }
       }
       SELECT_ALBUM -> {
         if (resultCode == SURE) {
-          uri = intent?.data
-          if (params.cutAble) {
-            cut()
+          val uri = intent?.data ?: return
+          if (params.imageParams.cutAble) {
+            cut(uri)
           } else {
-            onPhotoReady()
+            onPhotoReady(uri)
           }
         }
       }
       ADJUST_PHOTO -> {
-        uri = Uri.fromFile(outputFile)
-        onPhotoReady()
+        onPhotoReady(Uri.fromFile(outputFile ?: return))
       }
     }
   }
 
   override fun onTakePhoto() {
-    //拍照指定的是缓存路径，18及以下需要权限，在manifest中已申明；19以上默认拥有权限
-    PermissionHelper.Builder(params.wrapper.context())
+    PermissionHelper.Builder(context)
         .permission(Permission.CAMERA)
         .permissions(Permission.STORAGE)
         .rationale(params.rationale)
         .rationaleSetting(params.rationaleSetting)
         .permissionCallback {
           if (it) {
-            photoFile = File(LocalStorage.composePhotoImageFile(params.wrapper.context()))
+            photoFile = File(LocalStorage.composePhotoImageFile(context))
             PhotoUtil.takePhoto(params.wrapper, photoFile!!)
           } else {
-            Toast.makeText(
-                params.wrapper.context(), params.wrapper.context()
-                .getString(R.string.permission_storage), Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, context.getString(R.string.permission_storage), Toast.LENGTH_SHORT).show()
           }
         }.build()
         .request()
-
     onClickListener?.invoke()
   }
 
   override fun onSelectAlbum() {
-    //选择相册需要读写权限
-    PermissionHelper.Builder(params.wrapper.context())
+    PermissionHelper.Builder(context)
         .permissions(Permission.STORAGE)
+        .rationale(params.rationale)
+        .rationaleSetting(params.rationaleSetting)
         .permissionCallback {
           if (it) {
             PhotoUtil.takeAlbum(params.wrapper)
           } else {
-            Toast.makeText(
-                params.wrapper.context(), params.wrapper.context()
-                .getString(R.string.permission_storage), Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, context.getString(R.string.permission_storage), Toast.LENGTH_SHORT).show()
           }
         }
         .build()
@@ -99,22 +98,22 @@ class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListener {
     onClickListener?.invoke()
   }
 
-  private fun onPhotoReady() {
+  private fun onPhotoReady(uri: Uri) {
     if (BuildConfig.DEBUG) {
-      Log.d(TAG, "outputFileUri : ${uri!!}")
+      Log.d(TAG, "outputFileUri : $uri")
     }
-    val fileUrl = FileProviderUtil.getPathFromUri(params.wrapper.context(), uri!!)
+    val fileUrl = FileProviderUtil.getPathFromUri(context, uri)
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUrl : $fileUrl")
     }
     if (fileUrl.isNullOrEmpty()) {
-      Toast.makeText(params.wrapper.context(), "Error path '${uri!!.path}'", Toast.LENGTH_SHORT).show()
+      Toast.makeText(context, "Error path '${uri.path}'", Toast.LENGTH_SHORT).show()
     } else {
       val convertUrl = convertUrl(fileUrl)
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "convertUrl : $convertUrl")
       }
-      params.onPickedListener?.invoke(convertUrl)
+      params.imageParams.onSelectListener?.onSelected(convertUrl)
     }
   }
 
@@ -125,30 +124,22 @@ class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListener {
     return url
   }
 
-  /**
-   * 裁剪图片方法实现
-   *
-   * @param uri
-   */
-  private fun cut() {
-    outputFile = File(LocalStorage.composeThumbFile(params.wrapper.context()))
+  private fun cut(uri: Uri) {
+    outputFile = File(LocalStorage.composeThumbFile(context))
     outputFile!!.createNewFile()
-    PhotoUtil.cut(params.wrapper, this.uri!!, outputFile!!, params.outputW, params.outputH)
+    PhotoUtil.cut(params.wrapper, uri, outputFile!!, params.imageParams.outputW, params.imageParams.outputH)
     if (BuildConfig.DEBUG) {
-      Log.d(TAG, "cutFileUrl : ${FileProviderUtil.getPathFromUri(params.wrapper.context(), uri!!)}")
+      Log.d(TAG, "cutFileUrl : ${FileProviderUtil.getPathFromUri(context, uri)}")
     }
   }
 
   companion object {
-    /**
-     * 拍照标识
-     */
     internal const val TAKE_PHOTO = 2001
     internal const val SELECT_ALBUM = 2002
     internal const val ADJUST_PHOTO = 2003
 
-    internal const val SURE = -1 // 确定拍照/选照片
-    internal const val CANCEL = 0 // 取消
+    internal const val SURE = -1
+    internal const val CANCEL = 0
 
     internal const val TAG = "photo"
   }

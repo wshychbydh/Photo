@@ -6,12 +6,14 @@ package com.eye.cool.photo
 interface IPhotoListener {
 
   /**
-   * 拍照
+   * Taking a photo specifies the cache path,
+   * which requires permissions 18 and below, declared in the manifest.
+   * The 19 above default has permissions
    */
   fun onTakePhoto() {}
 
   /**
-   * 从相册选取
+   * Selecting an album requires read and write permissions
    */
   fun onSelectAlbum() {}
 

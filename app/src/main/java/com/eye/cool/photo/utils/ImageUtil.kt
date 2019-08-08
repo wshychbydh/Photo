@@ -1,14 +1,20 @@
-package com.eye.cool.photo
+package com.eye.cool.photo.utils
 
 import android.graphics.*
 import android.support.annotation.WorkerThread
-
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  *Created by cool on 2018/7/5
  */
 object ImageUtil {
 
+  /**
+   *Create rounded corner images
+   * @param source
+   * @param bitmapSize the output bitmap size
+   */
   @JvmStatic
   @WorkerThread
   fun createCircleImage(source: Bitmap, bitmapSize: Float): Bitmap {
@@ -29,9 +35,16 @@ object ImageUtil {
     return target
   }
 
+  /**
+   * Convert image to bitmap
+   * If the width and height are smaller than the image itself, it will not compress
+   * @param path The path of image
+   * @param width output bitmap's width, default -1
+   * @param height output bitmap's height, default -1
+   */
   @JvmStatic
   @WorkerThread
-  fun getBitmap(path: String, width: Int = -1, height: Int = -1): Bitmap {
+  fun getBitmapFromFile(path: String, width: Int = -1, height: Int = -1): Bitmap {
     if (width <= 0 || height <= 0) {
       return BitmapFactory.decodeFile(path)
     }
@@ -46,9 +59,9 @@ object ImageUtil {
   private fun getBitmapInSampleSize(reqWidth: Int, reqHeight: Int, options: BitmapFactory.Options): Int {
     var inSampleSize = 1
     if (options.outWidth > reqWidth || options.outHeight > reqHeight) {
-      val widthRatio = Math.round(options.outWidth.toFloat() / reqWidth.toFloat())
-      val heightRatio = Math.round(options.outHeight.toFloat() / reqHeight.toFloat())
-      inSampleSize = Math.min(widthRatio, heightRatio)
+      val widthRatio = (options.outWidth.toFloat() / reqWidth.toFloat()).roundToInt()
+      val heightRatio = (options.outHeight.toFloat() / reqHeight.toFloat()).roundToInt()
+      inSampleSize = min(widthRatio, heightRatio)
     }
     return inSampleSize
   }

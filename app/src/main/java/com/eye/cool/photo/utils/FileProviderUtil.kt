@@ -1,4 +1,4 @@
-package com.eye.cool.photo
+package com.eye.cool.photo.utils
 
 import android.annotation.TargetApi
 import android.content.*
@@ -11,20 +11,17 @@ import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import java.io.File
 
-
 /**
  * Created by cool on 2018/6/12
  */
 object FileProviderUtil {
   /**
-   * 从文件获得URI
+   * Get the URI from the file
    *
-   * @param context 上下文
-   * @param file    文件
-   * @return 文件对应的URI
+   * @param context
+   * @param file
    */
   fun uriFromFile(context: Context, file: File): Uri {
-    //7.0以上进行适配
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       FileProvider.getUriForFile(context, composeAuthority(context), file)
     } else {
@@ -36,6 +33,13 @@ object FileProviderUtil {
     return context.packageName + ".FileProvider"
   }
 
+  /**
+   * Grant temporary access to files
+   *
+   * @param context
+   * @param intent The intent to access the file
+   * @param file access file
+   */
   fun grantUriPermission(context: Context, intent: Intent, file: File): Uri {
     val uri = uriFromFile(context, file)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -49,19 +53,18 @@ object FileProviderUtil {
   }
 
   /**
-   * 设置Intent的data和类型，并赋予目标程序临时的URI读写权限
+   * Sets the data and type of the Intent and gives the target temporary URI read and write permissions
    *
-   * @param context   上下文
-   * @param intent    意图
-   * @param type      类型
-   * @param file      文件
-   * @param writeAble 是否赋予可写URI的权限
+   * @param context
+   * @param intent The intent to access the file
+   * @param type The MIME type of the data being handled by this intent.
+   * @param file
+   * @param writeAble Whether to grant permissions to writable uris
    */
   fun setIntentDataAndType(context: Context, intent: Intent, type: String, file: File, writeAble: Boolean) {
-    //7.0以上进行适配
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       intent.setDataAndType(uriFromFile(context, file), type)
-      //临时赋予读写Uri的权限
+      //Temporarily grant read and write Uri permissions
       intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
       if (writeAble) {
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
@@ -72,18 +75,17 @@ object FileProviderUtil {
   }
 
   /**
-   * 设置Intent的data和类型，并赋予目标程序临时的URI读写权限
+   * Sets the data and type of the Intent and gives the target temporary URI read and write permissions
    *
-   * @param intent    意图
-   * @param type      类型
-   * @param fileUri   文件uri
-   * @param writeAble 是否赋予可写URI的权限
+   * @param intent
+   * @param type The MIME type of the data being handled by this intent.
+   * @param fileUri
+   * @param writeAble Whether to grant permissions to writable uris
    */
   fun setIntentDataAndType(intent: Intent, type: String, fileUri: Uri, writeAble: Boolean) {
-    //7.0以上进行适配
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       intent.setDataAndType(fileUri, type)
-      //临时赋予读写Uri的权限
+      //Temporarily grant read and write Uri permissions
       intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
       if (writeAble) {
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
@@ -94,8 +96,13 @@ object FileProviderUtil {
   }
 
   /**
-   * 根据图片的Uri获取图片的绝对路径(已经适配多种API)
-   * @return 如果Uri对应的图片存在,那么返回该图片的绝对路径,否则返回null
+   * Get the absolute path to the image based on its Uri (multiple apis have been adapted)
+   *
+   * @param context
+   * @param uri
+   * @return If the image corresponding to the Uri exists,
+   * then the absolute path to the image is returned,
+   * otherwise null is returned
    */
   fun getPathFromUri(context: Context, uri: Uri): String? {
     if (ContentResolver.SCHEME_FILE == uri.scheme) {
@@ -115,7 +122,7 @@ object FileProviderUtil {
   }
 
   /**
-   * 适配api19以上,根据uri获取图片的绝对路径
+   * Api19 above, according to the uri to get the absolute path of the picture
    */
   @TargetApi(19)
   private fun getRealPathFromUriAboveApi19(context: Context, uri: Uri): String? {
@@ -137,7 +144,7 @@ object FileProviderUtil {
           return getRealPathFromUriBelowApi11(context, contentUri)
         } else if (isMediaDocument(uri)) {
           var filePath: String? = null
-          // 使用':'分割
+          // Use ':' to split
           val id = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
 
           val projection = arrayOf(MediaStore.Images.Media.DATA)
@@ -179,7 +186,7 @@ object FileProviderUtil {
   }
 
   /**
-   * 适配api11-api18,根据uri获取图片的绝对路径
+   * Api11-api18, which gets the absolute path of the image based on the uri
    */
   private fun getRealPathFromUriApi11To18(context: Context, uri: Uri): String? {
     var filePath: String? = null
@@ -197,7 +204,7 @@ object FileProviderUtil {
   }
 
   /**
-   * 适配api11以下(不包括api11),根据uri获取图片的绝对路径
+   * Api11 is applied below (excluding api11), and the absolute path of the image is obtained according to the uri
    */
   private fun getRealPathFromUriBelowApi11(context: Context, uri: Uri): String? {
     val projection = arrayOf(MediaStore.Images.Media.DATA)

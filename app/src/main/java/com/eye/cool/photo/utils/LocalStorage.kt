@@ -1,4 +1,4 @@
-package com.eye.cool.photo
+package com.eye.cool.photo.utils
 
 import android.content.Context
 import java.io.File
@@ -8,10 +8,10 @@ import java.io.File
  */
 internal object LocalStorage {
 
-  private const val PHOTO = "photo" // 文件夹根目录
+  private const val PHOTO = "photo" // folder root
   private const val PHOTO_PRE = "photo_"
   private const val IMAGE_SUFFIX = ".jpg"
-  private const val THUMB = "thumb" //缩略图目录
+  private const val THUMB = "thumb" //thumbnail catalog
   private const val LOG = "log"
 
   // create image storage dir

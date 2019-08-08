@@ -1,4 +1,4 @@
-package com.eye.cool.photo
+package com.eye.cool.photo.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
+import com.eye.cool.photo.IPhotoListener
+import com.eye.cool.photo.R
 import kotlinx.android.synthetic.main.layout_photo.view.*
 
 /**

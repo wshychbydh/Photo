@@ -1,17 +1,24 @@
-package com.eye.cool.photo
+package com.eye.cool.photo.utils
 
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import com.eye.cool.photo.ContextWrapper
+import com.eye.cool.photo.PhotoHelper
 import java.io.File
 
 
 /**
  * Created by cool on 2018/6/12
  */
-internal object PhotoUtil {
+object PhotoUtil {
 
+  /**
+   * take a photo
+   * @param wrapper
+   * @param outputFile The path for photo output
+   */
   fun takePhoto(wrapper: ContextWrapper, outputFile: File) {
     val intent = Intent()
     intent.action = "android.media.action.IMAGE_CAPTURE"
@@ -21,6 +28,10 @@ internal object PhotoUtil {
     wrapper.startActivityForResult(intent, PhotoHelper.TAKE_PHOTO)
   }
 
+  /**
+   * select image from album
+   *@param wrapper
+   */
   fun takeAlbum(wrapper: ContextWrapper) {
     val intent = Intent()
     intent.type = "image/*"
@@ -30,6 +41,14 @@ internal object PhotoUtil {
     wrapper.startActivityForResult(intent, PhotoHelper.SELECT_ALBUM)
   }
 
+  /**
+   * Shear pictures
+   * @param wrapper
+   * @param uri    The image uri to be clipped
+   * @param outputFile The path for clipped image output
+   * @param outputW output width, default 300px
+   * @param outputH output height, default 300px
+   */
   fun cut(wrapper: ContextWrapper, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
     val intent = Intent("com.android.camera.action.CROP")
     FileProviderUtil.setIntentDataAndType(intent, "image/*", uri, true)
@@ -38,8 +57,8 @@ internal object PhotoUtil {
     intent.putExtra("aspectY", outputW.toFloat() / outputH.toFloat())
     intent.putExtra("outputW", outputW)
     intent.putExtra("outputH", outputH)
-    //return-data为true时直接返回bitmap，会很占内存，不建议
-    //裁切后保存的URI，不属于我们向外共享的，所以可以使用file://类型的URI
+    //When return-data is true, it directly returns bitmap, which will occupy a lot of memory. It is not recommended
+    //The URI saved after cutting is not one we share outwards, so we can use the URI of type file://
     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outputFile))
     intent.putExtra("return-data", false)
 
