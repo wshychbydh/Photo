@@ -11,7 +11,7 @@ import java.io.File
 /**
  *Created by cool on 2018/6/12
  */
-internal class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListener {
+class PhotoHelper(private val params: PhotoDialog.Params) : IPhotoListener {
 
   private var onClickListener: (() -> Unit)? = null
 
