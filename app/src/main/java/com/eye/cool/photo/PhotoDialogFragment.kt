@@ -1,47 +1,52 @@
-package com.eye.cool.photo.view
+package com.eye.cool.photo
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDialog
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.eye.cool.permission.Rationale
-import com.eye.cool.photo.IPhotoListener
-import com.eye.cool.photo.ISelectListener
-import com.eye.cool.photo.PhotoHelper
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
+import com.eye.cool.photo.support.IClickListener
+import com.eye.cool.photo.support.IPhotoListener
+import com.eye.cool.photo.support.SelectListenerWrapper
+import com.eye.cool.photo.utils.PhotoExecutor
+import com.eye.cool.photo.view.DefaultView
 
 /**
  * Created by cool on 18-3-9
  */
 class PhotoDialogFragment : AppCompatDialogFragment() {
 
+  private lateinit var executor: PhotoExecutor
   private lateinit var params: Params
-  private lateinit var photoHelper: PhotoHelper
   private var createByBuilder = false
 
   override fun onAttach(context: Context?) {
-    if (!createByBuilder) throw IllegalStateException("You must create it in builder mode")
+    if (!createByBuilder) throw IllegalStateException("You must create it by Builder.build()!")
     super.onAttach(context)
-    photoHelper = PhotoHelper(params)
+    executor = PhotoExecutor(params)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     var view: View? = params.dialogParams.contentView
     if (view == null) {
       view = DefaultView(context)
-      view.setPhotoListener(photoHelper)
+      view.setPhotoListener(executor)
     } else {
       val method = view.javaClass.getDeclaredMethod("setPhotoListener", IPhotoListener::class.java)
           ?: throw IllegalArgumentException("Custom View must has public method setPhotoListener(IPhotoListener)")
-      method.invoke(view, photoHelper)
+      method.invoke(view, executor)
     }
     return view
   }
@@ -55,23 +60,41 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
     layoutParams.x = dialogParams.xPos
     layoutParams.y = dialogParams.yPos
     dialog.onWindowAttributesChanged(layoutParams)
+    dialog.setOnShowListener(dialogParams.onShownListener)
+    dialog.setOnDismissListener(dialogParams.onDismissListener)
+    dialog.setOnCancelListener(dialogParams.onCancelListener)
     return dialog
   }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    photoHelper.setOnClickListener {
-      view?.visibility = View.GONE
-    }
+    executor.setOnClickListener(object : IClickListener {
+      override fun onClicked(which: Int) {
+        view?.visibility = View.GONE
+        params.dialogParams.onClickListener?.onClicked(which)
+      }
+    })
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
     super.onActivityResult(requestCode, resultCode, intent)
-    photoHelper.onActivityResult(requestCode, resultCode, intent)
+    if (resultCode == Activity.RESULT_OK) {
+      executor.onActivityResult(requestCode, intent)
+    } else if (resultCode == Activity.RESULT_CANCELED) {
+      dismissAllowingStateLoss()
+    }
   }
 
   fun show(manager: FragmentManager) {
     show(manager, javaClass.simpleName)
+  }
+
+  fun show(activity: AppCompatActivity) {
+    show(activity.supportFragmentManager, javaClass.simpleName)
+  }
+
+  fun show(fragment: Fragment) {
+    show(fragment.childFragmentManager, javaClass.simpleName)
   }
 
   class Builder {
@@ -121,16 +144,6 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
       dialog.params = params
       dialog.createByBuilder = true
       return dialog
-    }
-  }
-
-  private class SelectListenerWrapper(
-      private val dialogFragment: PhotoDialogFragment,
-      private val listener: ISelectListener?
-  ) : ISelectListener {
-    override fun onSelected(imageUrl: String) {
-      dialogFragment.dismissAllowingStateLoss()
-      listener?.onSelected(imageUrl)
     }
   }
 }

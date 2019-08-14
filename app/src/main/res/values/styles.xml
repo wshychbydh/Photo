@@ -20,6 +20,12 @@
     <item name="android:backgroundDimEnabled">true</item>
   </style>
 
+  <style name="PhotoDialog.Translucent">
+    <item name="android:windowFullscreen">false</item>
+    <item name="android:windowCloseOnTouchOutside">false</item>
+    <item name="android:backgroundDimEnabled">false</item>
+  </style>
+
   <style name="AnimBottom">
     <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
     <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>

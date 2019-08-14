@@ -1,9 +1,9 @@
 package com.eye.cool.photo.params
 
+import android.app.Activity
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import com.eye.cool.permission.Rationale
-import com.eye.cool.photo.ContextWrapper
+import com.eye.cool.photo.support.ContextWrapper
 
 class Params private constructor() {
 
@@ -25,7 +25,7 @@ class Params private constructor() {
       params.wrapper = ContextWrapper(supportFragment)
     }
 
-    constructor(activity: AppCompatActivity) {
+    constructor(activity: Activity) {
       params.wrapper = ContextWrapper(activity)
     }
 

@@ -4,8 +4,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import com.eye.cool.photo.ContextWrapper
-import com.eye.cool.photo.PhotoHelper
+import com.eye.cool.photo.support.ContextWrapper
+import com.eye.cool.photo.support.PhotoConstants
 import java.io.File
 
 
@@ -23,9 +23,9 @@ object PhotoUtil {
     val intent = Intent()
     intent.action = "android.media.action.IMAGE_CAPTURE"
     intent.addCategory("android.intent.category.DEFAULT")
-    val uri = FileProviderUtil.uriFromFile(wrapper.activity(), outputFile)
+    val uri = FileProviderUtil.uriFromFile(wrapper.context(), outputFile)
     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-    wrapper.startActivityForResult(intent, PhotoHelper.TAKE_PHOTO)
+    wrapper.startActivityForResult(intent, PhotoConstants.TAKE_PHOTO)
   }
 
   /**
@@ -38,7 +38,7 @@ object PhotoUtil {
     intent.action = Intent.ACTION_PICK
     intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     intent.addCategory("android.intent.category.DEFAULT")
-    wrapper.startActivityForResult(intent, PhotoHelper.SELECT_ALBUM)
+    wrapper.startActivityForResult(intent, PhotoConstants.SELECT_ALBUM)
   }
 
   /**
@@ -64,6 +64,6 @@ object PhotoUtil {
 
     intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
     intent.putExtra("noFaceDetection", true)
-    wrapper.startActivityForResult(intent, PhotoHelper.ADJUST_PHOTO)
+    wrapper.startActivityForResult(intent, PhotoConstants.ADJUST_PHOTO)
   }
 }

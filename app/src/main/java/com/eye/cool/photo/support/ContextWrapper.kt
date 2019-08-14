@@ -1,24 +1,23 @@
-package com.eye.cool.photo
+package com.eye.cool.photo.support
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 
 /**
  *Created by cool on 2018/6/12
  */
 class ContextWrapper {
 
-  private var activity: AppCompatActivity? = null
+  private var activity: Activity? = null
   private var fragment: Fragment? = null
 
   constructor(supportFragment: Fragment) {
     this.fragment = supportFragment
   }
 
-  constructor(activity: AppCompatActivity) {
+  constructor(activity: Activity) {
     this.activity = activity
   }
 

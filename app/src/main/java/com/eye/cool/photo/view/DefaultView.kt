@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
-import com.eye.cool.photo.IPhotoListener
 import com.eye.cool.photo.R
+import com.eye.cool.photo.support.IPhotoListener
 import kotlinx.android.synthetic.main.layout_photo.view.*
 
 /**
