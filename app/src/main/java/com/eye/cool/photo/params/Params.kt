@@ -42,13 +42,13 @@ class Params private constructor() {
     }
 
     //permission prompt box
-    fun rationale(rationale: Rationale): Builder {
+    fun setRationale(rationale: Rationale): Builder {
       params.rationale = rationale
       return this
     }
 
     //Boot setup authorization prompt box
-    fun rationaleSetting(rationaleSetting: Rationale): Builder {
+    fun setRationaleSetting(rationaleSetting: Rationale): Builder {
       params.rationaleSetting = rationaleSetting
       return this
     }

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import com.eye.cool.photo.R
-import com.eye.cool.photo.support.IPhotoListener
+import com.eye.cool.photo.support.OnActionListener
 import kotlinx.android.synthetic.main.layout_photo.view.*
 
 /**
@@ -16,15 +16,15 @@ import kotlinx.android.synthetic.main.layout_photo.view.*
 internal class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     LinearLayout(context, attrs, defStyle), OnClickListener {
 
-  private var listener: IPhotoListener? = null
+  private var listener: OnActionListener? = null
 
-  fun setPhotoListener(listener: IPhotoListener) {
+  fun setActionListener(listener: OnActionListener) {
     this.listener = listener
   }
 
   init {
     orientation = VERTICAL
-    val padding = (context.resources.displayMetrics.density * 20).toInt()
+    val padding = (context.resources.displayMetrics.density * 20f).toInt()
     setPadding(padding, padding, padding, padding)
     layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     val view = LayoutInflater.from(context).inflate(R.layout.layout_photo, this, true)

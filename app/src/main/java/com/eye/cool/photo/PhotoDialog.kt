@@ -4,65 +4,40 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.View
-import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.IClickListener
-import com.eye.cool.photo.support.IPhotoListener
-import com.eye.cool.photo.support.ISelectListener
+import com.eye.cool.photo.support.OnActionListener
+import com.eye.cool.photo.support.OnClickListener
 import com.eye.cool.photo.utils.PhotoExecutor
 import com.eye.cool.photo.view.DefaultView
 
 /**
  * Created by cool on 18-3-9
  */
-class PhotoDialog : Dialog {
+class PhotoDialog(
+    private val params: Params
+) : Dialog(params.wrapper.context(), params.dialogParams.dialogStyle) {
 
-  private var params: Params
-  private var executor: PhotoExecutor
-
-  constructor(activity: Activity, onSelectListener: ISelectListener) : super(activity, R.style.PhotoDialog) {
-    params = Params.Builder(activity)
-        .setImageParams(ImageParams.Builder()
-            .setOnSelectedListener(onSelectListener)
-            .build())
-        .build()
-    executor = PhotoExecutor(params)
-  }
-
-  constructor(fragment: Fragment, onSelectListener: ISelectListener) : super(fragment.context, R.style.PhotoDialog) {
-    params = Params.Builder(fragment)
-        .setImageParams(ImageParams.Builder()
-            .setOnSelectedListener(onSelectListener)
-            .build())
-        .build()
-    executor = PhotoExecutor(params)
-  }
-
-  constructor(params: Params) : super(params.wrapper.context(), params.dialogParams.dialogStyle) {
-    this.params = params
-    executor = PhotoExecutor(params)
-  }
+  private val executor = PhotoExecutor(params)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     var view: View? = params.dialogParams.contentView
     if (view == null) {
       view = DefaultView(context)
-      view.setPhotoListener(executor)
+      view.setActionListener(executor)
     } else {
-      val method = view.javaClass.getDeclaredMethod("setPhotoListener", IPhotoListener::class.java)
-          ?: throw IllegalArgumentException("Custom View must has public method setPhotoListener(IPhotoListener)")
+      val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
+          ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
       method.invoke(view, executor)
     }
     setContentView(view)
     setParams()
 
-    executor.setOnClickListener(object : IClickListener {
-      override fun onClicked(which: Int) {
+    executor.setOnClickListener(object : OnClickListener {
+      override fun onClick(which: Int) {
         dismiss()
-        params.dialogParams.onClickListener?.onClicked(which)
+        params.dialogParams.onClickListener?.onClick(which)
       }
     })
   }
@@ -73,7 +48,7 @@ class PhotoDialog : Dialog {
     setCanceledOnTouchOutside(dialogParams.canceledOnTouchOutside)
     setOnCancelListener(dialogParams.onCancelListener)
     setOnDismissListener(dialogParams.onDismissListener)
-    setOnShowListener(dialogParams.onShownListener)
+    setOnShowListener(dialogParams.onShowListener)
 
     val window = window ?: return
     window.setWindowAnimations(dialogParams.animStyle)

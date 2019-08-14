@@ -1,6 +1,6 @@
 package com.eye.cool.photo.params
 
-import com.eye.cool.photo.support.ISelectListener
+import com.eye.cool.photo.support.OnSelectListener
 
 /**
  *Created by ycb on 2019/8/8 0008
@@ -13,7 +13,7 @@ class ImageParams private constructor() {
 
   internal var outputH = 300
 
-  internal var onSelectListener: ISelectListener? = null
+  internal var onSelectListener: OnSelectListener? = null
 
   class Builder {
 
@@ -23,7 +23,7 @@ class ImageParams private constructor() {
      * Callback after image selection, callback in ui thread
      * @param listener
      */
-    fun setOnSelectedListener(listener: ISelectListener): Builder {
+    fun setOnSelectListener(listener: OnSelectListener): Builder {
       params.onSelectListener = listener
       return this
     }
@@ -32,7 +32,7 @@ class ImageParams private constructor() {
      *  Whether the selected picture needs to be cut，default true
      *  @param cutAble
      */
-    fun cutAble(cutAble: Boolean): Builder {
+    fun setCutAble(cutAble: Boolean): Builder {
       params.cutAble = cutAble
       return this
     }

@@ -5,7 +5,7 @@ import android.content.res.Resources
 import android.support.annotation.StyleRes
 import android.view.View
 import com.eye.cool.photo.R
-import com.eye.cool.photo.support.IClickListener
+import com.eye.cool.photo.support.OnClickListener
 
 /**
  *Created by ycb on 2019/8/8 0008
@@ -28,13 +28,13 @@ class DialogParams private constructor() {
 
   internal var yPos = Resources.getSystem().displayMetrics.heightPixels
 
-  internal var onShownListener: DialogInterface.OnShowListener? = null
+  internal var onShowListener: DialogInterface.OnShowListener? = null
 
   internal var onDismissListener: DialogInterface.OnDismissListener? = null
 
   internal var onCancelListener: DialogInterface.OnCancelListener? = null
 
-  internal var onClickListener: IClickListener? = null
+  internal var onClickListener: OnClickListener? = null
 
   class Builder {
 
@@ -105,8 +105,8 @@ class DialogParams private constructor() {
      * Sets a listener to be invoked when the dialog is shown.
      * @param listener The {@link DialogInterface.OnShowListener} to use.
      */
-    fun setOnShownListener(listener: DialogInterface.OnShowListener): Builder {
-      params.onShownListener = listener
+    fun setOnShowListener(listener: DialogInterface.OnShowListener): Builder {
+      params.onShowListener = listener
       return this
     }
 
@@ -138,11 +138,11 @@ class DialogParams private constructor() {
     /**
      * Set a listener to be invoked when the button is clicked.
      * <p>
-     *   Only one of these button's {@link PhotoConstants#TAKE_PHOTO, SELECT_ALBUM, ADJUST_PHOTO} onclick will be invoked
+     *   Only one of these button's {@link Constants#TAKE_PHOTO, SELECT_ALBUM, ADJUST_PHOTO} onclick will be invoked
      * </p>
      * @param listener
      */
-    fun setOnClickListener(listener: IClickListener): Builder {
+    fun setOnClickListener(listener: OnClickListener): Builder {
       params.onClickListener = listener
       return this
     }

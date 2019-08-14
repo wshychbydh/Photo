@@ -9,13 +9,13 @@ import com.eye.cool.permission.PermissionHelper
 import com.eye.cool.photo.BuildConfig
 import com.eye.cool.photo.R
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.IClickListener
-import com.eye.cool.photo.support.IPhotoListener
-import com.eye.cool.photo.support.PhotoConstants.ADJUST_PHOTO
-import com.eye.cool.photo.support.PhotoConstants.CANCEL
-import com.eye.cool.photo.support.PhotoConstants.SELECT_ALBUM
-import com.eye.cool.photo.support.PhotoConstants.TAG
-import com.eye.cool.photo.support.PhotoConstants.TAKE_PHOTO
+import com.eye.cool.photo.support.Constants.ADJUST_PHOTO
+import com.eye.cool.photo.support.Constants.CANCEL
+import com.eye.cool.photo.support.Constants.SELECT_ALBUM
+import com.eye.cool.photo.support.Constants.TAG
+import com.eye.cool.photo.support.Constants.TAKE_PHOTO
+import com.eye.cool.photo.support.OnActionListener
+import com.eye.cool.photo.support.OnClickListener
 import java.io.File
 
 /**
@@ -24,15 +24,15 @@ import java.io.File
  *Provide picture operation
  *If you don't need a dialog box, you can use it
  */
-internal class PhotoExecutor(private val params: Params) : IPhotoListener {
+internal class PhotoExecutor(private val params: Params) : OnActionListener {
 
   private val context = params.wrapper.context()
 
-  private var onClickListener: IClickListener? = null
+  private var onClickListener: OnClickListener? = null
   private var outputFile: File? = null
   private var photoFile: File? = null
 
-  internal fun setOnClickListener(listener: IClickListener) {
+  internal fun setOnClickListener(listener: OnClickListener) {
     onClickListener = listener
   }
 
@@ -76,7 +76,7 @@ internal class PhotoExecutor(private val params: Params) : IPhotoListener {
           }
         }.build()
         .request()
-    onClickListener?.onClicked(TAKE_PHOTO)
+    onClickListener?.onClick(TAKE_PHOTO)
   }
 
   override fun onSelectAlbum() {
@@ -93,11 +93,11 @@ internal class PhotoExecutor(private val params: Params) : IPhotoListener {
         }
         .build()
         .request()
-    onClickListener?.onClicked(SELECT_ALBUM)
+    onClickListener?.onClick(SELECT_ALBUM)
   }
 
   override fun onCancel() {
-    onClickListener?.onClicked(CANCEL)
+    onClickListener?.onClick(CANCEL)
   }
 
   private fun onPhotoReady(uri: Uri) {
@@ -115,7 +115,7 @@ internal class PhotoExecutor(private val params: Params) : IPhotoListener {
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "convertUrl : $convertUrl")
       }
-      params.imageParams.onSelectListener?.onSelected(convertUrl)
+      params.imageParams.onSelectListener?.onSelect(convertUrl)
     }
   }
 

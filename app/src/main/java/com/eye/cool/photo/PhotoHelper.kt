@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
-import com.eye.cool.photo.support.SelectListenerWrapper
+import com.eye.cool.photo.support.OnSelectListenerWrapper
 import com.eye.cool.photo.view.EmptyView
 
 /**
@@ -13,22 +13,20 @@ import com.eye.cool.photo.view.EmptyView
  */
 class PhotoHelper(private val activity: AppCompatActivity) {
 
-  private var dialog: PhotoDialogFragment? = null
-
-  fun takePhoto(params: ImageParams) {
+  fun onTakePhoto(params: ImageParams) {
     val contentView = EmptyView(activity)
     val builder = createDefaultDialogParams(contentView)
-    builder.setOnShownListener(DialogInterface.OnShowListener {
-      contentView.takePhoto()
+    builder.setOnShowListener(DialogInterface.OnShowListener {
+      contentView.onTakePhoto()
     })
     execute(builder.build(), params)
   }
 
-  fun selectAlbum(params: ImageParams) {
+  fun onSelectAlbum(params: ImageParams) {
     val contentView = EmptyView(activity)
     val builder = createDefaultDialogParams(contentView)
-    builder.setOnShownListener(DialogInterface.OnShowListener {
-      contentView.selectAlbum()
+    builder.setOnShowListener(DialogInterface.OnShowListener {
+      contentView.onSelectAlbum()
     })
     execute(builder.build(), params)
   }
@@ -42,11 +40,11 @@ class PhotoHelper(private val activity: AppCompatActivity) {
   }
 
   private fun execute(dialogParams: DialogParams, params: ImageParams) {
-    params.onSelectListener = SelectListenerWrapper(dialog, params.onSelectListener)
-    dialog = PhotoDialogFragment.Builder()
+    val dialog = PhotoDialogFragment.Builder()
         .setImageParams(params)
         .setDialogParams(dialogParams)
         .build()
-    dialog!!.show(activity.supportFragmentManager)
+    params.onSelectListener = OnSelectListenerWrapper(dialog, params.onSelectListener)
+    dialog.show(activity.supportFragmentManager)
   }
 }

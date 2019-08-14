@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.eye.cool.photo.support.IPhotoListener
+import com.eye.cool.photo.support.OnActionListener
 
 /**
  *Created by ycb on 2019/8/14 0014
@@ -17,17 +17,17 @@ internal class EmptyView @JvmOverloads constructor(
     layoutParams = ViewGroup.LayoutParams(1, 1)
   }
 
-  private var listener: IPhotoListener? = null
+  private var listener: OnActionListener? = null
 
-  fun setPhotoListener(listener: IPhotoListener) {
+  private fun setActionListener(listener: OnActionListener) {
     this.listener = listener
   }
 
-  fun takePhoto() {
+  fun onTakePhoto() {
     listener?.onTakePhoto()
   }
 
-  fun selectAlbum() {
+  fun onSelectAlbum() {
     listener?.onSelectAlbum()
   }
 }

@@ -3,7 +3,7 @@ package com.eye.cool.photo.support
 /**
  *Created by ycb on 2019/8/14 0014
  */
-object PhotoConstants {
+object Constants {
 
   const val TAKE_PHOTO = 2001
   const val SELECT_ALBUM = 2002

@@ -3,7 +3,7 @@ package com.eye.cool.photo.support
 /**
  *Created by cool on 2018/6/12
  */
-interface IPhotoListener {
+interface OnActionListener {
 
   /**
    * Taking a photo specifies the cache path,

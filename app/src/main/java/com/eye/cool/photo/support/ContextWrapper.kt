@@ -10,8 +10,8 @@ import android.support.v4.app.Fragment
  */
 class ContextWrapper {
 
-  private var activity: Activity? = null
   private var fragment: Fragment? = null
+  private var activity: Activity? = null
 
   constructor(supportFragment: Fragment) {
     this.fragment = supportFragment
@@ -23,8 +23,8 @@ class ContextWrapper {
 
   fun startActivityForResult(intent: Intent?, requestCode: Int) {
     when {
-      activity != null -> activity!!.startActivityForResult(intent, requestCode)
       fragment != null -> fragment!!.startActivityForResult(intent, requestCode)
+      activity != null -> activity!!.startActivityForResult(intent, requestCode)
       else -> throw IllegalStateException("ContextWrapper init error")
     }
   }

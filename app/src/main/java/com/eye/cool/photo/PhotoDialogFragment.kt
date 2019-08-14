@@ -17,9 +17,9 @@ import com.eye.cool.permission.Rationale
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.IClickListener
-import com.eye.cool.photo.support.IPhotoListener
-import com.eye.cool.photo.support.SelectListenerWrapper
+import com.eye.cool.photo.support.OnActionListener
+import com.eye.cool.photo.support.OnClickListener
+import com.eye.cool.photo.support.OnSelectListenerWrapper
 import com.eye.cool.photo.utils.PhotoExecutor
 import com.eye.cool.photo.view.DefaultView
 
@@ -42,10 +42,10 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
     var view: View? = params.dialogParams.contentView
     if (view == null) {
       view = DefaultView(context)
-      view.setPhotoListener(executor)
+      view.setActionListener(executor)
     } else {
-      val method = view.javaClass.getDeclaredMethod("setPhotoListener", IPhotoListener::class.java)
-          ?: throw IllegalArgumentException("Custom View must has public method setPhotoListener(IPhotoListener)")
+      val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
+          ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
       method.invoke(view, executor)
     }
     return view
@@ -60,7 +60,7 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
     layoutParams.x = dialogParams.xPos
     layoutParams.y = dialogParams.yPos
     dialog.onWindowAttributesChanged(layoutParams)
-    dialog.setOnShowListener(dialogParams.onShownListener)
+    dialog.setOnShowListener(dialogParams.onShowListener)
     dialog.setOnDismissListener(dialogParams.onDismissListener)
     dialog.setOnCancelListener(dialogParams.onCancelListener)
     return dialog
@@ -68,10 +68,10 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    executor.setOnClickListener(object : IClickListener {
-      override fun onClicked(which: Int) {
+    executor.setOnClickListener(object : OnClickListener {
+      override fun onClick(which: Int) {
         view?.visibility = View.GONE
-        params.dialogParams.onClickListener?.onClicked(which)
+        params.dialogParams.onClickListener?.onClick(which)
       }
     })
   }
@@ -120,26 +120,26 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
     }
 
     /**
-     * Permission rationale when need
+     * Permission setRationale when need
      * @param rationale
      */
     fun setRationale(rationale: Rationale): Builder {
-      paramsBuilder.rationale(rationale)
+      paramsBuilder.setRationale(rationale)
       return this
     }
 
     /**
-     * Permission setting's rationale when need
+     * Permission setting's setRationale when need
      * @param rationale
      */
-    fun setSettingRationale(rationale: Rationale): Builder {
-      paramsBuilder.rationaleSetting(rationale)
+    fun setRationaleSetting(rationale: Rationale): Builder {
+      paramsBuilder.setRationaleSetting(rationale)
       return this
     }
 
     fun build(): PhotoDialogFragment {
       val params = paramsBuilder.build()
-      val wrapper = SelectListenerWrapper(dialog, params.imageParams.onSelectListener)
+      val wrapper = OnSelectListenerWrapper(dialog, params.imageParams.onSelectListener)
       params.imageParams.onSelectListener = wrapper
       dialog.params = params
       dialog.createByBuilder = true
