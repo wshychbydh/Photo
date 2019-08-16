@@ -16,7 +16,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.2.0'
+        implementation 'com.github.wshychbydh:photo:1.1.3'
     }
 ```
 
@@ -70,7 +70,7 @@
 
 6、若使用了**androidx**的包，可使用通用方法：**PhotoDialog**或**PhotoPickerDialog**
 
-**注**：使用PhotoPickerDialog时无须设置onActivityResult回调，但DialogParams类的部分属性无效，如：xPos,yPos,dialogStyle
+**注**：使用PhotoPickerDialog时无须设置onActivityResult回调，但DialogParams类的部分属性无效
 ```
    PhotoPickerDialog.setDialogParams(dialogParams)   //（可选）
    PhotoPickerDialog.setImageParams(imageParams)     // 必须设置setOnSelectListener方法，否则无回调
