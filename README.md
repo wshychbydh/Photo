@@ -57,7 +57,7 @@
     helper.onSelectAlbum(ImageParams)  //调用相机
 ```
 
-5、弹框选择可使用**PhotoDialog**或**PhotoDialogFragment**，区别在于PhotoDialog必须设置onActivityResult回调
+5、弹框选择可使用**PhotoDialog**或**PhotoDialogFragment**(<font color=#FF0000>**推荐**</font>)，区别在于PhotoDialog必须设置onActivityResult回调
 
 **注**：使用PhotoDialog时，需在相应的onActivityResult中设置如下回调：
 ```
@@ -69,7 +69,15 @@
 ```
 
 6、若使用了**androidx**的包，可使用通用方法：**PhotoDialog**或**PhotoPickerDialog**
+
 **注**：使用PhotoPickerDialog时无须设置onActivityResult回调，但DialogParams类的部分属性无效，如：xPos,yPos,dialogStyle
+```
+   PhotoPickerDialog.setDialogParams(dialogParams)   //（可选）
+   PhotoPickerDialog.setImageParams(imageParams)     // 必须设置setOnSelectListener方法，否则无回调
+   PhotoPickerDialog.setRationale(rationale)         //（可选）
+   PhotoPickerDialog.setRationaleSetting(rationale)  //（可选）
+   PhotoPickerDialog.show(context)                   // 启动对话框，在设置完参数后调用
+```
 
 7、因为选择图片和拍照在6.0及以上需要运行时权限，该库已包含权限请求库，若有相关需求则无需再单独引入
 
