@@ -22,8 +22,8 @@ class PhotoDialog(
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val view = params.dialogParams.contentView ?: DefaultView(context)
-    val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
-        ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
+    val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
+        ?: throw IllegalArgumentException("Custom View must declare method setOnActionListener(OnActionListener)")
     method.isAccessible = true
     method.invoke(view, executor)
     setContentView(view)

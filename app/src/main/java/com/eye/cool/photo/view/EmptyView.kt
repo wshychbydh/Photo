@@ -19,7 +19,7 @@ internal class EmptyView @JvmOverloads constructor(
 
   private var listener: OnActionListener? = null
 
-  private fun setActionListener(listener: OnActionListener) {
+  private fun setOnActionListener(listener: OnActionListener) {
     this.listener = listener
   }
 

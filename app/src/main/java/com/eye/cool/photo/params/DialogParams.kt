@@ -14,6 +14,9 @@ class DialogParams private constructor() {
 
   internal var contentView: View? = null
 
+  /**
+   * Nonsupport for PhotoPickerDialog
+   */
   @StyleRes
   internal var dialogStyle: Int = R.style.PhotoDialog
 
@@ -24,8 +27,14 @@ class DialogParams private constructor() {
 
   internal var canceledOnTouchOutside: Boolean = true
 
+  /**
+   * Nonsupport for PhotoPickerDialog
+   */
   internal var xPos = 0
 
+  /**
+   * Nonsupport for PhotoPickerDialog
+   */
   internal var yPos = Resources.getSystem().displayMetrics.heightPixels
 
   internal var onShowListener: DialogInterface.OnShowListener? = null

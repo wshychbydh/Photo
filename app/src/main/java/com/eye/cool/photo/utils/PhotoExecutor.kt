@@ -3,7 +3,6 @@ package com.eye.cool.photo.utils
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import com.eye.cool.permission.Permission
 import com.eye.cool.permission.PermissionHelper
 import com.eye.cool.photo.BuildConfig
@@ -11,6 +10,7 @@ import com.eye.cool.photo.R
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.Constants.ADJUST_PHOTO
 import com.eye.cool.photo.support.Constants.CANCEL
+import com.eye.cool.photo.support.Constants.PERMISSION_FORBID
 import com.eye.cool.photo.support.Constants.SELECT_ALBUM
 import com.eye.cool.photo.support.Constants.TAG
 import com.eye.cool.photo.support.Constants.TAKE_PHOTO
@@ -20,20 +20,17 @@ import java.io.File
 
 /**
  *Created by cool on 2018/6/12
- *
- *Provide picture operation
- *If you don't need a dialog box, you can use it
  */
 internal class PhotoExecutor(private val params: Params) : OnActionListener {
 
   private val context = params.wrapper.context()
 
-  private var onClickListener: OnClickListener? = null
+  private var clickListener: OnClickListener? = null
   private var outputFile: File? = null
   private var photoFile: File? = null
 
   internal fun setOnClickListener(listener: OnClickListener) {
-    onClickListener = listener
+    clickListener = listener
   }
 
   fun onActivityResult(requestCode: Int, intent: Intent?) {
@@ -63,18 +60,19 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
 
   override fun onTakePhoto() {
     PermissionHelper.Builder(context)
-        .permission(Permission.CAMERA)
         .permissions(Permission.STORAGE)
         .rationale(params.rationale)
         .rationaleSetting(params.rationaleSetting)
         .permissionCallback {
           if (it) {
-            onClickListener?.onClick(TAKE_PHOTO)
+            clickListener?.onClick(TAKE_PHOTO)
             photoFile = File(LocalStorage.composePhotoImageFile(context))
             PhotoUtil.takePhoto(params.wrapper, photoFile!!)
           } else {
-            onClickListener?.onClick(CANCEL)
-            Toast.makeText(context, context.getString(R.string.permission_storage), Toast.LENGTH_SHORT).show()
+            clickListener?.onClick(PERMISSION_FORBID)
+            if (BuildConfig.DEBUG) {
+              Log.d(TAG, context.getString(R.string.permission_storage))
+            }
           }
         }.build()
         .request()
@@ -87,11 +85,13 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
         .rationaleSetting(params.rationaleSetting)
         .permissionCallback {
           if (it) {
-            onClickListener?.onClick(SELECT_ALBUM)
+            clickListener?.onClick(SELECT_ALBUM)
             PhotoUtil.takeAlbum(params.wrapper)
           } else {
-            onClickListener?.onClick(CANCEL)
-            Toast.makeText(context, context.getString(R.string.permission_storage), Toast.LENGTH_SHORT).show()
+            clickListener?.onClick(PERMISSION_FORBID)
+            if (BuildConfig.DEBUG) {
+              Log.d(TAG, context.getString(R.string.permission_storage))
+            }
           }
         }
         .build()
@@ -99,7 +99,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
   }
 
   override fun onCancel() {
-    onClickListener?.onClick(CANCEL)
+    clickListener?.onClick(CANCEL)
   }
 
   private fun onPhotoReady(uri: Uri) {
@@ -110,9 +110,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUrl : $fileUrl")
     }
-    if (fileUrl.isNullOrEmpty()) {
-      Toast.makeText(context, "Error path '${uri.path}'", Toast.LENGTH_SHORT).show()
-    } else {
+    if (!fileUrl.isNullOrEmpty()) {
       val convertUrl = convertUrl(fileUrl)
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "convertUrl : $convertUrl")

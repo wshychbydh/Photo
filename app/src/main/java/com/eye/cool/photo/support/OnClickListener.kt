@@ -6,7 +6,13 @@ package com.eye.cool.photo.support
 interface OnClickListener {
 
   /**
-   * @param which which the button that was clicked ({@link Constants#TAKE_PHOTO, SELECT_ALBUM, CANCEL})
+   * @param which which the button that was clicked.
+   * {@link Constants
+   *        #TAKE_PHOTO,
+   *        #SELECT_ALBUM,
+   *        #CANCEL,
+   *        #PERMISSION_FORBID
+   * }
    */
   fun onClick(which: Int)
 }

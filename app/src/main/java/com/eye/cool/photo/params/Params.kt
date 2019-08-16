@@ -21,6 +21,12 @@ class Params private constructor() {
 
     private var params = Params()
 
+    /**
+     * Used for PhotoPickerDialog
+     * init wrapper after activity inited
+     */
+    internal constructor()
+
     constructor(supportFragment: Fragment) {
       params.wrapper = ContextWrapper(supportFragment)
     }

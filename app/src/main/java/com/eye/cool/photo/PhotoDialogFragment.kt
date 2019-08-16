@@ -1,5 +1,8 @@
 package com.eye.cool.photo
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -13,10 +16,12 @@ import android.support.v7.app.AppCompatDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import com.eye.cool.permission.Rationale
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
+import com.eye.cool.photo.support.Constants
 import com.eye.cool.photo.support.OnActionListener
 import com.eye.cool.photo.support.OnClickListener
 import com.eye.cool.photo.support.OnSelectListenerWrapper
@@ -40,8 +45,8 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     val view = params.dialogParams.contentView ?: DefaultView(context)
-    val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
-        ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
+    val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
+        ?: throw IllegalArgumentException("Custom View must declare method setOnActionListener(OnActionListener)")
     method.isAccessible = true
     method.invoke(view, executor)
     return view
@@ -66,7 +71,10 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
     super.onActivityCreated(savedInstanceState)
     executor.setOnClickListener(object : OnClickListener {
       override fun onClick(which: Int) {
-        view?.visibility = View.GONE
+        when (which) {
+          Constants.ADJUST_PHOTO, Constants.SELECT_ALBUM -> playExitAnim()
+          Constants.CANCEL, Constants.PERMISSION_FORBID -> dismissAllowingStateLoss()
+        }
         params.dialogParams.onClickListener?.onClick(which)
       }
     })
@@ -91,6 +99,29 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
 
   fun show(fragment: Fragment) {
     show(fragment.childFragmentManager, javaClass.simpleName)
+  }
+
+  private fun playExitAnim() {
+    if (dialog == null || view == null) return
+    val animator1 = ObjectAnimator.ofFloat(
+        view,
+        "translationY",
+        0f,
+        view!!.height.toFloat()
+    )
+    val window = dialog?.window ?: return
+    val animator2 = ValueAnimator.ofFloat(window.attributes.dimAmount, 0f)
+    animator2.addUpdateListener {
+      val dim = it.animatedValue as Float
+      val lp = window.attributes
+      lp.dimAmount = dim
+      window.attributes = lp
+    }
+    val set = AnimatorSet()
+    set.interpolator = LinearInterpolator()
+    set.duration = 150
+    set.playTogether(animator1, animator2)
+    set.start()
   }
 
   class Builder {
