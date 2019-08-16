@@ -39,15 +39,11 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    var view: View? = params.dialogParams.contentView
-    if (view == null) {
-      view = DefaultView(context)
-      view.setActionListener(executor)
-    } else {
-      val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
-          ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
-      method.invoke(view, executor)
-    }
+    val view = params.dialogParams.contentView ?: DefaultView(context)
+    val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
+        ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
+    method.isAccessible = true
+    method.invoke(view, executor)
     return view
   }
 

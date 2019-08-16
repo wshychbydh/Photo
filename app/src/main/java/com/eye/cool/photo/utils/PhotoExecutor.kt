@@ -69,14 +69,15 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
         .rationaleSetting(params.rationaleSetting)
         .permissionCallback {
           if (it) {
+            onClickListener?.onClick(TAKE_PHOTO)
             photoFile = File(LocalStorage.composePhotoImageFile(context))
             PhotoUtil.takePhoto(params.wrapper, photoFile!!)
           } else {
+            onClickListener?.onClick(CANCEL)
             Toast.makeText(context, context.getString(R.string.permission_storage), Toast.LENGTH_SHORT).show()
           }
         }.build()
         .request()
-    onClickListener?.onClick(TAKE_PHOTO)
   }
 
   override fun onSelectAlbum() {
@@ -86,14 +87,15 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
         .rationaleSetting(params.rationaleSetting)
         .permissionCallback {
           if (it) {
+            onClickListener?.onClick(SELECT_ALBUM)
             PhotoUtil.takeAlbum(params.wrapper)
           } else {
+            onClickListener?.onClick(CANCEL)
             Toast.makeText(context, context.getString(R.string.permission_storage), Toast.LENGTH_SHORT).show()
           }
         }
         .build()
         .request()
-    onClickListener?.onClick(SELECT_ALBUM)
   }
 
   override fun onCancel() {

@@ -18,7 +18,7 @@ internal class DefaultView @JvmOverloads constructor(context: Context, attrs: At
 
   private var listener: OnActionListener? = null
 
-  fun setActionListener(listener: OnActionListener) {
+  private fun setActionListener(listener: OnActionListener) {
     this.listener = listener
   }
 

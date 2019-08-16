@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.OnActionListener
 import com.eye.cool.photo.support.OnClickListener
@@ -22,15 +21,11 @@ class PhotoDialog(
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    var view: View? = params.dialogParams.contentView
-    if (view == null) {
-      view = DefaultView(context)
-      view.setActionListener(executor)
-    } else {
-      val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
-          ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
-      method.invoke(view, executor)
-    }
+    val view = params.dialogParams.contentView ?: DefaultView(context)
+    val method = view.javaClass.getDeclaredMethod("setActionListener", OnActionListener::class.java)
+        ?: throw IllegalArgumentException("Custom View must declare method setActionListener(OnActionListener)")
+    method.isAccessible = true
+    method.invoke(view, executor)
     setContentView(view)
     setParams()
 
