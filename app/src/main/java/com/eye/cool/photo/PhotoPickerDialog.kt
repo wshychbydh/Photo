@@ -38,7 +38,7 @@ class PhotoPickerDialog : Activity(), DialogInterface {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     invasionStatusBar(this)
-    params.wrapper = ContextWrapper(this)
+    params.wrapper = CompatContext(this)
     executor = PhotoExecutor(params)
     val selectListenerWrapper = OnSelectListenerWrapper(this, params.imageParams.onSelectListener)
     params.imageParams.onSelectListener = selectListenerWrapper

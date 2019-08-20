@@ -1,13 +1,13 @@
 package com.eye.cool.photo.params
 
 import android.app.Activity
-import android.support.v4.app.Fragment
+import android.app.Fragment
 import com.eye.cool.permission.Rationale
-import com.eye.cool.photo.support.ContextWrapper
+import com.eye.cool.photo.support.CompatContext
 
 class Params private constructor() {
 
-  internal lateinit var wrapper: ContextWrapper
+  internal lateinit var wrapper: CompatContext
 
   internal var imageParams: ImageParams = ImageParams.Builder().build()
 
@@ -27,12 +27,16 @@ class Params private constructor() {
      */
     internal constructor()
 
-    constructor(supportFragment: Fragment) {
-      params.wrapper = ContextWrapper(supportFragment)
+    constructor(fragment: Fragment) {
+      params.wrapper = CompatContext(fragment)
+    }
+
+    constructor(supportFragment: android.support.v4.app.Fragment) {
+      params.wrapper = CompatContext(supportFragment)
     }
 
     constructor(activity: Activity) {
-      params.wrapper = ContextWrapper(activity)
+      params.wrapper = CompatContext(activity)
     }
 
     //params for picked picture

@@ -1,15 +1,16 @@
-package com.eye.cool.photo
+package com.eye.cool.photo.support.v4
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.Dialog
-import android.app.DialogFragment
-import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatDialog
+import android.support.v7.app.AppCompatDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +29,7 @@ import com.eye.cool.photo.view.DefaultView
 /**
  * Created by cool on 18-3-9
  */
-class PhotoDialogFragment : DialogFragment() {
+class PhotoDialogFragment : AppCompatDialogFragment() {
 
   private lateinit var executor: PhotoExecutor
   private lateinit var params: Params
@@ -41,7 +42,7 @@ class PhotoDialogFragment : DialogFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    val view = params.dialogParams.contentView ?: DefaultView(activity)
+    val view = params.dialogParams.contentView ?: DefaultView(context)
     val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
         ?: throw IllegalArgumentException("Custom View must declare method setOnActionListener(OnActionListener)")
     method.isAccessible = true
@@ -51,7 +52,7 @@ class PhotoDialogFragment : DialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val dialogParams = params.dialogParams
-    val dialog = Dialog(activity, dialogParams.dialogStyle)
+    val dialog = AppCompatDialog(context, dialogParams.dialogStyle)
     val window = dialog.window ?: return dialog
     window.setWindowAnimations(dialogParams.animStyle)
     val layoutParams = window.attributes
@@ -156,7 +157,7 @@ class PhotoDialogFragment : DialogFragment() {
     fun build(): PhotoDialogFragment {
       val params = paramsBuilder.build()
       val wrapper = OnSelectListenerWrapper(
-          dialogFragment = dialog,
+          compatDialogFragment = dialog,
           listener = params.imageParams.onSelectListener
       )
       params.imageParams.onSelectListener = wrapper

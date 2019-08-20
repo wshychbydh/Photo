@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import com.eye.cool.photo.support.Constants
-import com.eye.cool.photo.support.ContextWrapper
+import com.eye.cool.photo.support.CompatContext
 import java.io.File
 
 
@@ -19,7 +19,7 @@ object PhotoUtil {
    * @param wrapper
    * @param outputFile The path for photo output
    */
-  fun takePhoto(wrapper: ContextWrapper, outputFile: File) {
+  fun takePhoto(wrapper: CompatContext, outputFile: File) {
     val intent = Intent()
     intent.action = "android.media.action.IMAGE_CAPTURE"
     intent.addCategory("android.intent.category.DEFAULT")
@@ -32,7 +32,7 @@ object PhotoUtil {
    * select image from album
    *@param wrapper
    */
-  fun takeAlbum(wrapper: ContextWrapper) {
+  fun takeAlbum(wrapper: CompatContext) {
     val intent = Intent()
     intent.type = "image/*"
     intent.action = Intent.ACTION_PICK
@@ -49,7 +49,7 @@ object PhotoUtil {
    * @param outputW output width, default 300px
    * @param outputH output height, default 300px
    */
-  fun cut(wrapper: ContextWrapper, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
+  fun cut(wrapper: CompatContext, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
     val intent = Intent("com.android.camera.action.CROP")
     FileProviderUtil.setIntentDataAndType(intent, "image/*", uri, true)
     intent.putExtra("crop", true)

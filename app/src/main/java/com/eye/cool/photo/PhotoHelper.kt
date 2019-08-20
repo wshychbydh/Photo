@@ -1,20 +1,37 @@
 package com.eye.cool.photo
 
+import android.app.Activity
+import android.app.Fragment
 import android.content.DialogInterface
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.FragmentActivity
 import android.view.View
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
+import com.eye.cool.photo.support.CompatContext
 import com.eye.cool.photo.support.OnSelectListenerWrapper
 import com.eye.cool.photo.view.EmptyView
 
 /**
  *Created by ycb on 2019/8/14 0014
  */
-class PhotoHelper(private val activity: AppCompatActivity) {
+class PhotoHelper {
+
+  private val compat: CompatContext
+
+  constructor(supportFragment: android.support.v4.app.Fragment) {
+    compat = CompatContext(supportFragment)
+  }
+
+  constructor(fragment: Fragment) {
+    compat = CompatContext(fragment)
+  }
+
+  constructor(activity: Activity) {
+    compat = CompatContext(activity)
+  }
 
   fun onTakePhoto(params: ImageParams) {
-    val contentView = EmptyView(activity)
+    val contentView = EmptyView(compat.context())
     val builder = createDefaultDialogParams(contentView)
     builder.setOnShowListener(DialogInterface.OnShowListener {
       contentView.onTakePhoto()
@@ -23,7 +40,7 @@ class PhotoHelper(private val activity: AppCompatActivity) {
   }
 
   fun onSelectAlbum(params: ImageParams) {
-    val contentView = EmptyView(activity)
+    val contentView = EmptyView(compat.context())
     val builder = createDefaultDialogParams(contentView)
     builder.setOnShowListener(DialogInterface.OnShowListener {
       contentView.onSelectAlbum()
@@ -40,11 +57,37 @@ class PhotoHelper(private val activity: AppCompatActivity) {
   }
 
   private fun execute(dialogParams: DialogParams, params: ImageParams) {
-    val dialog = PhotoDialogFragment.Builder()
+    val activity = compat.activity()
+    if (activity is FragmentActivity) {
+      val dialog = createSupportDialogFragment(dialogParams, params)
+      params.onSelectListener = OnSelectListenerWrapper(
+          compatDialogFragment = dialog,
+          listener = params.onSelectListener
+      )
+      dialog.show(activity.supportFragmentManager)
+    } else {
+      val dialog = createDialogFragment(dialogParams, params)
+      params.onSelectListener = OnSelectListenerWrapper(
+          dialogFragment = dialog,
+          listener = params.onSelectListener
+      )
+      dialog.show(activity.fragmentManager)
+    }
+  }
+
+  private fun createDialogFragment(dialogParams: DialogParams, params: ImageParams): PhotoDialogFragment {
+    return PhotoDialogFragment.Builder()
         .setImageParams(params)
         .setDialogParams(dialogParams)
         .build()
-    params.onSelectListener = OnSelectListenerWrapper(dialog, params.onSelectListener)
-    dialog.show(activity.supportFragmentManager)
+  }
+
+  private fun createSupportDialogFragment(
+      dialogParams: DialogParams, params: ImageParams
+  ): com.eye.cool.photo.support.v4.PhotoDialogFragment {
+    return com.eye.cool.photo.support.v4.PhotoDialogFragment.Builder()
+        .setImageParams(params)
+        .setDialogParams(dialogParams)
+        .build()
   }
 }
