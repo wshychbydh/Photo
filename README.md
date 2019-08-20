@@ -16,7 +16,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.1.3'
+        implementation 'com.github.wshychbydh:photo:1.1.4'
     }
 ```
 
@@ -59,7 +59,11 @@
 
 5、弹框选择可使用**PhotoDialog**或**PhotoDialogFragment**(<font color=#FF0000>**推荐**</font>)，区别在于PhotoDialog必须设置onActivityResult回调
 
-**注**：使用PhotoDialog时，需在相应的onActivityResult中设置如下回调：
+**注**：
+   
+   1）PhotoDialogFragment和support.v4.PhotoDialogFragment分别对应不同包的Fragment，按需调用
+   
+   2）使用PhotoDialog时，需在相应的onActivityResult中设置如下回调：
 ```
     //在调用的Activity或Fragment中调用（必须设置）
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -68,7 +72,7 @@
     }
 ```
 
-6、若使用了**androidx**的包，可使用通用方法：**PhotoDialog**或**PhotoPickerDialog**
+6、若使用了其他包，如**androidx**时，可使用**通用**方式：**PhotoDialog**或**PhotoPickerDialog**
 
 **注**：使用PhotoPickerDialog时无须设置onActivityResult回调，但DialogParams类的部分属性无效
 ```
