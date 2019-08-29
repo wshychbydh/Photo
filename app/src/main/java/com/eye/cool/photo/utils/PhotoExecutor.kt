@@ -60,6 +60,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
 
   override fun onTakePhoto() {
     PermissionHelper.Builder(context)
+        .permission(Permission.CAMERA)
         .permissions(Permission.STORAGE)
         .rationale(params.rationale)
         .rationaleSetting(params.rationaleSetting)
