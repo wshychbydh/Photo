@@ -16,7 +16,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.1.4'
+        implementation 'com.github.wshychbydh:photo:1.1.5'
     }
 ```
 
@@ -84,5 +84,6 @@
 ```
 
 7、因为选择图片和拍照在6.0及以上需要运行时权限，该库已包含权限请求库，若有相关需求则无需再单独引入
+**注**：在target23以下，权限是根据Manifest中是否配置自动授予的，如果又使用系统软件禁用权限，这里仍会返回已授权，需自行处理（建议升级target）。
 
-[![](https://jitpack.io/v/wshychbydh/Photo.svg)](https://jitpack.io/#wshychbydh/Photo)
+[![](https://jitpack.io/v/wshychbydh/photo.svg)](https://jitpack.io/#wshychbydh/photo)
