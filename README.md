@@ -21,6 +21,14 @@
     }
 ```
 
+**注**：如果编译的时候报重复的'META-INF/app_release.kotlin_module'时，在app的build.gradle文件的android下添加
+```
+    packagingOptions {
+        exclude 'META-INF/app_release.kotlin_module'
+    }
+```
+报其他类似的重复错误时，添加方式同上。
+
 3、调用系统相机不需要Camera权限，请检查项目中是否存在**android.permission.CAMERA**权限，若存在请删除或设置requestCameraPermission为true（必须）
 
 4、构建Params实例
