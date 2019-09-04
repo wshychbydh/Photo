@@ -17,7 +17,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.2.1'
+        implementation 'com.github.wshychbydh:photo:1.2.2'
     }
 ```
 
@@ -62,8 +62,6 @@
 ```
 
 6、需要弹框可使用**PhotoDialog**或**PhotoDialogFragment**(<font color=#FF0000>**推荐**</font>)，区别在于PhotoDialog必须设置onActivityResult回调
-
-**注**：
    
    1）PhotoDialogFragment和support.v4.PhotoDialogFragment分别对应不同包的Fragment，按需调用
    
@@ -89,8 +87,6 @@
 ```
 
 8、其他注意事项
-
-**注**：
 
    1）因为选择图片和拍照在6.0及以上需要运行时权限，该库已包含权限请求库，若有相关需求则无需再单独引入
   
