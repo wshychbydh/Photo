@@ -10,6 +10,7 @@ import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,7 +79,9 @@ class PhotoDialogFragment : DialogFragment() {
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-    super.onActivityResult(requestCode, resultCode, intent)
+    if (BuildConfig.DEBUG) {
+      Log.d(Constants.TAG, "requestCode-->$requestCode")
+    }
     if (resultCode == Activity.RESULT_OK) {
       executor.onActivityResult(requestCode, intent)
     } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -138,18 +141,30 @@ class PhotoDialogFragment : DialogFragment() {
     /**
      * Permission setRationale when need
      * @param rationale
+     * @param showRationaleWhenRequest
      */
-    fun setRationale(rationale: Rationale): Builder {
-      paramsBuilder.setRationale(rationale)
+    fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Builder {
+      paramsBuilder.setRationale(rationale, showRationaleWhenRequest)
       return this
     }
 
     /**
      * Permission setting's setRationale when need
-     * @param rationale
+     * @param rationaleSetting
+     * @param showRationaleSettingWhenDenied
      */
-    fun setRationaleSetting(rationale: Rationale): Builder {
-      paramsBuilder.setRationaleSetting(rationale)
+    fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Builder {
+      paramsBuilder.setRationaleSetting(rationaleSetting, showRationaleSettingWhenDenied)
+      return this
+    }
+
+    /**
+     * If registered permission of 'android.permission.CAMERA' in manifest,
+     * you must set it to true, default false
+     * @param requestCameraPermission
+     */
+    fun requestCameraPermission(requestCameraPermission: Boolean): Builder {
+      paramsBuilder.requestCameraPermission(requestCameraPermission)
       return this
     }
 

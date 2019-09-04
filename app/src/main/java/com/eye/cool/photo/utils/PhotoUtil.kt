@@ -4,8 +4,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import com.eye.cool.photo.support.Constants
 import com.eye.cool.photo.support.CompatContext
+import com.eye.cool.photo.support.Constants
 import java.io.File
 
 

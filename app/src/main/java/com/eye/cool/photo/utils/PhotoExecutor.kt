@@ -60,10 +60,12 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
 
   override fun onTakePhoto() {
     PermissionHelper.Builder(context)
-        .permission(Permission.CAMERA)
         .permissions(Permission.STORAGE)
+        .permissions(if (params.requestCameraPermission) Permission.CAMERA else emptyArray())
         .rationale(params.rationale)
         .rationaleSetting(params.rationaleSetting)
+        .showRationaleWhenRequest(params.showRationaleWhenRequest)
+        .showRationaleSettingWhenDenied(params.showRationaleSettingWhenDenied)
         .permissionCallback {
           if (it) {
             clickListener?.onClick(TAKE_PHOTO)
@@ -84,6 +86,8 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
         .permissions(Permission.STORAGE)
         .rationale(params.rationale)
         .rationaleSetting(params.rationaleSetting)
+        .showRationaleWhenRequest(params.showRationaleWhenRequest)
+        .showRationaleSettingWhenDenied(params.showRationaleSettingWhenDenied)
         .permissionCallback {
           if (it) {
             clickListener?.onClick(SELECT_ALBUM)

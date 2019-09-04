@@ -17,6 +17,12 @@ class Params private constructor() {
 
   internal var rationaleSetting: Rationale? = null
 
+  internal var showRationaleWhenRequest = false
+
+  internal var showRationaleSettingWhenDenied = true
+
+  internal var requestCameraPermission = false
+
   class Builder {
 
     private var params = Params()
@@ -39,27 +45,53 @@ class Params private constructor() {
       params.wrapper = CompatContext(activity)
     }
 
-    //params for picked picture
+    /**
+     * The params for selected image
+     * @param imageParams
+     */
     fun setImageParams(imageParams: ImageParams): Builder {
       params.imageParams = imageParams
       return this
     }
 
-    //params for shown dialog
+    /**
+     * The params for shown dialog
+     * @param dialogParams
+     */
     fun setDialogParams(dialogParams: DialogParams): Builder {
       params.dialogParams = dialogParams
       return this
     }
 
-    //permission prompt box
-    fun setRationale(rationale: Rationale): Builder {
+    /**
+     * Permission setRationale when need
+     * @param rationale
+     * @param showRationaleWhenRequest
+     */
+    fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Builder {
       params.rationale = rationale
+      params.showRationaleWhenRequest = showRationaleWhenRequest
       return this
     }
 
-    //Boot setup authorization prompt box
-    fun setRationaleSetting(rationaleSetting: Rationale): Builder {
+    /**
+     * Permission setting's setRationale when need
+     * @param rationaleSetting
+     * @param showRationaleSettingWhenDenied
+     */
+    fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Builder {
       params.rationaleSetting = rationaleSetting
+      params.showRationaleSettingWhenDenied = showRationaleSettingWhenDenied
+      return this
+    }
+
+    /**
+     * If registered permission of 'android.permission.CAMERA' in manifest,
+     * you must set it to true, default false
+     * @param requestCameraPermission
+     */
+    fun requestCameraPermission(requestCameraPermission: Boolean): Builder {
+      params.requestCameraPermission = requestCameraPermission
       return this
     }
 

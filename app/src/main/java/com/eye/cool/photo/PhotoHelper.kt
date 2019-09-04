@@ -30,15 +30,25 @@ class PhotoHelper {
     compat = CompatContext(activity)
   }
 
-  fun onTakePhoto(params: ImageParams) {
+  /**
+   * take a photo
+   * @param params settings of photo
+   * @param requestCameraPermission If registered permission of 'android.permission.CAMERA' in manifest,
+   * you must set it to true, default false
+   */
+  fun onTakePhoto(params: ImageParams, requestCameraPermission: Boolean = false) {
     val contentView = EmptyView(compat.context())
     val builder = createDefaultDialogParams(contentView)
     builder.setOnShowListener(DialogInterface.OnShowListener {
       contentView.onTakePhoto()
     })
-    execute(builder.build(), params)
+    execute(builder.build(), params, requestCameraPermission)
   }
 
+  /**
+   * select from album
+   * @param params settings of photo
+   */
   fun onSelectAlbum(params: ImageParams) {
     val contentView = EmptyView(compat.context())
     val builder = createDefaultDialogParams(contentView)
@@ -56,10 +66,10 @@ class PhotoHelper {
         .setContentView(contentView)
   }
 
-  private fun execute(dialogParams: DialogParams, params: ImageParams) {
+  private fun execute(dialogParams: DialogParams, params: ImageParams, requestCameraPermission: Boolean = false) {
     val activity = compat.activity()
     if (activity is FragmentActivity) {
-      val dialog = createSupportDialogFragment(dialogParams, params)
+      val dialog = createSupportDialogFragment(dialogParams, params, requestCameraPermission)
       params.onSelectListener = OnSelectListenerWrapper(
           compatDialogFragment = dialog,
           listener = params.onSelectListener
@@ -83,11 +93,14 @@ class PhotoHelper {
   }
 
   private fun createSupportDialogFragment(
-      dialogParams: DialogParams, params: ImageParams
+      dialogParams: DialogParams,
+      imageParams: ImageParams,
+      requestCameraPermission: Boolean
   ): com.eye.cool.photo.support.v4.PhotoDialogFragment {
     return com.eye.cool.photo.support.v4.PhotoDialogFragment.Builder()
-        .setImageParams(params)
+        .setImageParams(imageParams)
         .setDialogParams(dialogParams)
+        .requestCameraPermission(requestCameraPermission)
         .build()
   }
 }

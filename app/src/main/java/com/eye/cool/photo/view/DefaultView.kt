@@ -8,7 +8,6 @@ import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import com.eye.cool.photo.R
 import com.eye.cool.photo.support.OnActionListener
-import kotlinx.android.synthetic.main.layout_photo.view.*
 
 /**
  * Created by cool on 2018/6/12
@@ -28,16 +27,16 @@ internal class DefaultView @JvmOverloads constructor(context: Context, attrs: At
     setPadding(padding, padding, padding, padding)
     layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     val view = LayoutInflater.from(context).inflate(R.layout.layout_photo, this, true)
-    view.albumBtn.setOnClickListener(this)
-    view.photoBtn.setOnClickListener(this)
-    view.cancelBtn.setOnClickListener(this)
+    view.findViewById<View>(R.id.albumBtn).setOnClickListener(this)
+    view.findViewById<View>(R.id.photoBtn).setOnClickListener(this)
+    view.findViewById<View>(R.id.cancelBtn).setOnClickListener(this)
   }
 
   override fun onClick(v: View) {
-    when (v) {
-      albumBtn -> listener?.onSelectAlbum()
-      photoBtn -> listener?.onTakePhoto()
-      cancelBtn -> listener?.onCancel()
+    when (v.id) {
+      R.id.albumBtn -> listener?.onSelectAlbum()
+      R.id.photoBtn -> listener?.onTakePhoto()
+      R.id.cancelBtn -> listener?.onCancel()
     }
   }
 }

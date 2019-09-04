@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -120,6 +121,9 @@ class PhotoPickerDialog : Activity(), DialogInterface {
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    if (BuildConfig.DEBUG) {
+      Log.d(Constants.TAG, "requestCode-->$requestCode")
+    }
     if (resultCode == RESULT_OK) {
       executor.onActivityResult(requestCode, data)
     } else if (resultCode == RESULT_CANCELED) {
@@ -164,20 +168,35 @@ class PhotoPickerDialog : Activity(), DialogInterface {
     /**
      * Permission setRationale when need
      * @param rationale
+     * @param showRationaleWhenRequest
      */
-    fun setRationale(rationale: Rationale): Companion {
+    fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.rationale = rationale
+      params!!.showRationaleWhenRequest = showRationaleWhenRequest
       return this
     }
 
     /**
      * Permission setting's setRationale when need
-     * @param rationale
+     * @param rationaleSetting
+     * @param showRationaleSettingWhenDenied
      */
-    fun setRationaleSetting(rationale: Rationale): Companion {
+    fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Companion {
       if (params == null) params = Params.Builder().build()
-      params!!.rationaleSetting = rationale
+      params!!.rationaleSetting = rationaleSetting
+      params!!.showRationaleSettingWhenDenied = showRationaleSettingWhenDenied
+      return this
+    }
+
+    /**
+     * If registered permission of 'android.permission.CAMERA' in manifest,
+     * you must set it to true, default false
+     * @param requestCameraPermission
+     */
+    fun requestCameraPermission(requestCameraPermission: Boolean): Companion {
+      if (params == null) params = Params.Builder().build()
+      params!!.requestCameraPermission = requestCameraPermission
       return this
     }
 

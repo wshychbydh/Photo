@@ -42,7 +42,7 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    val view = params.dialogParams.contentView ?: DefaultView(context)
+    val view = params.dialogParams.contentView ?: DefaultView(requireContext())
     val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
         ?: throw IllegalArgumentException("Custom View must declare method setOnActionListener(OnActionListener)")
     method.isAccessible = true
@@ -139,18 +139,30 @@ class PhotoDialogFragment : AppCompatDialogFragment() {
     /**
      * Permission setRationale when need
      * @param rationale
+     * @param showRationaleWhenRequest
      */
-    fun setRationale(rationale: Rationale): Builder {
-      paramsBuilder.setRationale(rationale)
+    fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Builder {
+      paramsBuilder.setRationale(rationale, showRationaleWhenRequest)
       return this
     }
 
     /**
      * Permission setting's setRationale when need
-     * @param rationale
+     * @param rationaleSetting
+     * @param showRationaleSettingWhenDenied
      */
-    fun setRationaleSetting(rationale: Rationale): Builder {
-      paramsBuilder.setRationaleSetting(rationale)
+    fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Builder {
+      paramsBuilder.setRationaleSetting(rationaleSetting, showRationaleSettingWhenDenied)
+      return this
+    }
+
+    /**
+     * If registered permission of 'android.permission.CAMERA' in manifest,
+     * you must set it to true, default false
+     * @param requestCameraPermission
+     */
+    fun requestCameraPermission(requestCameraPermission: Boolean): Builder {
+      paramsBuilder.requestCameraPermission(requestCameraPermission)
       return this
     }
 

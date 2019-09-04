@@ -4,7 +4,9 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.eye.cool.photo.params.Params
+import com.eye.cool.photo.support.Constants
 import com.eye.cool.photo.support.OnActionListener
 import com.eye.cool.photo.support.OnClickListener
 import com.eye.cool.photo.utils.PhotoExecutor
@@ -57,6 +59,9 @@ class PhotoDialog(
    * Call back the interface after taking a photo and call it in the corresponding OnActivityResult.
    */
   fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    if (BuildConfig.DEBUG) {
+      Log.d(Constants.TAG, "requestCode-->$requestCode")
+    }
     if (resultCode == Activity.RESULT_OK) {
       executor.onActivityResult(requestCode, intent)
     } else if (resultCode == Activity.RESULT_CANCELED) {
