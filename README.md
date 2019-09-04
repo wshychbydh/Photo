@@ -88,17 +88,17 @@
    PhotoPickerDialog.show(context)                            // 启动对话框，在设置完参数后调用
 ```
 
-8、因为选择图片和拍照在6.0及以上需要运行时权限，该库已包含权限请求库，若有相关需求则无需再单独引入
-
-9、其他注意事项
+8、其他注意事项
 
 **注**：
 
-   1）部分机型如模拟器在剪切图片后回调异常，导致程序无法达到预期效果，可尝试禁用剪切（设置ImageParams的setCutAble为false）修复
+   1）因为选择图片和拍照在6.0及以上需要运行时权限，该库已包含权限请求库，若有相关需求则无需再单独引入
+  
+   2）部分机型如模拟器在剪切图片后回调异常，导致程序无法达到预期效果，可尝试禁用剪切（设置ImageParams的setCutAble为false）修复
 
-   2）切记检查Manifest是否配置了Camera权限，并做相应权限请求，否则可能会出现调用相机crash
+   3）切记检查Manifest是否配置了Camera权限，并做相应权限请求，否则可能会出现调用相机crash  
+    
     
 #### 联系方式 wshychbydh@gmail.com
-
 
 [![](https://jitpack.io/v/wshychbydh/photo.svg)](https://jitpack.io/#wshychbydh/photo)
