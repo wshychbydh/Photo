@@ -97,4 +97,7 @@
     
 #### 联系方式 wshychbydh@gmail.com
 
-[![](https://jitpack.io/v/wshychbydh/Photo.svg)](https://jitpack.io/#wshychbydh/Photo)
+**注**：在target23以下，权限是根据Manifest中是否配置自动授予的，如果又使用系统软件禁用权限，这里仍会返回已授权，需自行处理（建议升级target）。
+
+
+[![](https://jitpack.io/v/wshychbydh/photo.svg)](https://jitpack.io/#wshychbydh/photo)
