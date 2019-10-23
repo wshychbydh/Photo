@@ -17,7 +17,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.2.2'
+        implementation 'com.github.wshychbydh:photo:1.3.0'
     }
 ```
 
@@ -61,32 +61,26 @@
     helper.onSelectAlbum(ImageParams)  //调用相机
 ```
 
-6、需要弹框可使用**PhotoDialog**或**PhotoDialogFragment**(<font color=#FF0000>**推荐**</font>)，区别在于PhotoDialog必须设置onActivityResult回调
+6、需要弹框使用**PhotoDialog**(<font color=#FF0000>**推荐**</font>)或**PhotoDialogFragment**或**PhotoDialogActivity**
    
-   1）PhotoDialogFragment和support.v4.PhotoDialogFragment分别对应不同包的Fragment，按需调用
+   1）PhotoDialog对应的包为androidx.appcompat.app.AppCompatDialogFragment，按需调用
    
-   2）使用PhotoDialog时，需在相应的onActivityResult中设置如下回调：
+   2）PhotoDialogFragment对应的包为android.app.DialogFragment（Deprecated）
+
+   3）在**android.support.fragment**等类中调用**PhotoDialogActivity**
+
+**注**：使用PhotoDialogActivity时，DialogParams类的部分属性无效
 ```
-    //在调用的Activity或Fragment中调用（必须设置）
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-      super.onActivityResult(requestCode, resultCode, data)
-      dialog.onActivityResult(requestCode, data)
-    }
+   PhotoDialogActivity.resetParams()                            // 重置参数 (可选)
+                      .setDialogParams(dialogParams)            //（可选）
+                      .setImageParams(imageParams)              // 必须设置setOnSelectListener方法，否则无回调
+                      .setRationale(rationale, boolean)         // 自定义请求权限对话框（可选）
+                      .setRationaleSetting(rationale, boolean)  // 自定义引导授权对话框（可选）
+                      .requestCameraPermission(boolean)         // 是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
+                      .show(context)                            // 启动对话框，在设置完参数后调用
 ```
 
-7、若使用了其他包，如**androidx**时，可使用**通用**方式：**PhotoDialog**或**PhotoPickerDialog**
-
-**注**：使用PhotoPickerDialog时无须设置onActivityResult回调，但DialogParams类的部分属性无效
-```
-   PhotoPickerDialog.setDialogParams(dialogParams)            //（可选）
-   PhotoPickerDialog.setImageParams(imageParams)              // 必须设置setOnSelectListener方法，否则无回调
-   PhotoPickerDialog.setRationale(rationale, boolean)         // 自定义请求权限对话框（可选）
-   PhotoPickerDialog.setRationaleSetting(rationale, boolean)  // 自定义引导授权对话框（可选）
-   PhotoPickerDialog.requestCameraPermission(boolean)         // 是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
-   PhotoPickerDialog.show(context)                            // 启动对话框，在设置完参数后调用
-```
-
-8、其他注意事项
+7、其他注意事项
 
    1）因为选择图片和拍照在6.0及以上需要运行时权限，该库已包含权限请求库，若有相关需求则无需再单独引入
   

@@ -28,7 +28,7 @@ class Params private constructor() {
     private var params = Params()
 
     /**
-     * Used for PhotoPickerDialog
+     * Used for PhotoDialogActivity
      * init wrapper after activity inited
      */
     internal constructor()
@@ -37,8 +37,8 @@ class Params private constructor() {
       params.wrapper = CompatContext(fragment)
     }
 
-    constructor(supportFragment: android.support.v4.app.Fragment) {
-      params.wrapper = CompatContext(supportFragment)
+    constructor(fragmentX: androidx.fragment.app.Fragment) {
+      params.wrapper = CompatContext(fragmentX)
     }
 
     constructor(activity: Activity) {

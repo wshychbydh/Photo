@@ -2,8 +2,8 @@ package com.eye.cool.photo.params
 
 import android.content.DialogInterface
 import android.content.res.Resources
-import android.support.annotation.StyleRes
 import android.view.View
+import androidx.annotation.StyleRes
 import com.eye.cool.photo.R
 import com.eye.cool.photo.support.OnClickListener
 
@@ -15,7 +15,7 @@ class DialogParams private constructor() {
   internal var contentView: View? = null
 
   /**
-   * Nonsupport for PhotoPickerDialog
+   * Nonsupport for PhotoDialogActivity
    */
   @StyleRes
   internal var dialogStyle: Int = R.style.PhotoDialog
@@ -28,12 +28,12 @@ class DialogParams private constructor() {
   internal var canceledOnTouchOutside: Boolean = true
 
   /**
-   * Nonsupport for PhotoPickerDialog
+   * Nonsupport for PhotoDialogActivity
    */
   internal var xPos = 0
 
   /**
-   * Nonsupport for PhotoPickerDialog
+   * Nonsupport for PhotoDialogActivity
    */
   internal var yPos = Resources.getSystem().displayMetrics.heightPixels
 

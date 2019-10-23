@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import com.eye.cool.permission.Rationale
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
@@ -26,13 +27,13 @@ import com.eye.cool.photo.utils.PhotoExecutor
 import com.eye.cool.photo.view.DefaultView
 
 /**
- * Compatible with androidx, PhotoDialogFragment is recommended
+ * Compatible with android.support and others, but PhotoDialog is recommended
  *
  *Created by ycb on 2019/8/16 0016
  */
-class PhotoPickerDialog : Activity(), DialogInterface {
+class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
 
-  private val params = PhotoPickerDialog.params ?: Params.Builder().build()
+  private val params = PhotoDialogActivity.params ?: Params.Builder().build()
 
   private lateinit var executor: PhotoExecutor
 
@@ -117,7 +118,7 @@ class PhotoPickerDialog : Activity(), DialogInterface {
 
   override fun finish() {
     super.finish()
-    PhotoPickerDialog.params = null
+    PhotoDialogActivity.params = null
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -132,7 +133,7 @@ class PhotoPickerDialog : Activity(), DialogInterface {
   }
 
   private class OnSelectListenerWrapper(
-      val activity: PhotoPickerDialog,
+      val activity: PhotoDialogActivity,
       val listener: OnSelectListener?
   ) : OnSelectListener {
     override fun onSelect(path: String) {
@@ -144,6 +145,14 @@ class PhotoPickerDialog : Activity(), DialogInterface {
   companion object {
 
     private var params: Params? = null
+
+    /**
+     * Clear old params
+     */
+    fun resetParams(): Companion {
+      this.params = null
+      return this
+    }
 
     /**
      * The params for shown dialog
@@ -202,7 +211,7 @@ class PhotoPickerDialog : Activity(), DialogInterface {
 
     fun show(context: Context) {
       if (params == null) params = Params.Builder().build()
-      context.startActivity(Intent(context, PhotoPickerDialog::class.java))
+      context.startActivity(Intent(context, PhotoDialogActivity::class.java))
     }
 
     /**

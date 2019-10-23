@@ -29,6 +29,7 @@ import com.eye.cool.photo.view.DefaultView
 /**
  * Created by cool on 18-3-9
  */
+@Deprecated("Use @{PhotoDialog} instead")
 class PhotoDialogFragment : DialogFragment() {
 
   private lateinit var executor: PhotoExecutor

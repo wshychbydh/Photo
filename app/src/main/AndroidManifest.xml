@@ -7,7 +7,7 @@
 
   <application android:allowBackup="true">
     <provider
-      android:name="android.support.v4.content.FileProvider"
+      android:name="androidx.core.content.FileProvider"
       android:authorities="${applicationId}.FileProvider"
       android:exported="false"
       android:grantUriPermissions="true">
@@ -17,7 +17,7 @@
     </provider>
 
     <activity
-      android:name="com.eye.cool.photo.PhotoPickerDialog"
+      android:name="com.eye.cool.photo.PhotoDialogActivity"
       android:exported="false"
       android:launchMode="singleTask"
       android:theme="@style/DialogActivity" />

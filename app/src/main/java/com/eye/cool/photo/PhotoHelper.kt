@@ -3,8 +3,8 @@ package com.eye.cool.photo
 import android.app.Activity
 import android.app.Fragment
 import android.content.DialogInterface
-import android.support.v4.app.FragmentActivity
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.support.CompatContext
@@ -18,8 +18,8 @@ class PhotoHelper {
 
   private val compat: CompatContext
 
-  constructor(supportFragment: android.support.v4.app.Fragment) {
-    compat = CompatContext(supportFragment)
+  constructor(fragmentX: androidx.fragment.app.Fragment) {
+    compat = CompatContext(fragmentX)
   }
 
   constructor(fragment: Fragment) {
@@ -69,14 +69,14 @@ class PhotoHelper {
   private fun execute(dialogParams: DialogParams, params: ImageParams, requestCameraPermission: Boolean = false) {
     val activity = compat.activity()
     if (activity is FragmentActivity) {
-      val dialog = createSupportDialogFragment(dialogParams, params, requestCameraPermission)
+      val dialog = createAppDialogFragment(dialogParams, params, requestCameraPermission)
       params.onSelectListener = OnSelectListenerWrapper(
           compatDialogFragment = dialog,
           listener = params.onSelectListener
       )
       dialog.show(activity.supportFragmentManager)
     } else {
-      val dialog = createDialogFragment(dialogParams, params)
+      val dialog = createDialogFragment(dialogParams, params, requestCameraPermission)
       params.onSelectListener = OnSelectListenerWrapper(
           dialogFragment = dialog,
           listener = params.onSelectListener
@@ -85,19 +85,24 @@ class PhotoHelper {
     }
   }
 
-  private fun createDialogFragment(dialogParams: DialogParams, params: ImageParams): PhotoDialogFragment {
-    return PhotoDialogFragment.Builder()
-        .setImageParams(params)
-        .setDialogParams(dialogParams)
-        .build()
-  }
-
-  private fun createSupportDialogFragment(
+  private fun createDialogFragment(
       dialogParams: DialogParams,
       imageParams: ImageParams,
       requestCameraPermission: Boolean
-  ): com.eye.cool.photo.support.v4.PhotoDialogFragment {
-    return com.eye.cool.photo.support.v4.PhotoDialogFragment.Builder()
+  ): PhotoDialogFragment {
+    return PhotoDialogFragment.Builder()
+        .setImageParams(imageParams)
+        .setDialogParams(dialogParams)
+        .requestCameraPermission(requestCameraPermission)
+        .build()
+  }
+
+  private fun createAppDialogFragment(
+      dialogParams: DialogParams,
+      imageParams: ImageParams,
+      requestCameraPermission: Boolean
+  ): PhotoDialog {
+    return PhotoDialog.Builder()
         .setImageParams(imageParams)
         .setDialogParams(dialogParams)
         .requestCameraPermission(requestCameraPermission)
