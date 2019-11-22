@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.StrictMode
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
@@ -38,10 +39,9 @@ object FileProviderUtil {
    *
    * @param context
    * @param intent The intent to access the file
-   * @param file access file
+   * @param uri
    */
-  fun grantUriPermission(context: Context, intent: Intent, file: File): Uri {
-    val uri = uriFromFile(context, file)
+  fun grantUriPermission(context: Context, intent: Intent, uri: Uri): Uri {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       val result = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
       result.forEach {
@@ -50,6 +50,18 @@ object FileProviderUtil {
       }
     }
     return uri
+  }
+
+  /**
+   * Grant temporary access to files
+   *
+   * @param context
+   * @param intent The intent to access the file
+   * @param file access file
+   */
+  fun grantUriPermission(context: Context, intent: Intent, file: File): Uri {
+    val uri = uriFromFile(context, file)
+    return grantUriPermission(context, intent, uri)
   }
 
   /**
@@ -214,5 +226,13 @@ object FileProviderUtil {
       return it.getString(0)
     }
     return null
+  }
+
+  fun detectFileUriExposure() {
+    val builder = StrictMode.VmPolicy.Builder()
+    StrictMode.setVmPolicy(builder.build())
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      builder.detectFileUriExposure()
+    }
   }
 }

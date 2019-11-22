@@ -2,59 +2,79 @@
 <paths>
 
   <!--官网地址https://developer.android.google.cn/reference/android/support/v4/content/FileProvider-->
+
+  <!--外置的扩展存储卡-->
+  <root-path
+    name="."
+    path="." />
+
   <external-path
-    name="external_path"
-    path=""/>
+    name="."
+    path="." />
+
+  <cache-path
+    name="."
+    path="." />
+
+  <external-path
+    name="."
+    path="." />
 
   <external-cache-path
-    name="external_cash"
-    path=""/>
+    name="."
+    path="." />
 
   <external-files-path
-    name="external_file"
-    path=""/>
+    name="."
+    path="." />
+
+  <files-path
+    name="."
+    path="." />
 
   <files-path
     name="file_path"
-    path="photo"/>
+    path="photo" />
 
   <cache-path
     name="cache_path_phone"
-    path="photo"/>
+    path="photo" />
 
   <cache-path
     name="cache_path_thumb"
-    path="photo/thumb"/>
+    path="photo/thumb" />
 
   <external-cache-path
     name="external_cache_path_photo"
-    path="photo"/>
+    path="photo" />
 
   <external-cache-path
     name="external_cache_path_thumb"
-    path="photo/thumb"/>
-
-  <!--外置的扩展存储卡-->
-  <!--<root-path-->
-    <!--name="camera_photos"-->
-    <!--path=""/>-->
+    path="photo/thumb" />
 
   <!--填写你要所要申请访问的目录地址，name最好是你的目录名，path是你要申请的目录-->
 
   <external-path
     name="external_storage_root"
-    path="photo"/>
+    path="photo" />
   <external-path
     name="images"
-    path="Pictures"/>
+    path="Pictures" />
   <external-files-path
     name="Pictures"
-    path="Pictures"/>
+    path="Pictures" />
   <external-path
     name="dcim"
-    path="DCIM"/>
+    path="DCIM" />
   <external-path
     name="camera"
-    path="DCIM/Camera"/>
+    path="DCIM/Camera" />
 
+  <external-path
+    name="download"
+    path="Download/" />
+
+  <external-files-path
+    name="Download"
+    path="Download/" />
 </paths>
