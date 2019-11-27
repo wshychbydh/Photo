@@ -11,6 +11,7 @@
       android:name="com.eye.cool.photo.PhotoDialogActivity"
       android:exported="false"
       android:launchMode="singleTask"
+      android:screenOrientation="portrait"
       android:theme="@style/DialogActivity" />
 
     <provider
