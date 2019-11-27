@@ -19,6 +19,7 @@ object PhotoUtil {
    * @param wrapper
    * @param outputFile The path for photo output
    */
+  @JvmStatic
   fun takePhoto(wrapper: CompatContext, outputFile: File) {
     val intent = Intent()
     intent.action = "android.media.action.IMAGE_CAPTURE"
@@ -32,6 +33,7 @@ object PhotoUtil {
    * select image from album
    *@param wrapper
    */
+  @JvmStatic
   fun takeAlbum(wrapper: CompatContext) {
     val intent = Intent()
     intent.type = "image/*"
@@ -49,6 +51,7 @@ object PhotoUtil {
    * @param outputW output width, default 300px
    * @param outputH output height, default 300px
    */
+  @JvmStatic
   fun cut(wrapper: CompatContext, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
     val intent = Intent("com.android.camera.action.CROP")
     FileProviderUtil.setIntentDataAndType(intent, "image/*", uri, true)

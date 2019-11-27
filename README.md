@@ -17,7 +17,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.3.0'
+        implementation 'com.github.wshychbydh:photo:1.3.4'
     }
 ```
 
@@ -95,6 +95,8 @@
    2）部分机型如模拟器在剪切图片后回调异常，导致程序无法达到预期效果，可尝试禁用剪切（设置ImageParams的setCutAble为false）修复
 
    3）切记检查Manifest是否配置了Camera权限，并做相应权限请求，否则可能会出现调用相机crash  
+   
+   4）为了适配7.0以上文件权限，仅添加了external-path及必要的临时权限目录，若所需其他目录的临时权限则需自行添加
     
     
 #### 联系方式 wshychbydh@gmail.com

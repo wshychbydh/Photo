@@ -149,6 +149,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     /**
      * Clear old params
      */
+    @JvmStatic
     fun resetParams(): Companion {
       this.params = null
       return this
@@ -158,6 +159,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * The params for shown dialog
      * @param dialogParams
      */
+    @JvmStatic
     fun setDialogParams(dialogParams: DialogParams): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.dialogParams = dialogParams
@@ -168,6 +170,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * The params for selected image
      * @param imageParams
      */
+    @JvmStatic
     fun setImageParams(imageParams: ImageParams): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.imageParams = imageParams
@@ -179,6 +182,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * @param rationale
      * @param showRationaleWhenRequest
      */
+    @JvmStatic
     fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.rationale = rationale
@@ -191,6 +195,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * @param rationaleSetting
      * @param showRationaleSettingWhenDenied
      */
+    @JvmStatic
     fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.rationaleSetting = rationaleSetting
@@ -203,12 +208,14 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * you must set it to true, default false
      * @param requestCameraPermission
      */
+    @JvmStatic
     fun requestCameraPermission(requestCameraPermission: Boolean): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.requestCameraPermission = requestCameraPermission
       return this
     }
 
+    @JvmStatic
     fun show(context: Context) {
       if (params == null) params = Params.Builder().build()
       context.startActivity(Intent(context, PhotoDialogActivity::class.java))

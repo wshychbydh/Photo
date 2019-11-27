@@ -12,6 +12,16 @@
       android:exported="false"
       android:launchMode="singleTask"
       android:theme="@style/DialogActivity" />
+
+    <provider
+      android:name=".support.PhotoFileProvider"
+      android:authorities="${applicationId}.Photo.FileProvider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+      <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/photo_file_paths" />
+    </provider>
   </application>
 
 </manifest>

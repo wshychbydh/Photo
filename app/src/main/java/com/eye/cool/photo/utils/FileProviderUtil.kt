@@ -20,18 +20,34 @@ object FileProviderUtil {
    * Get the URI from the file
    *
    * @param context
-   * @param file
+   * @param file A {@link File} pointing to the filename for which you want a
+   * <code>content</code> {@link Uri}.
    */
+  @JvmStatic
   fun uriFromFile(context: Context, file: File): Uri {
+    return uriFromFile(context, composeAuthority(context), file)
+  }
+
+  /**
+   * Get the URI from the file
+   *
+   * @param context
+   * @param authority The authority of a {@link FileProvider} defined in a
+   *            {@code <provider>} element in your app's manifest.
+   * @param file A {@link File} pointing to the filename for which you want a
+   * <code>content</code> {@link Uri}.
+   */
+  @JvmStatic
+  fun uriFromFile(context: Context, authority: String, file: File): Uri {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      FileProvider.getUriForFile(context, composeAuthority(context), file)
+      FileProvider.getUriForFile(context, authority, file)
     } else {
       Uri.fromFile(file)
     }
   }
 
   private fun composeAuthority(context: Context): String {
-    return context.packageName + ".FileProvider"
+    return context.packageName + ".Photo.FileProvider"
   }
 
   /**
@@ -41,6 +57,7 @@ object FileProviderUtil {
    * @param intent The intent to access the file
    * @param uri
    */
+  @JvmStatic
   fun grantUriPermission(context: Context, intent: Intent, uri: Uri): Uri {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       val result = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
@@ -59,6 +76,7 @@ object FileProviderUtil {
    * @param intent The intent to access the file
    * @param file access file
    */
+  @JvmStatic
   fun grantUriPermission(context: Context, intent: Intent, file: File): Uri {
     val uri = uriFromFile(context, file)
     return grantUriPermission(context, intent, uri)
@@ -73,6 +91,7 @@ object FileProviderUtil {
    * @param file
    * @param writeAble Whether to grant permissions to writable uris
    */
+  @JvmStatic
   fun setIntentDataAndType(context: Context, intent: Intent, type: String, file: File, writeAble: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       intent.setDataAndType(uriFromFile(context, file), type)
@@ -94,6 +113,7 @@ object FileProviderUtil {
    * @param fileUri
    * @param writeAble Whether to grant permissions to writable uris
    */
+  @JvmStatic
   fun setIntentDataAndType(intent: Intent, type: String, fileUri: Uri, writeAble: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       intent.setDataAndType(fileUri, type)
@@ -116,6 +136,7 @@ object FileProviderUtil {
    * then the absolute path to the image is returned,
    * otherwise null is returned
    */
+  @JvmStatic
   fun getPathFromUri(context: Context, uri: Uri): String? {
     if (ContentResolver.SCHEME_FILE == uri.scheme) {
       return uri.path
@@ -228,6 +249,7 @@ object FileProviderUtil {
     return null
   }
 
+  @JvmStatic
   fun detectFileUriExposure() {
     val builder = StrictMode.VmPolicy.Builder()
     StrictMode.setVmPolicy(builder.build())
