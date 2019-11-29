@@ -3,4 +3,6 @@
   <string name="select_photo">Take a Photo</string>
 
   <string name="cancel">Cancel</string>
+
+  <string name="permission_storage">Grant access to the storage</string>
 </resources>

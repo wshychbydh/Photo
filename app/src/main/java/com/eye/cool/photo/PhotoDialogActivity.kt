@@ -7,6 +7,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +20,6 @@ import android.view.WindowManager
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.eye.cool.permission.Rationale
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
@@ -40,6 +41,13 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     invasionStatusBar(this)
+
+    requestedOrientation = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    } else {
+      ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
     params.wrapper = CompatContext(this)
     executor = PhotoExecutor(params)
     val selectListenerWrapper = OnSelectListenerWrapper(this, params.imageParams.onSelectListener)
@@ -178,28 +186,11 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     }
 
     /**
-     * Permission setRationale when need
-     * @param rationale
-     * @param showRationaleWhenRequest
+     * Permission invoker to request permissions
+     * @param permissionInvoker
      */
-    @JvmStatic
-    fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.rationale = rationale
-      params!!.showRationaleWhenRequest = showRationaleWhenRequest
-      return this
-    }
-
-    /**
-     * Permission setting's setRationale when need
-     * @param rationaleSetting
-     * @param showRationaleSettingWhenDenied
-     */
-    @JvmStatic
-    fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.rationaleSetting = rationaleSetting
-      params!!.showRationaleSettingWhenDenied = showRationaleSettingWhenDenied
+    fun setPermissionInvoker(permissionInvoker: (Array<String>) -> Boolean): Companion {
+      params!!.permissionInvoker = permissionInvoker
       return this
     }
 

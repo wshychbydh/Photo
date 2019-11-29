@@ -4,4 +4,6 @@
   <string name="select_photo">相机拍摄</string>
 
   <string name="cancel">取消</string>
+
+  <string name="permission_storage">请授予访问存储权限</string>
 </resources>

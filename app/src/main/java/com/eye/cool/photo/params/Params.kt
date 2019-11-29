@@ -2,7 +2,6 @@ package com.eye.cool.photo.params
 
 import android.app.Activity
 import android.app.Fragment
-import com.eye.cool.permission.Rationale
 import com.eye.cool.photo.support.CompatContext
 
 class Params private constructor() {
@@ -13,9 +12,7 @@ class Params private constructor() {
 
   internal var dialogParams: DialogParams = DialogParams.Builder().build()
 
-  internal var rationale: Rationale? = null
-
-  internal var rationaleSetting: Rationale? = null
+  internal var permissionInvoker: ((Array<String>) -> Boolean)? = null
 
   internal var showRationaleWhenRequest = false
 
@@ -64,24 +61,11 @@ class Params private constructor() {
     }
 
     /**
-     * Permission setRationale when need
-     * @param rationale
-     * @param showRationaleWhenRequest
+     * Permission invoker to request permissions
+     * @param permissionInvoker
      */
-    fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Builder {
-      params.rationale = rationale
-      params.showRationaleWhenRequest = showRationaleWhenRequest
-      return this
-    }
-
-    /**
-     * Permission setting's setRationale when need
-     * @param rationaleSetting
-     * @param showRationaleSettingWhenDenied
-     */
-    fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Builder {
-      params.rationaleSetting = rationaleSetting
-      params.showRationaleSettingWhenDenied = showRationaleSettingWhenDenied
+    fun setPermissionInvoker(permissionInvoker: (Array<String>) -> Boolean): Builder {
+      params.permissionInvoker = permissionInvoker
       return this
     }
 

@@ -3,8 +3,6 @@ package com.eye.cool.photo.utils
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import com.eye.cool.permission.Permission
-import com.eye.cool.permission.PermissionHelper
 import com.eye.cool.photo.BuildConfig
 import com.eye.cool.photo.R
 import com.eye.cool.photo.params.Params
@@ -16,6 +14,7 @@ import com.eye.cool.photo.support.Constants.TAG
 import com.eye.cool.photo.support.Constants.TAKE_PHOTO
 import com.eye.cool.photo.support.OnActionListener
 import com.eye.cool.photo.support.OnClickListener
+import com.eye.cool.photo.view.PhotoPermissionActivity
 import java.io.File
 
 /**
@@ -59,48 +58,59 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
   }
 
   override fun onTakePhoto() {
-    PermissionHelper.Builder(context)
-        .permissions(Permission.STORAGE)
-        .permissions(if (params.requestCameraPermission) Permission.CAMERA else emptyArray())
-        .rationale(params.rationale)
-        .rationaleSetting(params.rationaleSetting)
-        .showRationaleWhenRequest(params.showRationaleWhenRequest)
-        .showRationaleSettingWhenDenied(params.showRationaleSettingWhenDenied)
-        .permissionCallback {
-          if (it) {
-            clickListener?.onClick(TAKE_PHOTO)
-            photoFile = File(LocalStorage.composePhotoImageFile(context))
-            PhotoUtil.takePhoto(params.wrapper, photoFile!!)
-          } else {
-            clickListener?.onClick(PERMISSION_FORBID)
-            if (BuildConfig.DEBUG) {
-              Log.d(TAG, context.getString(R.string.permission_storage))
-            }
+    val list = arrayListOf<String>()
+    list.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    list.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    if (params.requestCameraPermission) {
+      list.add(android.Manifest.permission.CAMERA)
+    }
+    val permissions = list.toTypedArray()
+    val granted = params.permissionInvoker?.invoke(permissions) ?: false
+    if (granted) {
+      clickListener?.onClick(TAKE_PHOTO)
+      photoFile = File(LocalStorage.composePhotoImageFile(context))
+      PhotoUtil.takePhoto(params.wrapper, photoFile!!)
+    } else {
+      PhotoPermissionActivity.requestPermission(context, permissions) {
+        if (it) {
+          clickListener?.onClick(TAKE_PHOTO)
+          photoFile = File(LocalStorage.composePhotoImageFile(context))
+          PhotoUtil.takePhoto(params.wrapper, photoFile!!)
+        } else {
+          clickListener?.onClick(PERMISSION_FORBID)
+          if (BuildConfig.DEBUG) {
+            Log.d(TAG, context.getString(R.string.permission_storage))
           }
-        }.build()
-        .request()
+        }
+      }
+    }
   }
 
   override fun onSelectAlbum() {
-    PermissionHelper.Builder(context)
-        .permissions(Permission.STORAGE)
-        .rationale(params.rationale)
-        .rationaleSetting(params.rationaleSetting)
-        .showRationaleWhenRequest(params.showRationaleWhenRequest)
-        .showRationaleSettingWhenDenied(params.showRationaleSettingWhenDenied)
-        .permissionCallback {
-          if (it) {
-            clickListener?.onClick(SELECT_ALBUM)
-            PhotoUtil.takeAlbum(params.wrapper)
-          } else {
-            clickListener?.onClick(PERMISSION_FORBID)
-            if (BuildConfig.DEBUG) {
-              Log.d(TAG, context.getString(R.string.permission_storage))
-            }
+    val list = arrayListOf<String>()
+    list.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    list.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    if (params.requestCameraPermission) {
+      list.add(android.Manifest.permission.CAMERA)
+    }
+    val permissions = list.toTypedArray()
+    val granted = params.permissionInvoker?.invoke(permissions) ?: false
+    if (granted) {
+      clickListener?.onClick(SELECT_ALBUM)
+      PhotoUtil.takeAlbum(params.wrapper)
+    } else {
+      PhotoPermissionActivity.requestPermission(context, permissions) {
+        if (it) {
+          clickListener?.onClick(SELECT_ALBUM)
+          PhotoUtil.takeAlbum(params.wrapper)
+        } else {
+          clickListener?.onClick(PERMISSION_FORBID)
+          if (BuildConfig.DEBUG) {
+            Log.d(TAG, context.getString(R.string.permission_storage))
           }
         }
-        .build()
-        .request()
+      }
+    }
   }
 
   override fun onCancel() {

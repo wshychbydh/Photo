@@ -9,9 +9,9 @@
 
     <activity
       android:name="com.eye.cool.photo.PhotoDialogActivity"
+      android:configChanges="keyboardHidden|orientation|screenSize"
       android:exported="false"
-      android:launchMode="singleTask"
-      android:screenOrientation="portrait"
+      android:launchMode="singleInstance"
       android:theme="@style/DialogActivity" />
 
     <provider
