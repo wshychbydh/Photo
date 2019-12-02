@@ -42,7 +42,6 @@ class PhotoDialogFragment : DialogFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     val view = params.dialogParams.contentView ?: DefaultView(activity)
     val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
-        ?: throw IllegalArgumentException("Custom View must declare method setOnActionListener(OnActionListener)")
     method.isAccessible = true
     method.invoke(view, executor)
     return view
@@ -77,6 +76,7 @@ class PhotoDialogFragment : DialogFragment() {
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    super.onActivityResult(requestCode, resultCode, intent)
     if (BuildConfig.DEBUG) {
       Log.d(Constants.TAG, "requestCode-->$requestCode")
     }
@@ -152,7 +152,7 @@ class PhotoDialogFragment : DialogFragment() {
     fun create(
         onSelectListener: OnSelectListener,
         requestCamera: Boolean = false,
-        permissionInvoker: (Array<String>) -> Boolean
+        permissionInvoker: ((Array<String>) -> Boolean)? = null
     ): PhotoDialogFragment {
       return create(
           ImageParams.Builder()
@@ -175,7 +175,7 @@ class PhotoDialogFragment : DialogFragment() {
     fun create(
         imageParams: ImageParams,
         requestCamera: Boolean = false,
-        permissionInvoker: (Array<String>) -> Boolean
+        permissionInvoker: ((Array<String>) -> Boolean)? = null
     ): PhotoDialogFragment {
       return create(
           Params.Builder()

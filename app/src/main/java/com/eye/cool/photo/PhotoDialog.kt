@@ -32,7 +32,7 @@ class PhotoDialog : AppCompatDialogFragment() {
   private lateinit var params: Params
   private var createByBuilder = false
 
-  override fun onAttach(context: Context?) {
+  override fun onAttach(context: Context) {
     check(createByBuilder) { "You must create it by PhotoDialog.create()!" }
     super.onAttach(context)
     executor = PhotoExecutor(params)
@@ -148,7 +148,7 @@ class PhotoDialog : AppCompatDialogFragment() {
     fun create(
         onSelectListener: OnSelectListener,
         requestCamera: Boolean = false,
-        permissionInvoker: (Array<String>) -> Boolean
+        permissionInvoker: ((Array<String>) -> Boolean)? = null
     ): PhotoDialog {
       return create(
           ImageParams.Builder()
@@ -171,7 +171,7 @@ class PhotoDialog : AppCompatDialogFragment() {
     fun create(
         imageParams: ImageParams,
         requestCamera: Boolean = false,
-        permissionInvoker: (Array<String>) -> Boolean
+        permissionInvoker: ((Array<String>) -> Boolean)? = null
     ): PhotoDialog {
       return create(
           Params.Builder()

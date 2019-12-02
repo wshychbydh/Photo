@@ -130,6 +130,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
     if (BuildConfig.DEBUG) {
       Log.d(Constants.TAG, "requestCode-->$requestCode")
     }
