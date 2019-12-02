@@ -33,7 +33,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.3.6'
+        implementation 'com.github.wshychbydh:photo:1.3.7'
     }
 ```
 
