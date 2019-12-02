@@ -28,26 +28,21 @@ internal object LocalStorage {
     return composePhotoImageDir(context).append(File.separator).append(THUMB)
   }
 
-  // create log storage dir
-  private fun composeLogDir(context: Context): StringBuilder {
-    return composePhotoImageDir(context).append(LOG)
-  }
-
   @JvmStatic
-  fun composePhotoImageFile(context: Context): String {
+  fun composePhotoImageFile(context: Context): File {
     val sb = composePhotoImageDir(context)
     val dir = File(sb.toString())
     if (!dir.exists()) dir.mkdirs()
     sb.append(File.separator).append("$PHOTO_PRE${System.currentTimeMillis()}$IMAGE_SUFFIX")
-    return sb.toString()
+    return File(sb.toString())
   }
 
   @JvmStatic
-  fun composeThumbFile(context: Context): String {
+  fun composeThumbFile(context: Context): File {
     val sb = composeThumbDir(context)
     val dir = File(sb.toString())
     if (!dir.exists()) dir.mkdirs()
     sb.append(File.separator).append("$PHOTO_PRE${System.currentTimeMillis()}$IMAGE_SUFFIX")
-    return sb.toString()
+    return File(sb.toString())
   }
 }

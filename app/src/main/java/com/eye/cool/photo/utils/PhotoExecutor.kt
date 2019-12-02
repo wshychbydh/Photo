@@ -1,7 +1,10 @@
 package com.eye.cool.photo.utils
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.util.Log
 import com.eye.cool.photo.BuildConfig
 import com.eye.cool.photo.R
@@ -64,23 +67,15 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     if (params.requestCameraPermission) {
       list.add(android.Manifest.permission.CAMERA)
     }
-    val permissions = list.toTypedArray()
-    val granted = params.permissionInvoker?.invoke(permissions) ?: false
-    if (granted) {
-      clickListener?.onClick(TAKE_PHOTO)
-      photoFile = File(LocalStorage.composePhotoImageFile(context))
-      PhotoUtil.takePhoto(params.wrapper, params.authority, photoFile!!)
-    } else {
-      PhotoPermissionActivity.requestPermission(context, permissions) {
-        if (it) {
-          clickListener?.onClick(TAKE_PHOTO)
-          photoFile = File(LocalStorage.composePhotoImageFile(context))
-          PhotoUtil.takePhoto(params.wrapper, params.authority, photoFile!!)
-        } else {
-          clickListener?.onClick(PERMISSION_FORBID)
-          if (BuildConfig.DEBUG) {
-            Log.d(TAG, context.getString(R.string.permission_storage))
-          }
+    checkPermission(list.toTypedArray()) {
+      if (it) {
+        clickListener?.onClick(TAKE_PHOTO)
+        photoFile = LocalStorage.composePhotoImageFile(context)
+        PhotoUtil.takePhoto(params.wrapper, params.authority, photoFile!!)
+      } else {
+        clickListener?.onClick(PERMISSION_FORBID)
+        if (BuildConfig.DEBUG) {
+          Log.d(TAG, context.getString(if (params.requestCameraPermission) R.string.permission_storage_and_camera else R.string.permission_storage))
         }
       }
     }
@@ -91,23 +86,43 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
-    val granted = params.permissionInvoker?.invoke(permissions) ?: false
-    if (granted) {
-      clickListener?.onClick(SELECT_ALBUM)
-      PhotoUtil.takeAlbum(params.wrapper)
-    } else {
-      PhotoPermissionActivity.requestPermission(context, permissions) {
-        if (it) {
-          clickListener?.onClick(SELECT_ALBUM)
-          PhotoUtil.takeAlbum(params.wrapper)
-        } else {
-          clickListener?.onClick(PERMISSION_FORBID)
-          if (BuildConfig.DEBUG) {
-            Log.d(TAG, context.getString(R.string.permission_storage))
-          }
+    checkPermission(permissions) {
+      if (it) {
+        clickListener?.onClick(SELECT_ALBUM)
+        PhotoUtil.takeAlbum(params.wrapper)
+      } else {
+        clickListener?.onClick(PERMISSION_FORBID)
+        if (BuildConfig.DEBUG) {
+          Log.d(TAG, context.getString(R.string.permission_storage))
         }
       }
     }
+  }
+
+  private fun checkPermission(permissions: Array<String>, callback: (Boolean) -> Unit) {
+    val target = context.applicationInfo.targetSdkVersion
+    if (target >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      val granted = params.permissionInvoker?.invoke(permissions) ?: false
+      if (granted) {
+        callback.invoke(true)
+      } else {
+        PhotoPermissionActivity.requestPermission(context, permissions) {
+          callback.invoke(it)
+        }
+      }
+    } else {
+      callback.invoke(isCacheDirAvailable(context) && isExternalDirAvailable())
+    }
+  }
+
+  private fun isCacheDirAvailable(context: Context): Boolean {
+    val appFile = context.externalCacheDir ?: return false
+    return appFile.canWrite() && appFile.canRead()
+  }
+
+  private fun isExternalDirAvailable(): Boolean {
+    val file = Environment.getExternalStorageDirectory()
+    return file != null && file.canWrite() && file.canRead()
   }
 
   override fun onCancel() {
@@ -139,7 +154,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
   }
 
   private fun cut(uri: Uri) {
-    outputFile = File(LocalStorage.composeThumbFile(context))
+    outputFile = LocalStorage.composeThumbFile(context)
     outputFile!!.createNewFile()
     PhotoUtil.cut(params.wrapper, uri, outputFile!!, params.imageParams.outputW, params.imageParams.outputH)
     if (BuildConfig.DEBUG) {

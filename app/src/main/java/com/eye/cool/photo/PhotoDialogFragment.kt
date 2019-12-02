@@ -3,12 +3,14 @@ package com.eye.cool.photo
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
 import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -146,7 +148,12 @@ class PhotoDialogFragment : DialogFragment() {
      * @param permissionInvoker permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
      * @return A instance of PhotoDialogFragment
      */
-    fun create(onSelectListener: OnSelectListener, requestCamera: Boolean = false, permissionInvoker: (Array<String>) -> Boolean): PhotoDialogFragment {
+    @TargetApi(Build.VERSION_CODES.M)
+    fun create(
+        onSelectListener: OnSelectListener,
+        requestCamera: Boolean = false,
+        permissionInvoker: (Array<String>) -> Boolean
+    ): PhotoDialogFragment {
       return create(
           ImageParams.Builder()
               .setOnSelectListener(onSelectListener)
@@ -164,7 +171,12 @@ class PhotoDialogFragment : DialogFragment() {
      * @param permissionInvoker permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
      * @return A instance of PhotoDialogFragment
      */
-    fun create(imageParams: ImageParams, requestCamera: Boolean = false, permissionInvoker: (Array<String>) -> Boolean): PhotoDialogFragment {
+    @TargetApi(Build.VERSION_CODES.M)
+    fun create(
+        imageParams: ImageParams,
+        requestCamera: Boolean = false,
+        permissionInvoker: (Array<String>) -> Boolean
+    ): PhotoDialogFragment {
       return create(
           Params.Builder()
               .setImageParams(imageParams)

@@ -3,10 +3,12 @@ package com.eye.cool.photo
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +41,6 @@ class PhotoDialog : AppCompatDialogFragment() {
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     val view = params.dialogParams.contentView ?: DefaultView(requireContext())
     val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
-        ?: throw IllegalArgumentException("Custom View must declare method setOnActionListener(OnActionListener)")
     method.isAccessible = true
     method.invoke(view, executor)
     return view
@@ -143,7 +144,12 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @param permissionInvoker Permission request executor. Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
      * @return A instance of PhotoDialog
      */
-    fun create(onSelectListener: OnSelectListener, requestCamera: Boolean = false, permissionInvoker: (Array<String>) -> Boolean): PhotoDialog {
+    @TargetApi(Build.VERSION_CODES.M)
+    fun create(
+        onSelectListener: OnSelectListener,
+        requestCamera: Boolean = false,
+        permissionInvoker: (Array<String>) -> Boolean
+    ): PhotoDialog {
       return create(
           ImageParams.Builder()
               .setOnSelectListener(onSelectListener)
@@ -161,7 +167,12 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @param permissionInvoker permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
      * @return A instance of PhotoDialog
      */
-    fun create(imageParams: ImageParams, requestCamera: Boolean = false, permissionInvoker: (Array<String>) -> Boolean): PhotoDialog {
+    @TargetApi(Build.VERSION_CODES.M)
+    fun create(
+        imageParams: ImageParams,
+        requestCamera: Boolean = false,
+        permissionInvoker: (Array<String>) -> Boolean
+    ): PhotoDialog {
       return create(
           Params.Builder()
               .setImageParams(imageParams)

@@ -3,6 +3,7 @@ package com.eye.cool.photo
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
@@ -191,6 +192,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * @param permissionInvoker
      */
     @JvmStatic
+    @TargetApi(Build.VERSION_CODES.M)
     fun setPermissionInvoker(permissionInvoker: (Array<String>) -> Boolean): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.permissionInvoker = permissionInvoker
@@ -203,9 +205,23 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * @param requestCameraPermission default false
      */
     @JvmStatic
+    @TargetApi(Build.VERSION_CODES.M)
     fun requestCameraPermission(requestCameraPermission: Boolean): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.requestCameraPermission = requestCameraPermission
+      return this
+    }
+
+    /**
+     * If you specify a custom image path, you need to add a FileProvider above 7.0
+     *
+     * @param authority The authority of a {@link FileProvider} defined in a
+     *            {@code <provider>} element in your app's manifest.
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    fun setAuthority(authority: String): Companion {
+      if (params == null) params = Params.Builder().build()
+      params!!.authority = authority
       return this
     }
 

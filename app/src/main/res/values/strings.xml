@@ -5,4 +5,5 @@
   <string name="cancel">Cancel</string>
 
   <string name="permission_storage">Grant access to the storage</string>
+  <string name="permission_storage_and_camera">Grant access to the storage and camera</string>
 </resources>

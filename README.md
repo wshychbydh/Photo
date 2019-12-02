@@ -1,6 +1,21 @@
 # Photo
+
 ## Android拍照适配
-解决7.0及以上拍照，兼容6.0以下权限适配
+解决6.0及7.0以上拍照，兼容6.0以下权限适配
+
+
+### 功能介绍：
+
+1、适配target23以下及以上运行时权限
+
+2、适配7.0以上文件访问权限
+
+3、提供拍照和选择图片功能调用
+
+4、支持自定义选择弹框
+
+5、支持自定义临时授权FileProvider
+
 
 #### 使用方法：
 
@@ -14,10 +29,11 @@
     }
 ```
 
+
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.3.4'
+        implementation 'com.github.wshychbydh:photo:1.3.6'
     }
 ```
 
@@ -29,7 +45,9 @@
 ```
 报其他类似的重复错误时，添加方式同上。
 
+
 3、调用系统相机不需要Camera权限，请检查项目中是否存在**android.permission.CAMERA**权限，若存在请删除或设置requestCameraPermission为true（必须）
+
 
 4、构建Params实例
 ```
@@ -53,50 +71,61 @@
         .build()
         
      val params = Params.Builder(this)
-        .setDialogParams(dialogParams)                  //对话框参数（可选）
-        .setImageParams(imageParams)                    //图片参数（可选）
-        .setRationale(Rationale, Boolean)               //自定义请求权限对话框（可选）
-        .setRationaleSetting(rationaleSetting, Boolean) //自定义引导授权对话框（可选）
-        .requestCameraPermission(false)                 //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
+        .setDialogParams(dialogParams)                   //对话框参数（可选）
+        .setImageParams(imageParams)                     //图片参数（可选）
+        .setPermissionInvoker(Array<String>) -> Boolean) //自定义请求权限（可选）
+        .requestCameraPermission(false)                  //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
+        .setAuthority(String)                            //自定义的FileProvider
         .build()
      
 ```
 
-5、如果只需要调用拍照或选图片，可使用**PhotoHelper**，并按需调用onTakePhoto()或onSelectAlbum()方法
-```
-    helper.onTakePhoto(ImageParams, requestCameraPermission)    //调用相册
-    
-    helper.onSelectAlbum(ImageParams)  //调用相机
-```
 
-6、需要弹框使用**PhotoDialog**(<font color=#FF0000>**推荐**</font>)或**PhotoDialogFragment**或**PhotoDialogActivity**
+5、若只需要调用拍照或选图片，可使用**PhotoHelper**，按需调用onTakePhoto()或onSelectAlbum()方法
+
+```
+    helper.onTakePhoto(ImageParams, requestCameraPermission, permissionInvoker?)    //调用相册
+    
+    helper.onSelectAlbum(ImageParams, permissionInvoker?)  //调用相机
+```
+requestCameraPermission：若在Manifest中配置了Camera权限，则必须设置为true；permissionInvoker为自定义请求权限回调，可为null
+
+
+6、需要弹框可使用**PhotoDialog**(<font color=#FF0000>**推荐**</font>)或**PhotoDialogFragment**或**PhotoDialogActivity**
    
-   1）PhotoDialog对应的包为androidx.appcompat.app.AppCompatDialogFragment，按需调用
+   1）PhotoDialog对应的包为androidx.appcompat.app.AppCompatDialogFragment
    
    2）PhotoDialogFragment对应的包为android.app.DialogFragment（Deprecated）
 
-   3）在**android.support.fragment**等类中调用**PhotoDialogActivity**
+   3）在**android.support.fragment**等其他环境中可调用**PhotoDialogActivity**
 
+```
+   PhotoDialog.create(onSelectListener)                                //不设置其他参数，简单调用
+   
+   PhotoDialog.create(imageParams)                                     //只设置图片返回参数
+   
+   PhotoDialog.create(params)                                          //设置所以可自定义的参数
+   
+   PhotoDialogActivity.resetParams()                                   //重置参数 (可选)
+                      .setDialogParams(dialogParams)                   //选择对话框参数（可选）
+                      .setImageParams(imageParams)                     //必须设置setOnSelectListener方法，否则无回调
+                      .setPermissionInvoker(Array<String>) -> Boolean) //自定义请求权限（可选）
+                      .requestCameraPermission(boolean)                //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
+                      .setAuthority(String)                            //自定义的FileProvider
+                      .show(context)                                   //启动对话框，在设置完参数后调用
+```
 **注**：使用PhotoDialogActivity时，DialogParams类的部分属性无效
-```
-   PhotoDialogActivity.resetParams()                            // 重置参数 (可选)
-                      .setDialogParams(dialogParams)            //（可选）
-                      .setImageParams(imageParams)              // 必须设置setOnSelectListener方法，否则无回调
-                      .setRationale(rationale, boolean)         // 自定义请求权限对话框（可选）
-                      .setRationaleSetting(rationale, boolean)  // 自定义引导授权对话框（可选）
-                      .requestCameraPermission(boolean)         // 是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
-                      .show(context)                            // 启动对话框，在设置完参数后调用
-```
 
 7、其他注意事项
 
-   1）因为选择图片和拍照在6.0及以上需要运行时权限，该库已包含权限请求库，若有相关需求则无需再单独引入
+   1）因为选择图片和拍照在6.0及以上需要运行时权限，该库包含默认权限请求，无需额外添加
   
    2）部分机型如模拟器在剪切图片后回调异常，导致程序无法达到预期效果，可尝试禁用剪切（设置ImageParams的setCutAble为false）修复
 
    3）切记检查Manifest是否配置了Camera权限，并做相应权限请求，否则可能会出现调用相机crash  
    
    4）为了适配7.0以上文件权限，仅添加了external-path及必要的临时权限目录，若所需其他目录的临时权限则需自行添加
+    
     
     
 #### 联系方式 wshychbydh@gmail.com
