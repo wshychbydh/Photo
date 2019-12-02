@@ -197,6 +197,7 @@ class PhotoDialog : AppCompatDialogFragment() {
       params.imageParams.onSelectListener = wrapper
       dialog.params = params
       dialog.createByBuilder = true
+      params.wrapper = CompatContext(dialog)
       return dialog
     }
   }

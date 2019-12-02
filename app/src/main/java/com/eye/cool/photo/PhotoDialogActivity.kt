@@ -60,7 +60,6 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     val layoutParams = FrameLayout.LayoutParams(-1, -2)
     layoutParams.gravity = Gravity.BOTTOM
     val method = contentView.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
-        ?: throw IllegalArgumentException("Custom View must declare method setOnActionListener(OnActionListener)")
     method.isAccessible = true
     method.invoke(contentView, executor)
     container.addView(contentView, layoutParams)

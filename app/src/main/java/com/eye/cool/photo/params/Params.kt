@@ -24,10 +24,6 @@ class Params private constructor() {
 
     private var params = Params()
 
-    /**
-     * Used for PhotoDialogActivity
-     * init wrapper after activity inited
-     */
     internal constructor()
 
     constructor(fragment: Fragment) {
