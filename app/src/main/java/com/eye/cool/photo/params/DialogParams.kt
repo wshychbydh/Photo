@@ -50,7 +50,8 @@ class DialogParams private constructor() {
     private var params = DialogParams()
 
     /**
-     * dialog's contentView for shown
+     * Dialog's contentView to be shown
+     *
      * @param view the shown view
      */
     fun setContentView(view: View): Builder {
@@ -61,6 +62,7 @@ class DialogParams private constructor() {
     /**
      * Sets whether this dialog is cancelable with the
      * {@link KeyEvent#KEYCODE_BACK BACK} key.
+     *
      * @param cancelable
      */
     fun setCancelable(cancelable: Boolean): Builder {
@@ -73,8 +75,7 @@ class DialogParams private constructor() {
      * bounds. If setting to true, the dialog is set to be cancelable if not
      * already set.
      *
-     * @param cancel Whether the dialog should be canceled when touched outside
-     *            the window.
+     * @param cancel Whether the dialog should be canceled when touched outside the window.
      */
     fun setCanceledOnTouchOutside(cancel: Boolean): Builder {
       params.canceledOnTouchOutside = cancel
@@ -83,6 +84,7 @@ class DialogParams private constructor() {
 
     /**
      * Pop-up animation style，default from bottom
+     *
      * @param animStyle
      */
     fun setAnimStyle(animStyle: Int): Builder {
@@ -91,7 +93,8 @@ class DialogParams private constructor() {
     }
 
     /**
-     * a style resource describing the theme to use for the window, or {@code 0} to use the default dialog theme
+     * A style resource describing the theme to use for the window, or {@code 0} to use the default dialog theme
+     *
      * @param dialogStyle
      */
     fun setDialogStyle(dialogStyle: Int): Builder {
@@ -101,6 +104,7 @@ class DialogParams private constructor() {
 
     /**
      * Dialog popup location
+     *
      * @param x
      * @param y
      */
@@ -112,6 +116,7 @@ class DialogParams private constructor() {
 
     /**
      * Sets a listener to be invoked when the dialog is shown.
+     *
      * @param listener The {@link DialogInterface.OnShowListener} to use.
      */
     fun setOnShowListener(listener: DialogInterface.OnShowListener): Builder {
@@ -121,6 +126,7 @@ class DialogParams private constructor() {
 
     /**
      * Set a listener to be invoked when the dialog is dismissed.
+     *
      * @param listener The {@link DialogInterface.OnDismissListener} to use.
      */
     fun setOnDismissListener(listener: DialogInterface.OnDismissListener): Builder {
@@ -149,6 +155,7 @@ class DialogParams private constructor() {
      * <p>
      *   Only one of these button's {@link Constants#TAKE_PHOTO, SELECT_ALBUM, ADJUST_PHOTO} onclick will be invoked
      * </p>
+     *
      * @param listener
      */
     fun setOnClickListener(listener: OnClickListener): Builder {

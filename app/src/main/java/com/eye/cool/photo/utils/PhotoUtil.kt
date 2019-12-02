@@ -12,7 +12,7 @@ import java.io.File
 /**
  * Created by cool on 2018/6/12
  */
-object PhotoUtil {
+internal object PhotoUtil {
 
   /**
    * take a photo
@@ -20,11 +20,11 @@ object PhotoUtil {
    * @param outputFile The path for photo output
    */
   @JvmStatic
-  fun takePhoto(wrapper: CompatContext, outputFile: File) {
+  fun takePhoto(wrapper: CompatContext, authority: String?, outputFile: File) {
     val intent = Intent()
     intent.action = "android.media.action.IMAGE_CAPTURE"
     intent.addCategory("android.intent.category.DEFAULT")
-    val uri = FileProviderUtil.uriFromFile(wrapper.context(), outputFile)
+    val uri = ImageFileProviderUtil.uriFromFile(wrapper.context(), authority, outputFile)
     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
     wrapper.startActivityForResult(intent, Constants.TAKE_PHOTO)
   }
@@ -54,7 +54,7 @@ object PhotoUtil {
   @JvmStatic
   fun cut(wrapper: CompatContext, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
     val intent = Intent("com.android.camera.action.CROP")
-    FileProviderUtil.setIntentDataAndType(intent, "image/*", uri, true)
+    ImageFileProviderUtil.setIntentDataAndType(intent, "image/*", uri, true)
     intent.putExtra("crop", true)
     intent.putExtra("aspectX", 1)
     intent.putExtra("aspectY", outputW.toFloat() / outputH.toFloat())

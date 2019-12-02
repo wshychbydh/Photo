@@ -15,7 +15,7 @@ import java.io.File
 /**
  * Created by cool on 2018/6/12
  */
-object FileProviderUtil {
+object ImageFileProviderUtil {
   /**
    * Get the URI from the file
    *
@@ -38,9 +38,9 @@ object FileProviderUtil {
    * <code>content</code> {@link Uri}.
    */
   @JvmStatic
-  fun uriFromFile(context: Context, authority: String, file: File): Uri {
+  fun uriFromFile(context: Context, authority: String?, file: File): Uri {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      FileProvider.getUriForFile(context, authority, file)
+      FileProvider.getUriForFile(context, authority ?: composeAuthority(context), file)
     } else {
       Uri.fromFile(file)
     }
@@ -249,6 +249,22 @@ object FileProviderUtil {
     return null
   }
 
+  /**
+   * Detect when the calling application exposes a {@code file://} {@link android.net.Uri}
+   * to another app.
+   *
+   * <p>This exposure is discouraged since the receiving app may not have access to the
+   * shared path. For example, the receiving app may not have requested the {@link
+   * android.Manifest.permission#READ_EXTERNAL_STORAGE} runtime permission, or the
+   * platform may be sharing the {@link android.net.Uri} across user profile boundaries.
+   *
+   * <p>Instead, apps should use {@code content://} Uris so the platform can extend
+   * temporary permission for the receiving app to access the resource.
+   *
+   * @see android.support.v4.content.FileProvider
+   * @see Intent#FLAG_GRANT_READ_URI_PERMISSION
+   */
+  @Deprecated("Use file uri instead.")
   @JvmStatic
   fun detectFileUriExposure() {
     val builder = StrictMode.VmPolicy.Builder()

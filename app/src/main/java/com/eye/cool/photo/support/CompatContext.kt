@@ -8,7 +8,7 @@ import android.content.Intent
 /**
  *Created by cool on 2018/6/12
  */
-class CompatContext {
+internal class CompatContext {
 
   private var fragment: Fragment? = null
   private var fragmentX: androidx.fragment.app.Fragment? = null

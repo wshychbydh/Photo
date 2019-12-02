@@ -14,11 +14,9 @@ class Params private constructor() {
 
   internal var permissionInvoker: ((Array<String>) -> Boolean)? = null
 
-  internal var showRationaleWhenRequest = false
-
-  internal var showRationaleSettingWhenDenied = true
-
   internal var requestCameraPermission = false
+
+  internal var authority: String? = null
 
   class Builder {
 
@@ -43,7 +41,8 @@ class Params private constructor() {
     }
 
     /**
-     * The params for selected image
+     * The configure for selected image
+     *
      * @param imageParams
      */
     fun setImageParams(imageParams: ImageParams): Builder {
@@ -52,7 +51,8 @@ class Params private constructor() {
     }
 
     /**
-     * The params for shown dialog
+     * The configure for shown dialog
+     *
      * @param dialogParams
      */
     fun setDialogParams(dialogParams: DialogParams): Builder {
@@ -62,9 +62,10 @@ class Params private constructor() {
 
     /**
      * Permission invoker to request permissions
-     * @param permissionInvoker
+     *
+     * @param permissionInvoker Permission request executor. Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
      */
-    fun setPermissionInvoker(permissionInvoker: (Array<String>) -> Boolean): Builder {
+    fun setPermissionInvoker(permissionInvoker: ((Array<String>) -> Boolean)? = null): Builder {
       params.permissionInvoker = permissionInvoker
       return this
     }
@@ -72,10 +73,22 @@ class Params private constructor() {
     /**
      * If registered permission of 'android.permission.CAMERA' in manifest,
      * you must set it to true, default false
+     *
      * @param requestCameraPermission
      */
     fun requestCameraPermission(requestCameraPermission: Boolean): Builder {
       params.requestCameraPermission = requestCameraPermission
+      return this
+    }
+
+    /**
+     * If you specify a custom image path, you need to add a FileProvider above 7.0
+     *
+     * @param authority The authority of a {@link FileProvider} defined in a
+     *            {@code <provider>} element in your app's manifest.
+     */
+    fun setAuthority(authority: String): Builder {
+      params.authority = authority
       return this
     }
 

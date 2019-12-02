@@ -35,7 +35,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
   fun onActivityResult(requestCode: Int, intent: Intent?) {
     when (requestCode) {
       TAKE_PHOTO -> {
-        val uri = FileProviderUtil.uriFromFile(context, photoFile ?: return)
+        val uri = ImageFileProviderUtil.uriFromFile(context, params.authority, photoFile ?: return)
         if (params.imageParams.cutAble) {
           //After the photo is taken, crop the picture
           cut(uri)
@@ -69,13 +69,13 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     if (granted) {
       clickListener?.onClick(TAKE_PHOTO)
       photoFile = File(LocalStorage.composePhotoImageFile(context))
-      PhotoUtil.takePhoto(params.wrapper, photoFile!!)
+      PhotoUtil.takePhoto(params.wrapper, params.authority, photoFile!!)
     } else {
       PhotoPermissionActivity.requestPermission(context, permissions) {
         if (it) {
           clickListener?.onClick(TAKE_PHOTO)
           photoFile = File(LocalStorage.composePhotoImageFile(context))
-          PhotoUtil.takePhoto(params.wrapper, photoFile!!)
+          PhotoUtil.takePhoto(params.wrapper, params.authority, photoFile!!)
         } else {
           clickListener?.onClick(PERMISSION_FORBID)
           if (BuildConfig.DEBUG) {
@@ -87,13 +87,10 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
   }
 
   override fun onSelectAlbum() {
-    val list = arrayListOf<String>()
-    list.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    list.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    if (params.requestCameraPermission) {
-      list.add(android.Manifest.permission.CAMERA)
-    }
-    val permissions = list.toTypedArray()
+    val permissions = arrayOf(
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
     val granted = params.permissionInvoker?.invoke(permissions) ?: false
     if (granted) {
       clickListener?.onClick(SELECT_ALBUM)
@@ -121,7 +118,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUri : $uri")
     }
-    val fileUrl = FileProviderUtil.getPathFromUri(context, uri)
+    val fileUrl = ImageFileProviderUtil.getPathFromUri(context, uri)
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUrl : $fileUrl")
     }
@@ -146,7 +143,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     outputFile!!.createNewFile()
     PhotoUtil.cut(params.wrapper, uri, outputFile!!, params.imageParams.outputW, params.imageParams.outputH)
     if (BuildConfig.DEBUG) {
-      Log.d(TAG, "cutFileUrl : ${FileProviderUtil.getPathFromUri(context, uri)}")
+      Log.d(TAG, "cutFileUrl : ${ImageFileProviderUtil.getPathFromUri(context, uri)}")
     }
   }
 }

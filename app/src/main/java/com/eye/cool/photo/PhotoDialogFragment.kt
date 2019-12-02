@@ -15,14 +15,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
-import com.eye.cool.permission.Rationale
-import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.Constants
-import com.eye.cool.photo.support.OnActionListener
-import com.eye.cool.photo.support.OnClickListener
-import com.eye.cool.photo.support.OnSelectListenerWrapper
+import com.eye.cool.photo.support.*
 import com.eye.cool.photo.utils.PhotoExecutor
 import com.eye.cool.photo.view.DefaultView
 
@@ -37,7 +32,7 @@ class PhotoDialogFragment : DialogFragment() {
   private var createByBuilder = false
 
   override fun onAttach(context: Context?) {
-    if (!createByBuilder) throw IllegalStateException("You must create it by Builder.build()!")
+    if (!createByBuilder) throw IllegalStateException("You must create it by PhotoDialogFragment.create()!")
     super.onAttach(context)
     executor = PhotoExecutor(params)
   }
@@ -117,60 +112,76 @@ class PhotoDialogFragment : DialogFragment() {
     set.start()
   }
 
-  class Builder {
-    private val dialog = PhotoDialogFragment()
-    private val paramsBuilder = Params.Builder(dialog)
+  companion object {
 
     /**
-     * The params for shown dialog
-     * @param dialogParams
+     * If you only want to get the returned image, set it
+     *
+     * @param onSelectListener Image selection callback
+     * @return A instance of PhotoDialogFragment
      */
-    fun setDialogParams(dialogParams: DialogParams): Builder {
-      paramsBuilder.setDialogParams(dialogParams)
-      return this
+    fun create(onSelectListener: OnSelectListener): PhotoDialogFragment {
+      return create(
+          ImageParams.Builder()
+              .setOnSelectListener(onSelectListener)
+              .build()
+      )
     }
 
     /**
-     * The params for selected image
-     * @param imageParams
+     * If you want to configure the returned image, set it
+     *
+     * @param imageParams image configure
+     * @return A instance of PhotoDialogFragment
      */
-    fun setImageParams(imageParams: ImageParams): Builder {
-      paramsBuilder.setImageParams(imageParams)
-      return this
+    fun create(imageParams: ImageParams): PhotoDialogFragment {
+      return create(Params.Builder().setImageParams(imageParams).build())
     }
 
     /**
-     * Permission setRationale when need
-     * @param rationale
-     * @param showRationaleWhenRequest
+     * If you only want to custom permission, set it
+     *
+     * @param onSelectListener Image selection callback
+     * @param requestCamera Is camera permission applied in the Manifest, default false
+     * @param permissionInvoker permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+     * @return A instance of PhotoDialogFragment
      */
-    fun setRationale(rationale: Rationale?, showRationaleWhenRequest: Boolean = false): Builder {
-      paramsBuilder.setRationale(rationale, showRationaleWhenRequest)
-      return this
+    fun create(onSelectListener: OnSelectListener, requestCamera: Boolean = false, permissionInvoker: (Array<String>) -> Boolean): PhotoDialogFragment {
+      return create(
+          ImageParams.Builder()
+              .setOnSelectListener(onSelectListener)
+              .build(),
+          requestCamera,
+          permissionInvoker
+      )
     }
 
     /**
-     * Permission setting's setRationale when need
-     * @param rationaleSetting
-     * @param showRationaleSettingWhenDenied
+     * Custom image return and permission
+     *
+     * @param imageParams image configure
+     * @param requestCamera Is camera permission applied in the Manifest, default false
+     * @param permissionInvoker permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+     * @return A instance of PhotoDialogFragment
      */
-    fun setRationaleSetting(rationaleSetting: Rationale?, showRationaleSettingWhenDenied: Boolean = true): Builder {
-      paramsBuilder.setRationaleSetting(rationaleSetting, showRationaleSettingWhenDenied)
-      return this
+    fun create(imageParams: ImageParams, requestCamera: Boolean = false, permissionInvoker: (Array<String>) -> Boolean): PhotoDialogFragment {
+      return create(
+          Params.Builder()
+              .setImageParams(imageParams)
+              .requestCameraPermission(requestCamera)
+              .setPermissionInvoker(permissionInvoker)
+              .build()
+      )
     }
 
     /**
-     * If registered permission of 'android.permission.CAMERA' in manifest,
-     * you must set it to true, default false
-     * @param requestCameraPermission
+     * Custom all of this call
+     *
+     * @param params all the configure of this call
+     * @return A instance of PhotoDialogFragment
      */
-    fun requestCameraPermission(requestCameraPermission: Boolean): Builder {
-      paramsBuilder.requestCameraPermission(requestCameraPermission)
-      return this
-    }
-
-    fun build(): PhotoDialogFragment {
-      val params = paramsBuilder.build()
+    fun create(params: Params): PhotoDialogFragment {
+      val dialog = PhotoDialogFragment()
       val wrapper = OnSelectListenerWrapper(
           dialogFragment = dialog,
           listener = params.imageParams.onSelectListener

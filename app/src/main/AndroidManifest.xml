@@ -12,6 +12,7 @@
       android:configChanges="keyboardHidden|orientation|screenSize"
       android:exported="false"
       android:launchMode="singleInstance"
+      android:screenOrientation="unspecified"
       android:theme="@style/DialogActivity" />
 
     <provider
@@ -23,6 +24,14 @@
         android:name="android.support.FILE_PROVIDER_PATHS"
         android:resource="@xml/photo_file_paths" />
     </provider>
+
+    <activity
+      android:name=".view.PhotoPermissionActivity"
+      android:configChanges="keyboardHidden|orientation|screenSize"
+      android:exported="false"
+      android:launchMode="singleInstance"
+      android:screenOrientation="unspecified"
+      android:theme="@style/PhotoPermissionTranslate" />
   </application>
 
 </manifest>

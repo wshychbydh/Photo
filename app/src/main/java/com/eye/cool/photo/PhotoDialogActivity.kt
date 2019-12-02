@@ -20,7 +20,6 @@ import android.view.WindowManager
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.*
@@ -124,8 +123,8 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     set.start()
   }
 
-  override fun finish() {
-    super.finish()
+  override fun onDestroy() {
+    super.onDestroy()
     PhotoDialogActivity.params = null
   }
 
@@ -164,18 +163,19 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     }
 
     /**
-     * The params for shown dialog
-     * @param dialogParams
+     * All settings for this call
+     *
+     * @param params
      */
     @JvmStatic
-    fun setDialogParams(dialogParams: DialogParams): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.dialogParams = dialogParams
+    fun setParams(params: Params): Companion {
+      this.params = params
       return this
     }
 
     /**
      * The params for selected image
+     *
      * @param imageParams
      */
     @JvmStatic
@@ -187,17 +187,20 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
 
     /**
      * Permission invoker to request permissions
+     *
      * @param permissionInvoker
      */
+    @JvmStatic
     fun setPermissionInvoker(permissionInvoker: (Array<String>) -> Boolean): Companion {
+      if (params == null) params = Params.Builder().build()
       params!!.permissionInvoker = permissionInvoker
       return this
     }
 
     /**
-     * If registered permission of 'android.permission.CAMERA' in manifest,
-     * you must set it to true, default false
-     * @param requestCameraPermission
+     * If registered permission of 'android.permission.CAMERA' in manifest, you must set it to true.
+     *
+     * @param requestCameraPermission default false
      */
     @JvmStatic
     fun requestCameraPermission(requestCameraPermission: Boolean): Companion {

@@ -21,6 +21,7 @@ class ImageParams private constructor() {
 
     /**
      * Callback after image selection, callback in ui thread
+     *
      * @param listener
      */
     fun setOnSelectListener(listener: OnSelectListener): Builder {
@@ -30,6 +31,7 @@ class ImageParams private constructor() {
 
     /**
      *  Whether the selected picture needs to be cut，default true
+     *
      *  @param cutAble
      */
     fun setCutAble(cutAble: Boolean): Builder {
@@ -39,6 +41,7 @@ class ImageParams private constructor() {
 
     /**
      * Output the size of the image，default width:300,height:300
+     *
      * @param outputW
      * @param outputH
      */

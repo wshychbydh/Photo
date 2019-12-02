@@ -11,9 +11,23 @@ import kotlin.math.roundToInt
 object ImageUtil {
 
   /**
-   *Create rounded corner images
-   * @param source
-   * @param bitmapSize the output bitmap size
+   * Create rounded corner images
+   *
+   * @param path The path of the rounded picture
+   * @param bitmapSize The output bitmap size
+   */
+  @JvmStatic
+  @WorkerThread
+  fun createCircleImage(path: String, bitmapSize: Float): Bitmap {
+    val source = getBitmapFromFile(path, bitmapSize.toInt(), bitmapSize.toInt())
+    return createCircleImage(source, bitmapSize)
+  }
+
+  /**
+   * Create rounded corner images
+   *
+   * @param source The source of the rounded picture
+   * @param bitmapSize The output bitmap size
    */
   @JvmStatic
   @WorkerThread
@@ -38,7 +52,8 @@ object ImageUtil {
   /**
    * Convert image to bitmap
    * If the width and height are smaller than the image itself, it will not compress
-   * @param path The path of image
+   *
+   * @param path The path of picture
    * @param width output bitmap's width, default -1
    * @param height output bitmap's height, default -1
    */
