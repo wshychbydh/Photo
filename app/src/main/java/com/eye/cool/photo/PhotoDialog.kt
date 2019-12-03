@@ -35,7 +35,7 @@ class PhotoDialog : AppCompatDialogFragment() {
   override fun onAttach(context: Context) {
     check(createByBuilder) { "You must create it by PhotoDialog.create()!" }
     super.onAttach(context)
-    executor = PhotoExecutor(params)
+    executor = PhotoExecutor(CompatContext(this), params)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -118,6 +118,7 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @param onSelectListener Image selection callback
      * @return A instance of PhotoDialog
      */
+    @JvmStatic
     fun create(onSelectListener: OnSelectListener): PhotoDialog {
       return create(
           ImageParams.Builder()
@@ -132,6 +133,7 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @param imageParams image configure
      * @return A instance of PhotoDialog
      */
+    @JvmStatic
     fun create(imageParams: ImageParams): PhotoDialog {
       return create(Params.Builder().setImageParams(imageParams).build())
     }
@@ -145,6 +147,7 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @return A instance of PhotoDialog
      */
     @TargetApi(Build.VERSION_CODES.M)
+    @JvmStatic
     fun create(
         onSelectListener: OnSelectListener,
         requestCamera: Boolean = false,
@@ -168,6 +171,7 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @return A instance of PhotoDialog
      */
     @TargetApi(Build.VERSION_CODES.M)
+    @JvmStatic
     fun create(
         imageParams: ImageParams,
         requestCamera: Boolean = false,
@@ -188,16 +192,16 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @param params all the configure of this call
      * @return A instance of PhotoDialog
      */
+    @JvmStatic
     fun create(params: Params): PhotoDialog {
       val dialog = PhotoDialog()
-      val wrapper = OnSelectListenerWrapper(
+      val listenerWrapper = OnSelectListenerWrapper(
           compatDialogFragment = dialog,
           listener = params.imageParams.onSelectListener
       )
-      params.imageParams.onSelectListener = wrapper
+      params.imageParams.onSelectListener = listenerWrapper
       dialog.params = params
       dialog.createByBuilder = true
-      params.wrapper = CompatContext(dialog)
       return dialog
     }
   }

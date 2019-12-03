@@ -9,6 +9,7 @@ import android.util.Log
 import com.eye.cool.photo.BuildConfig
 import com.eye.cool.photo.R
 import com.eye.cool.photo.params.Params
+import com.eye.cool.photo.support.CompatContext
 import com.eye.cool.photo.support.Constants.ADJUST_PHOTO
 import com.eye.cool.photo.support.Constants.CANCEL
 import com.eye.cool.photo.support.Constants.PERMISSION_FORBID
@@ -23,9 +24,10 @@ import java.io.File
 /**
  *Created by cool on 2018/6/12
  */
-internal class PhotoExecutor(private val params: Params) : OnActionListener {
-
-  private val context = params.wrapper.context()
+internal class PhotoExecutor(
+    private val compatContext: CompatContext,
+    private val params: Params
+) : OnActionListener {
 
   private var clickListener: OnClickListener? = null
   private var outputFile: File? = null
@@ -38,7 +40,11 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
   fun onActivityResult(requestCode: Int, intent: Intent?) {
     when (requestCode) {
       TAKE_PHOTO -> {
-        val uri = ImageFileProviderUtil.uriFromFile(context, params.authority, photoFile ?: return)
+        val uri = ImageFileProvider.uriFromFile(
+            compatContext.context(),
+            params.authority,
+            photoFile ?: return
+        )
         if (params.imageParams.cutAble) {
           //After the photo is taken, crop the picture
           cut(uri)
@@ -70,12 +76,17 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     checkPermission(list.toTypedArray()) {
       if (it) {
         clickListener?.onClick(TAKE_PHOTO)
-        photoFile = LocalStorage.composePhotoImageFile(context)
-        PhotoUtil.takePhoto(params.wrapper, params.authority, photoFile!!)
+        photoFile = LocalStorage.composePhotoImageFile(compatContext.context())
+        PhotoUtil.takePhoto(compatContext, params.authority, photoFile!!)
       } else {
         clickListener?.onClick(PERMISSION_FORBID)
         if (BuildConfig.DEBUG) {
-          Log.d(TAG, context.getString(if (params.requestCameraPermission) R.string.permission_storage_and_camera else R.string.permission_storage))
+          Log.d(TAG, compatContext.context().getString(
+              if (params.requestCameraPermission)
+                R.string.permission_storage_and_camera
+              else
+                R.string.permission_storage
+          ))
         }
       }
     }
@@ -89,29 +100,29 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     checkPermission(permissions) {
       if (it) {
         clickListener?.onClick(SELECT_ALBUM)
-        PhotoUtil.takeAlbum(params.wrapper)
+        PhotoUtil.takeAlbum(compatContext)
       } else {
         clickListener?.onClick(PERMISSION_FORBID)
         if (BuildConfig.DEBUG) {
-          Log.d(TAG, context.getString(R.string.permission_storage))
+          Log.d(TAG, compatContext.context().getString(R.string.permission_storage))
         }
       }
     }
   }
 
   private fun checkPermission(permissions: Array<String>, callback: (Boolean) -> Unit) {
-    val target = context.applicationInfo.targetSdkVersion
+    val target = compatContext.context().applicationInfo.targetSdkVersion
     if (target >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       val granted = params.permissionInvoker?.invoke(permissions) ?: false
       if (granted) {
         callback.invoke(true)
       } else {
-        PhotoPermissionActivity.requestPermission(context, permissions) {
+        PhotoPermissionActivity.requestPermission(compatContext.context(), permissions) {
           callback.invoke(it)
         }
       }
     } else {
-      callback.invoke(isCacheDirAvailable(context) && isExternalDirAvailable())
+      callback.invoke(isCacheDirAvailable(compatContext.context()) && isExternalDirAvailable())
     }
   }
 
@@ -133,7 +144,7 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUri : $uri")
     }
-    val fileUrl = ImageFileProviderUtil.getPathFromUri(context, uri)
+    val fileUrl = ImageFileProvider.getPathFromUri(compatContext.context(), uri)
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUrl : $fileUrl")
     }
@@ -154,11 +165,18 @@ internal class PhotoExecutor(private val params: Params) : OnActionListener {
   }
 
   private fun cut(uri: Uri) {
-    outputFile = LocalStorage.composeThumbFile(context)
+    outputFile = LocalStorage.composeThumbFile(compatContext.context())
     outputFile!!.createNewFile()
-    PhotoUtil.cut(params.wrapper, uri, outputFile!!, params.imageParams.outputW, params.imageParams.outputH)
+    PhotoUtil.cut(
+        compatContext,
+        uri,
+        outputFile!!,
+        params.imageParams.outputW,
+        params.imageParams.outputH
+    )
+
     if (BuildConfig.DEBUG) {
-      Log.d(TAG, "cutFileUrl : ${ImageFileProviderUtil.getPathFromUri(context, uri)}")
+      Log.d(TAG, "cutFileUrl : ${ImageFileProvider.getPathFromUri(compatContext.context(), uri)}")
     }
   }
 }

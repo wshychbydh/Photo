@@ -24,7 +24,7 @@ internal object PhotoUtil {
     val intent = Intent()
     intent.action = "android.media.action.IMAGE_CAPTURE"
     intent.addCategory("android.intent.category.DEFAULT")
-    val uri = ImageFileProviderUtil.uriFromFile(wrapper.context(), authority, outputFile)
+    val uri = ImageFileProvider.uriFromFile(wrapper.context(), authority, outputFile)
     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
     wrapper.startActivityForResult(intent, Constants.TAKE_PHOTO)
   }
@@ -54,7 +54,7 @@ internal object PhotoUtil {
   @JvmStatic
   fun cut(wrapper: CompatContext, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
     val intent = Intent("com.android.camera.action.CROP")
-    ImageFileProviderUtil.setIntentDataAndType(intent, "image/*", uri, true)
+    ImageFileProvider.setIntentDataAndType(intent, "image/*", uri, true)
     intent.putExtra("crop", true)
     intent.putExtra("aspectX", 1)
     intent.putExtra("aspectY", outputW.toFloat() / outputH.toFloat())

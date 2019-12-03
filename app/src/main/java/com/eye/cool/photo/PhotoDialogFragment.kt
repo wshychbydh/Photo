@@ -36,7 +36,7 @@ class PhotoDialogFragment : DialogFragment() {
   override fun onAttach(context: Context?) {
     if (!createByBuilder) throw IllegalStateException("You must create it by PhotoDialogFragment.create()!")
     super.onAttach(context)
-    executor = PhotoExecutor(params)
+    executor = PhotoExecutor(CompatContext(this), params)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -122,6 +122,7 @@ class PhotoDialogFragment : DialogFragment() {
      * @param onSelectListener Image selection callback
      * @return A instance of PhotoDialogFragment
      */
+    @JvmStatic
     fun create(onSelectListener: OnSelectListener): PhotoDialogFragment {
       return create(
           ImageParams.Builder()
@@ -136,6 +137,7 @@ class PhotoDialogFragment : DialogFragment() {
      * @param imageParams image configure
      * @return A instance of PhotoDialogFragment
      */
+    @JvmStatic
     fun create(imageParams: ImageParams): PhotoDialogFragment {
       return create(Params.Builder().setImageParams(imageParams).build())
     }
@@ -149,6 +151,7 @@ class PhotoDialogFragment : DialogFragment() {
      * @return A instance of PhotoDialogFragment
      */
     @TargetApi(Build.VERSION_CODES.M)
+    @JvmStatic
     fun create(
         onSelectListener: OnSelectListener,
         requestCamera: Boolean = false,
@@ -172,6 +175,7 @@ class PhotoDialogFragment : DialogFragment() {
      * @return A instance of PhotoDialogFragment
      */
     @TargetApi(Build.VERSION_CODES.M)
+    @JvmStatic
     fun create(
         imageParams: ImageParams,
         requestCamera: Boolean = false,
@@ -192,16 +196,16 @@ class PhotoDialogFragment : DialogFragment() {
      * @param params all the configure of this call
      * @return A instance of PhotoDialogFragment
      */
+    @JvmStatic
     fun create(params: Params): PhotoDialogFragment {
       val dialog = PhotoDialogFragment()
-      val wrapper = OnSelectListenerWrapper(
+      val listenerWrapper = OnSelectListenerWrapper(
           dialogFragment = dialog,
           listener = params.imageParams.onSelectListener
       )
-      params.imageParams.onSelectListener = wrapper
+      params.imageParams.onSelectListener = listenerWrapper
       dialog.params = params
       dialog.createByBuilder = true
-      params.wrapper = CompatContext(dialog)
       return dialog
     }
   }

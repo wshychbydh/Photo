@@ -1,14 +1,9 @@
 package com.eye.cool.photo.params
 
 import android.annotation.TargetApi
-import android.app.Activity
-import android.app.Fragment
 import android.os.Build
-import com.eye.cool.photo.support.CompatContext
 
 class Params private constructor() {
-
-  internal lateinit var wrapper: CompatContext
 
   internal var imageParams: ImageParams = ImageParams.Builder().build()
 
@@ -23,20 +18,6 @@ class Params private constructor() {
   class Builder {
 
     private var params = Params()
-
-    internal constructor()
-
-    constructor(fragment: Fragment) {
-      params.wrapper = CompatContext(fragment)
-    }
-
-    constructor(fragmentX: androidx.fragment.app.Fragment) {
-      params.wrapper = CompatContext(fragmentX)
-    }
-
-    constructor(activity: Activity) {
-      params.wrapper = CompatContext(activity)
-    }
 
     /**
      * The configure for selected image

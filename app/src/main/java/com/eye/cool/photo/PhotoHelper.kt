@@ -2,7 +2,7 @@ package com.eye.cool.photo
 
 import android.annotation.TargetApi
 import android.app.Activity
-import android.app.Fragment
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Build
 import android.view.View
@@ -10,29 +10,13 @@ import androidx.fragment.app.FragmentActivity
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.CompatContext
 import com.eye.cool.photo.support.OnSelectListener
-import com.eye.cool.photo.support.OnSelectListenerWrapper
 import com.eye.cool.photo.view.EmptyView
 
 /**
  *Created by ycb on 2019/8/14 0014
  */
-class PhotoHelper {
-
-  private val compat: CompatContext
-
-  constructor(fragmentX: androidx.fragment.app.Fragment) {
-    compat = CompatContext(fragmentX)
-  }
-
-  constructor(fragment: Fragment) {
-    compat = CompatContext(fragment)
-  }
-
-  constructor(activity: Activity) {
-    compat = CompatContext(activity)
-  }
+class PhotoHelper(private val context: Context) {
 
   /**
    * Take a photo
@@ -91,7 +75,7 @@ class PhotoHelper {
       permissionInvoker: ((Array<String>) -> Boolean)? = null,
       authority: String? = null
   ) {
-    val contentView = EmptyView(compat.context())
+    val contentView = EmptyView(context)
     val builder = createDefaultDialogParams(contentView)
     builder.setOnShowListener(DialogInterface.OnShowListener {
       contentView.onTakePhoto()
@@ -150,7 +134,7 @@ class PhotoHelper {
       permissionInvoker: ((Array<String>) -> Boolean)? = null,
       authority: String? = null
   ) {
-    val contentView = EmptyView(compat.context())
+    val contentView = EmptyView(context)
     val builder = createDefaultDialogParams(contentView)
     builder.setOnShowListener(DialogInterface.OnShowListener {
       contentView.onSelectAlbum()
@@ -168,38 +152,44 @@ class PhotoHelper {
 
   private fun execute(
       dialogParams: DialogParams,
-      params: ImageParams,
+      imageParams: ImageParams,
       requestCameraPermission: Boolean = false,
       permissionInvoker: ((Array<String>) -> Boolean)? = null,
       authority: String? = null
   ) {
-    val activity = compat.activity()
-    if (activity is FragmentActivity) {
-      val dialog = createAppDialogFragment(
-          dialogParams,
-          params,
-          requestCameraPermission,
-          permissionInvoker,
-          authority
-      )
-      params.onSelectListener = OnSelectListenerWrapper(
-          compatDialogFragment = dialog,
-          listener = params.onSelectListener
-      )
-      dialog.show(activity.supportFragmentManager)
-    } else {
-      val dialog = createDialogFragment(
-          dialogParams,
-          params,
-          requestCameraPermission,
-          permissionInvoker,
-          authority
-      )
-      params.onSelectListener = OnSelectListenerWrapper(
-          dialogFragment = dialog,
-          listener = params.onSelectListener
-      )
-      dialog.show(activity.fragmentManager)
+    when (context) {
+      is FragmentActivity -> {
+        createAppDialogFragment(
+            dialogParams,
+            imageParams,
+            requestCameraPermission,
+            permissionInvoker,
+            authority
+        ).show(context.supportFragmentManager)
+      }
+      is Activity -> {
+        createDialogFragment(
+            dialogParams,
+            imageParams,
+            requestCameraPermission,
+            permissionInvoker,
+            authority
+        ).show(context.fragmentManager)
+      }
+      else -> {
+        PhotoDialogActivity
+            .resetParams()
+            .setParams(
+                Params.Builder()
+                    .setImageParams(imageParams)
+                    .setDialogParams(dialogParams)
+                    .setAuthority(authority)
+                    .requestCameraPermission(requestCameraPermission)
+                    .setPermissionInvoker(permissionInvoker)
+                    .build()
+            )
+            .show(context)
+      }
     }
   }
 

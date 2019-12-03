@@ -15,7 +15,7 @@ import java.io.File
 /**
  * Created by cool on 2018/6/12
  */
-object ImageFileProviderUtil {
+object ImageFileProvider {
   /**
    * Get the URI from the file
    *

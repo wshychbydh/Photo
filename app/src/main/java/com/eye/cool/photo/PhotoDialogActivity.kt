@@ -48,8 +48,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
       ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
-    params.wrapper = CompatContext(this)
-    executor = PhotoExecutor(params)
+    executor = PhotoExecutor(CompatContext(this), params)
     val selectListenerWrapper = OnSelectListenerWrapper(this, params.imageParams.onSelectListener)
     params.imageParams.onSelectListener = selectListenerWrapper
     window.setWindowAnimations(params.dialogParams.animStyle)
@@ -152,6 +151,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
 
   companion object {
 
+    @Volatile
     private var params: Params? = null
 
     /**
@@ -171,6 +171,18 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     @JvmStatic
     fun setParams(params: Params): Companion {
       this.params = params
+      return this
+    }
+
+    /**
+     * If you only want to get the returned image, set it
+     *
+     * @param onSelectListener Image selection callback
+     */
+    @JvmStatic
+    fun setOnSelectListener(onSelectListener: OnSelectListener): Companion {
+      if (params == null) params = Params.Builder().build()
+      params!!.imageParams.onSelectListener = onSelectListener
       return this
     }
 
@@ -219,6 +231,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      *            {@code <provider>} element in your app's manifest.
      */
     @TargetApi(Build.VERSION_CODES.N)
+    @JvmStatic
     fun setAuthority(authority: String): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.authority = authority
@@ -228,7 +241,9 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     @JvmStatic
     fun show(context: Context) {
       if (params == null) params = Params.Builder().build()
-      context.startActivity(Intent(context, PhotoDialogActivity::class.java))
+      val intent = Intent(context, PhotoDialogActivity::class.java)
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      context.startActivity(intent)
     }
 
     /**
