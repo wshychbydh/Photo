@@ -110,19 +110,16 @@ internal class PhotoExecutor(
     }
   }
 
-  private fun checkPermission(permissions: Array<String>, callback: (Boolean) -> Unit) {
+  private fun checkPermission(permissions: Array<String>, invoker: (Boolean) -> Unit) {
     val target = compatContext.context().applicationInfo.targetSdkVersion
     if (target >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      val granted = params.permissionInvoker?.invoke(permissions) ?: false
-      if (granted) {
-        callback.invoke(true)
+      if (params.permissionInvoker == null) {
+        PhotoPermissionActivity.requestPermission(compatContext.context(), permissions, invoker)
       } else {
-        PhotoPermissionActivity.requestPermission(compatContext.context(), permissions) {
-          callback.invoke(it)
-        }
+        params.permissionInvoker!!.request(permissions, invoker)
       }
     } else {
-      callback.invoke(isCacheDirAvailable(compatContext.context()) && isExternalDirAvailable())
+      invoker.invoke(isCacheDirAvailable(compatContext.context()) && isExternalDirAvailable())
     }
   }
 
