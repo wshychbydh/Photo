@@ -199,13 +199,12 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     }
 
     /**
-     * Permission invoker to request permissions
+     * Callback the request result after requesting permission
      *
-     * @param permissionInvoker
+     * @param permissionInvoker Permission invoker callback after to request permissions
      */
-    @JvmStatic
     @TargetApi(Build.VERSION_CODES.M)
-    fun setPermissionInvoker(permissionInvoker: (Array<String>) -> Boolean): Companion {
+    fun setPermissionInvoker(permissionInvoker: PermissionInvoker): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.permissionInvoker = permissionInvoker
       return this

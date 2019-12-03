@@ -2,6 +2,7 @@ package com.eye.cool.photo.params
 
 import android.annotation.TargetApi
 import android.os.Build
+import com.eye.cool.photo.support.PermissionInvoker
 
 class Params private constructor() {
 
@@ -9,7 +10,7 @@ class Params private constructor() {
 
   internal var dialogParams: DialogParams = DialogParams.Builder().build()
 
-  internal var permissionInvoker: ((Array<String>) -> Boolean)? = null
+  internal var permissionInvoker: PermissionInvoker? = null
 
   internal var requestCameraPermission = false
 
@@ -40,12 +41,12 @@ class Params private constructor() {
     }
 
     /**
-     * Permission invoker to request permissions,
+     * Callback the request result after requesting permission
      *
-     * @param permissionInvoker Permission request executor. Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+     * @param permissionInvoker Permission invoker callback after to request permissions
      */
     @TargetApi(Build.VERSION_CODES.M)
-    fun setPermissionInvoker(permissionInvoker: ((Array<String>) -> Boolean)? = null): Builder {
+    fun setPermissionInvoker(permissionInvoker: PermissionInvoker?): Builder {
       params.permissionInvoker = permissionInvoker
       return this
     }

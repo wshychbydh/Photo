@@ -147,7 +147,7 @@ class PhotoDialogFragment : DialogFragment() {
      *
      * @param onSelectListener Image selection callback
      * @param requestCamera Is camera permission applied in the Manifest, default false
-     * @param permissionInvoker permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+     * @param permissionInvoker Permission invoker callback after to request permissions
      * @return A instance of PhotoDialogFragment
      */
     @TargetApi(Build.VERSION_CODES.M)
@@ -155,7 +155,7 @@ class PhotoDialogFragment : DialogFragment() {
     fun create(
         onSelectListener: OnSelectListener,
         requestCamera: Boolean = false,
-        permissionInvoker: ((Array<String>) -> Boolean)? = null
+        permissionInvoker: PermissionInvoker? = null
     ): PhotoDialogFragment {
       return create(
           ImageParams.Builder()
@@ -171,7 +171,7 @@ class PhotoDialogFragment : DialogFragment() {
      *
      * @param imageParams image configure
      * @param requestCamera Is camera permission applied in the Manifest, default false
-     * @param permissionInvoker permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+     * @param permissionInvoker Permission invoker callback after to request permissions
      * @return A instance of PhotoDialogFragment
      */
     @TargetApi(Build.VERSION_CODES.M)
@@ -179,7 +179,7 @@ class PhotoDialogFragment : DialogFragment() {
     fun create(
         imageParams: ImageParams,
         requestCamera: Boolean = false,
-        permissionInvoker: ((Array<String>) -> Boolean)? = null
+        permissionInvoker: PermissionInvoker? = null
     ): PhotoDialogFragment {
       return create(
           Params.Builder()

@@ -11,6 +11,7 @@ import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.OnSelectListener
+import com.eye.cool.photo.support.PermissionInvoker
 import com.eye.cool.photo.view.EmptyView
 
 /**
@@ -46,14 +47,13 @@ class PhotoHelper(private val context: Context) {
    * @param params The configure of image
    * @param requestCameraPermission If registered permission of 'android.permission.CAMERA' in manifest,
    * you must set it to true, default false
-   * @param permissionInvoker Permission request executor.
-   * Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+   * @param permissionInvoker Permission invoker callback after to request permissions
    */
   @TargetApi(Build.VERSION_CODES.M)
   fun onTakePhoto(
       params: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: ((Array<String>) -> Boolean)? = null
+      permissionInvoker: PermissionInvoker? = null
   ) {
     onTakePhoto(params, requestCameraPermission, permissionInvoker, null)
   }
@@ -64,15 +64,14 @@ class PhotoHelper(private val context: Context) {
    * @param params The configure of image
    * @param requestCameraPermission If registered permission of 'android.permission.CAMERA' in manifest,
    * you must set it to true, default false
-   * @param permissionInvoker Permission request executor.
-   * Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+   * @param permissionInvoker Permission invoker callback after to request permissions
    * @param authority The authority of a {@link FileProvider} defined in a {@code <provider>} element in your app's manifest.
    */
   @TargetApi(Build.VERSION_CODES.N)
   fun onTakePhoto(
       params: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: ((Array<String>) -> Boolean)? = null,
+      permissionInvoker: PermissionInvoker? = null,
       authority: String? = null
   ) {
     val contentView = EmptyView(context)
@@ -110,13 +109,12 @@ class PhotoHelper(private val context: Context) {
    * Select from album
    *
    * @param imageParams The configure of image
-   * @param permissionInvoker Permission request executor.
-   * Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE}
+   * @param permissionInvoker Permission invoker callback after to request permissions
    */
   @TargetApi(Build.VERSION_CODES.M)
   fun onSelectAlbum(
       imageParams: ImageParams,
-      permissionInvoker: ((Array<String>) -> Boolean)? = null
+      permissionInvoker: PermissionInvoker? = null
   ) {
     onSelectAlbum(imageParams, permissionInvoker, null)
   }
@@ -125,13 +123,12 @@ class PhotoHelper(private val context: Context) {
    * Select from album
    *
    * @param imageParams The configure of image
-   * @param permissionInvoker Permission request executor.
-   * Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE}
+   * @param permissionInvoker Permission invoker callback after to request permissions
    */
   @TargetApi(Build.VERSION_CODES.N)
   fun onSelectAlbum(
       imageParams: ImageParams,
-      permissionInvoker: ((Array<String>) -> Boolean)? = null,
+      permissionInvoker: PermissionInvoker? = null,
       authority: String? = null
   ) {
     val contentView = EmptyView(context)
@@ -154,7 +151,7 @@ class PhotoHelper(private val context: Context) {
       dialogParams: DialogParams,
       imageParams: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: ((Array<String>) -> Boolean)? = null,
+      permissionInvoker: PermissionInvoker? = null,
       authority: String? = null
   ) {
     when (context) {
@@ -197,7 +194,7 @@ class PhotoHelper(private val context: Context) {
       dialogParams: DialogParams,
       imageParams: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: ((Array<String>) -> Boolean)? = null,
+      permissionInvoker: PermissionInvoker? = null,
       authority: String? = null
   ): PhotoDialogFragment {
     return PhotoDialogFragment.create(
@@ -215,7 +212,7 @@ class PhotoHelper(private val context: Context) {
       dialogParams: DialogParams,
       imageParams: ImageParams,
       requestCameraPermission: Boolean,
-      permissionInvoker: ((Array<String>) -> Boolean)? = null,
+      permissionInvoker: PermissionInvoker? = null,
       authority: String?
   ): PhotoDialog {
     return PhotoDialog.create(
