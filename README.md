@@ -33,7 +33,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.3.9'
+        implementation 'com.github.wshychbydh:photo:1.4.0'
     }
 ```
 
@@ -73,7 +73,7 @@
      val params = Params.Builder()
         .setDialogParams(dialogParams)                   //对话框参数（可选）
         .setImageParams(imageParams)                     //图片参数（可选）
-        .setPermissionInvoker(Array<String>) -> Boolean) //自定义请求权限（可选）
+        .setPermissionInvoker(PermissionInvoker)         //自定义请求权限（可选）
         .requestCameraPermission(false)                  //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
         .setAuthority(String)                            //自定义的FileProvider，默认授权external目录
         .build()
@@ -112,7 +112,7 @@
    PhotoDialogActivity.resetParams()                                   //重置参数 (可选)
                       .setDialogParams(dialogParams)                   //选择对话框参数（可选）
                       .setImageParams(imageParams)                     //必须设置setOnSelectListener方法，否则无回调
-                      .setPermissionInvoker(Array<String>) -> Boolean) //自定义请求权限（可选）
+                      .setPermissionInvoker(PermissionInvoker)         //自定义请求权限（可选）
                       .requestCameraPermission(boolean)                //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
                       .setAuthority(String)                            //自定义的FileProvider
                       .show(context)                                   //启动对话框，在设置完参数后调用
