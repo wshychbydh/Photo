@@ -33,7 +33,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.3.7'
+        implementation 'com.github.wshychbydh:photo:1.3.8'
     }
 ```
 
@@ -46,49 +46,52 @@
 报其他类似的重复错误时，添加方式同上。
 
 
-3、调用系统相机不需要Camera权限，请检查项目中是否存在**android.permission.CAMERA**权限，若存在请删除或设置requestCameraPermission为true（必须）
+3、调用系统相机不需要Camera权限，请检查项目中是配置有**android.permission.CAMERA**权限，若存在请删除或设置requestCameraPermission（必须）
 
 
 4、构建Params实例
 ```
      val imageParams = ImageParams.Builder()
         .setOnSelectListener()          //图片选择后回调（必填）
-        .setOutput()                    //设置输出图片大小（可选）
+        .setOutput()                    //设置输出图片大小，默认300x300（可选）
         .setCutAble()                   //是否剪切图片，默认true（可选）
         .build()
          
      val dialogParams = DialogParams.Builder()
         .setContentView()               //自定义对话框视图（可选），注：自定义View必须拥有setOnActionListener(OnActionListener)方法
         .setDialogStyle()               //自定义对话框的样式（可选）
-        .setAnimStyle()                 //自定义对话框的动画样式（可选）
+        .setAnimStyle()                 //自定义对话框的动画样式，默认无动画（可选）
         .setCoordinate()                //设置对话框弹出的XY坐标，默认从底部弹出（可选）
-        .setCancelable()                //同dialog的setCancelable（可选）
-        .setCanceledOnTouchOutside()    //同dialog的setCanceledOnTouchOutside（可选）
+        .setCancelable()                //同dialog的setCancelable，默认false（可选）
+        .setCanceledOnTouchOutside()    //同dialog的setCanceledOnTouchOutside，默认false（可选）
         .setOnCancelListener()          //同dialog的OnCancelListener（可选）
         .setOnDismissListener()         //同dialog的setOnDismissListener（可选）
         .setOnShowListener()            //同dialog的setOnShownListener（可选）
         .setOnClickListener()           //按钮点击时回调，回调@link{Constants#TAKE_PHOTO | SELECT_ALBUM | CANCEL | PERMISSION_FORBID}（可选）
         .build()
         
-     val params = Params.Builder(this)
+     val params = Params.Builder()
         .setDialogParams(dialogParams)                   //对话框参数（可选）
         .setImageParams(imageParams)                     //图片参数（可选）
         .setPermissionInvoker(Array<String>) -> Boolean) //自定义请求权限（可选）
         .requestCameraPermission(false)                  //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
-        .setAuthority(String)                            //自定义的FileProvider
+        .setAuthority(String)                            //自定义的FileProvider，默认授权external目录
         .build()
      
 ```
 
 
-5、若只需要调用拍照或选图片，可使用**PhotoHelper**，按需调用onTakePhoto()或onSelectAlbum()方法
+5、若只需要调用拍照或选图片，可使用**PhotoHelper**，按需调用onTakePhoto()或onSelectAlbum()方法，如：
 
 ```
-    helper.onTakePhoto(ImageParams, requestCameraPermission, permissionInvoker?)    //调用相册
+    helper.onTakePhoto(OnSelectListener)    //调用相册    
     
-    helper.onSelectAlbum(ImageParams, permissionInvoker?)  //调用相机
+    helper.onTakePhoto(ImageParams)         //调用相册
+    
+    helper.onSelectAlbum(OnSelectListener)  //调用相机
+    
+    helper.onSelectAlbum(ImageParams)       //调用相机
 ```
-requestCameraPermission：若在Manifest中配置了Camera权限，则必须设置为true；permissionInvoker为自定义请求权限回调，可为null
 
 
 6、需要弹框可使用**PhotoDialog**(<font color=#FF0000>**推荐**</font>)或**PhotoDialogFragment**或**PhotoDialogActivity**
