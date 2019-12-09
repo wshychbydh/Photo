@@ -8,8 +8,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -41,12 +39,6 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     invasionStatusBar(this)
-
-    requestedOrientation = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    } else {
-      ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-    }
 
     executor = PhotoExecutor(CompatContext(this), params)
     val selectListenerWrapper = OnSelectListenerWrapper(this, params.imageParams.onSelectListener)
