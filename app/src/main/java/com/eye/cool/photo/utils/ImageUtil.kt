@@ -5,6 +5,7 @@ import androidx.annotation.WorkerThread
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+
 /**
  *Created by cool on 2018/7/5
  */

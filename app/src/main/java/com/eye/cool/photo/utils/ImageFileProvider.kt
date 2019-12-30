@@ -180,17 +180,24 @@ object ImageFileProvider {
           // Use ':' to split
           val id = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
 
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return getMediaPathAboveQ(id)
+          }
+
           val projection = arrayOf(MediaStore.Images.Media.DATA)
           val selection = MediaStore.Images.Media._ID + "=?"
           val selectionArgs = arrayOf(id)
 
           val cursor = context.contentResolver.query(
-              MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
-              selection, selectionArgs, null)
-          val columnIndex = cursor!!.getColumnIndex(projection[0])
+              MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+              projection,
+              selection,
+              selectionArgs,
+              null
+          ) ?: return null
 
           if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex)
+            filePath = cursor.getString(cursor.getColumnIndexOrThrow(projection[0]))
           }
           cursor.close()
           return filePath
@@ -200,6 +207,14 @@ object ImageFileProvider {
       }
     }
     return null
+  }
+
+  @TargetApi(Build.VERSION_CODES.Q)
+  private fun getMediaPathAboveQ(id: String): String {
+    return MediaStore.Images.Media
+        .EXTERNAL_CONTENT_URI
+        .buildUpon()
+        .appendPath(id).build().toString()
   }
 
   private fun isCustomAuthority(context: Context, uri: Uri): Boolean {
