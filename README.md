@@ -125,9 +125,15 @@
    2）切记检查Manifest是否配置了Camera权限，并做相应权限请求，否则可能会出现调用相机crash  
    
    3）为了适配7.0以上文件权限，仅添加了external-path及必要的临时权限目录，若所需其他目录的临时权限则需自行添加
+   
+#####   
+ 
+**Demo地址：(https://github.com/wshychbydh/SampleDemo)**    
     
-    
-    
-#### 联系方式 wshychbydh@gmail.com
+##
+
+###### **欢迎fork，更希望你能贡献commit.** (*￣︶￣)    
+
+###### 联系方式 wshychbydh@gmail.com
 
 [![](https://jitpack.io/v/wshychbydh/photo.svg)](https://jitpack.io/#wshychbydh/photo)
