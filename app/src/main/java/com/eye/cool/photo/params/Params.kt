@@ -64,7 +64,7 @@ class Params private constructor() {
     }
 
     /**
-     * If you specify a custom image path, you need to add a FileProvider above 7.0
+     * If you specify a custom image path, you may need to add a FileProvider above 7.0
      *
      * @param authority The authority of a {@link FileProvider} defined in a
      *            {@code <provider>} element in your app's manifest.

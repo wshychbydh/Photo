@@ -6,7 +6,7 @@ package com.eye.cool.photo.support
 interface PermissionInvoker {
 
   /**
-   *Permission invoker to request permissions.
+   * Permission invoker to request permissions.
    *
    * @param permissions Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
    * @param invoker call on permission granted or denied
