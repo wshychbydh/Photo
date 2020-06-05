@@ -83,9 +83,9 @@ internal class PhotoExecutor(
         if (BuildConfig.DEBUG) {
           Log.d(TAG, compatContext.context().getString(
               if (params.requestCameraPermission)
-                R.string.permission_storage_and_camera
+                R.string.photo_permission_storage_and_camera
               else
-                R.string.permission_storage
+                R.string.photo_permission_storage
           ))
         }
       }
@@ -104,7 +104,7 @@ internal class PhotoExecutor(
       } else {
         clickListener?.onClick(PERMISSION_FORBID)
         if (BuildConfig.DEBUG) {
-          Log.d(TAG, compatContext.context().getString(R.string.permission_storage))
+          Log.d(TAG, compatContext.context().getString(R.string.photo_permission_storage))
         }
       }
     }

@@ -1,13 +1,13 @@
 <resources>
 
-  <style name="PhotoButton">
+  <style name="photo_button">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">45dp</item>
     <item name="android:gravity">center</item>
-    <item name="android:background">@drawable/selector_button_white_corner</item>
+    <item name="android:background">@drawable/photo_button_white_corner_selector</item>
   </style>
 
-  <style name="PhotoDialog" parent="@android:style/Theme.Dialog">
+  <style name="photo_dialog" parent="@android:style/Theme.Dialog">
     <item name="android:windowFrame">@null</item>
     <item name="android:windowBackground">@android:color/transparent</item>
     <item name="android:windowFullscreen">true</item>
@@ -20,18 +20,18 @@
     <item name="android:backgroundDimEnabled">true</item>
   </style>
 
-  <style name="PhotoDialog.Translucent">
+  <style name="photo_dialog.translucent">
     <item name="android:windowFullscreen">false</item>
     <item name="android:windowCloseOnTouchOutside">false</item>
     <item name="android:backgroundDimEnabled">false</item>
   </style>
 
-  <style name="AnimBottom">
-    <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
-    <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+  <style name="photo_anim_bottom">
+    <item name="android:windowEnterAnimation">@anim/photo_slide_in_bottom</item>
+    <item name="android:windowExitAnimation">@anim/photo_slide_out_bottom</item>
   </style>
 
-  <style name="DialogActivity" parent="Theme.AppCompat.Dialog">
+  <style name="photo_dialog_activity" parent="Theme.AppCompat.Dialog">
     <item name="android:windowBackground">@android:color/transparent</item>
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
@@ -41,7 +41,7 @@
     <item name="windowNoTitle">true</item>
   </style>
 
-  <style name="PhotoPermissionTranslate">
+  <style name="photo_permission_translate">
     <item name="android:windowBackground">@android:color/transparent</item>
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowIsTranslucent">true</item>

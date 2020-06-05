@@ -141,7 +141,7 @@ class PhotoHelper(private val context: Context) {
 
   private fun createDefaultDialogParams(contentView: View): DialogParams.Builder {
     return DialogParams.Builder()
-        .setDialogStyle(R.style.PhotoDialog_Translucent)
+        .setDialogStyle(R.style.photo_dialog_translucent)
         .setCancelable(false)
         .setCanceledOnTouchOutside(false)
         .setContentView(contentView)

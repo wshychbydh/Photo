@@ -27,7 +27,7 @@ internal class DefaultView @JvmOverloads constructor(context: Context, attrs: At
     val padding = (context.resources.displayMetrics.density * 20f).toInt()
     setPadding(padding, padding, padding, padding)
     layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-    val view = LayoutInflater.from(context).inflate(R.layout.layout_photo, this, true)
+    val view = LayoutInflater.from(context).inflate(R.layout.photo_layout, this, true)
     view.findViewById<View>(R.id.albumBtn).setOnClickListener(this)
     view.findViewById<View>(R.id.photoBtn).setOnClickListener(this)
     view.findViewById<View>(R.id.cancelBtn).setOnClickListener(this)

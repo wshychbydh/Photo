@@ -18,10 +18,10 @@ class DialogParams private constructor() {
    * Nonsupport for PhotoDialogActivity
    */
   @StyleRes
-  internal var dialogStyle: Int = R.style.PhotoDialog
+  internal var dialogStyle: Int = R.style.photo_dialog
 
   @StyleRes
-  internal var animStyle: Int = R.style.AnimBottom
+  internal var animStyle: Int = R.style.photo_anim_bottom
 
   internal var cancelable: Boolean = true
 

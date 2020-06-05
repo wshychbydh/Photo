@@ -1,9 +1,9 @@
 <resources>
-  <string name="select_album">Select Album</string>
-  <string name="select_photo">Take a Photo</string>
+  <string name="photo_select_album">Select Album</string>
+  <string name="photo_select_photo">Take a Photo</string>
 
-  <string name="cancel">Cancel</string>
+  <string name="photo_cancel">Cancel</string>
 
-  <string name="permission_storage">Grant access to the storage</string>
-  <string name="permission_storage_and_camera">Grant access to the storage and camera</string>
+  <string name="photo_permission_storage">Grant access to the storage</string>
+  <string name="photo_permission_storage_and_camera">Grant access to the storage and camera</string>
 </resources>
