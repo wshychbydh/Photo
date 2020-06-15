@@ -17,6 +17,7 @@ import android.view.animation.LinearInterpolator
 import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.FragmentManager
+import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.*
@@ -63,7 +64,7 @@ class PhotoDialog : AppCompatDialogFragment() {
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    executor.setOnClickListener(object : OnClickListener {
+    executor.setOnClickListener(object : DialogParams.OnClickListener {
       override fun onClick(which: Int) {
         when (which) {
           Constants.ADJUST_PHOTO, Constants.SELECT_ALBUM -> playExitAnim()
@@ -119,7 +120,7 @@ class PhotoDialog : AppCompatDialogFragment() {
      * @return A instance of PhotoDialog
      */
     @JvmStatic
-    fun create(onSelectListener: OnSelectListener): PhotoDialog {
+    fun create(onSelectListener: ImageParams.OnSelectListener): PhotoDialog {
       return create(
           ImageParams.Builder()
               .setOnSelectListener(onSelectListener)
@@ -149,9 +150,9 @@ class PhotoDialog : AppCompatDialogFragment() {
     @TargetApi(Build.VERSION_CODES.M)
     @JvmStatic
     fun create(
-        onSelectListener: OnSelectListener,
+        onSelectListener: ImageParams.OnSelectListener,
         requestCamera: Boolean = false,
-        permissionInvoker: PermissionInvoker? = null
+        permissionInvoker: Params.PermissionInvoker? = null
     ): PhotoDialog {
       return create(
           ImageParams.Builder()
@@ -175,7 +176,7 @@ class PhotoDialog : AppCompatDialogFragment() {
     fun create(
         imageParams: ImageParams,
         requestCamera: Boolean = false,
-        permissionInvoker: PermissionInvoker? = null
+        permissionInvoker: Params.PermissionInvoker? = null
     ): PhotoDialog {
       return create(
           Params.Builder()

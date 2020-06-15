@@ -2,7 +2,6 @@ package com.eye.cool.photo.params
 
 import android.annotation.TargetApi
 import android.os.Build
-import com.eye.cool.photo.support.PermissionInvoker
 
 class Params private constructor() {
 
@@ -76,5 +75,16 @@ class Params private constructor() {
     }
 
     fun build() = params
+  }
+
+  interface PermissionInvoker {
+
+    /**
+     * Permission invoker to request permissions.
+     *
+     * @param permissions Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+     * @param invoker call on permission granted or denied
+     */
+    fun request(permissions: Array<String>, invoker: (Boolean) -> Unit)
   }
 }

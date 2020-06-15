@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.view.View
 import androidx.annotation.StyleRes
 import com.eye.cool.photo.R
-import com.eye.cool.photo.support.OnClickListener
 
 /**
  *Created by ycb on 2019/8/8 0008
@@ -164,5 +163,19 @@ class DialogParams private constructor() {
     }
 
     fun build() = params
+  }
+
+  interface OnClickListener {
+
+    /**
+     * @param which which the button that was clicked.
+     * {@link Constants
+     *        #TAKE_PHOTO,
+     *        #SELECT_ALBUM,
+     *        #CANCEL,
+     *        #PERMISSION_FORBID
+     * }
+     */
+    fun onClick(which: Int)
   }
 }

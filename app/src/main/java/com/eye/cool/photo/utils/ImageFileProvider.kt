@@ -176,7 +176,6 @@ object ImageFileProvider {
               Uri.parse("content://downloads/public_downloads"), docId.toLong())
           return getRealPathFromUriBelowApi11(context, contentUri)
         } else if (isMediaDocument(uri)) {
-          var filePath: String? = null
           // Use ':' to split
           val id = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
 
@@ -196,11 +195,13 @@ object ImageFileProvider {
               null
           ) ?: return null
 
-          if (cursor.moveToFirst()) {
-            filePath = cursor.getString(cursor.getColumnIndexOrThrow(projection[0]))
+          cursor.use {
+            if (it.moveToFirst()) {
+              return cursor.getString(cursor.getColumnIndexOrThrow(projection[0]))
+            }
           }
-          cursor.close()
-          return filePath
+
+          return null
         }
       } else {
         return getRealPathFromUriBelowApi11(context, uri)
@@ -237,18 +238,16 @@ object ImageFileProvider {
    * Api11-api18, which gets the absolute path of the image based on the uri
    */
   private fun getRealPathFromUriApi11To18(context: Context, uri: Uri): String? {
-    var filePath: String? = null
     val projection = arrayOf(MediaStore.Images.Media.DATA)
 
     val loader = CursorLoader(context, uri, projection, null, null, null)
     val cursor = loader.loadInBackground()
-
-    if (cursor != null) {
-      cursor.moveToFirst()
-      filePath = cursor.getString(0)
-      cursor.close()
+    cursor?.use {
+      if (it.moveToFirst()) {
+        return cursor.getString(0)
+      }
     }
-    return filePath
+    return null
   }
 
   /**
@@ -258,8 +257,9 @@ object ImageFileProvider {
     val projection = arrayOf(MediaStore.Images.Media.DATA)
     val cursor = context.contentResolver.query(uri, projection, null, null, null)
     cursor?.use {
-      cursor.moveToFirst()
-      return it.getString(0)
+      if (it.moveToFirst()) {
+        return it.getString(0)
+      }
     }
     return null
   }

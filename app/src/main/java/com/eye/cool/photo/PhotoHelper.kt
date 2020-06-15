@@ -10,8 +10,6 @@ import androidx.fragment.app.FragmentActivity
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.OnSelectListener
-import com.eye.cool.photo.support.PermissionInvoker
 import com.eye.cool.photo.view.EmptyView
 
 /**
@@ -24,7 +22,7 @@ class PhotoHelper(private val context: Context) {
    *
    * @param onSelectListener Image selection callback
    */
-  fun onTakePhoto(onSelectListener: OnSelectListener) {
+  fun onTakePhoto(onSelectListener: ImageParams.OnSelectListener) {
     onTakePhoto(
         ImageParams.Builder()
             .setOnSelectListener(onSelectListener)
@@ -53,7 +51,7 @@ class PhotoHelper(private val context: Context) {
   fun onTakePhoto(
       params: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: PermissionInvoker? = null
+      permissionInvoker: Params.PermissionInvoker? = null
   ) {
     onTakePhoto(params, requestCameraPermission, permissionInvoker, null)
   }
@@ -71,7 +69,7 @@ class PhotoHelper(private val context: Context) {
   fun onTakePhoto(
       params: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: PermissionInvoker? = null,
+      permissionInvoker: Params.PermissionInvoker? = null,
       authority: String? = null
   ) {
     val contentView = EmptyView(context)
@@ -87,7 +85,7 @@ class PhotoHelper(private val context: Context) {
    *
    * @param onSelectListener Image selection callback
    */
-  fun onSelectAlbum(onSelectListener: OnSelectListener) {
+  fun onSelectAlbum(onSelectListener: ImageParams.OnSelectListener) {
     onSelectAlbum(
         ImageParams.Builder()
             .setOnSelectListener(onSelectListener)
@@ -114,7 +112,7 @@ class PhotoHelper(private val context: Context) {
   @TargetApi(Build.VERSION_CODES.M)
   fun onSelectAlbum(
       imageParams: ImageParams,
-      permissionInvoker: PermissionInvoker? = null
+      permissionInvoker: Params.PermissionInvoker? = null
   ) {
     onSelectAlbum(imageParams, permissionInvoker, null)
   }
@@ -128,7 +126,7 @@ class PhotoHelper(private val context: Context) {
   @TargetApi(Build.VERSION_CODES.N)
   fun onSelectAlbum(
       imageParams: ImageParams,
-      permissionInvoker: PermissionInvoker? = null,
+      permissionInvoker: Params.PermissionInvoker? = null,
       authority: String? = null
   ) {
     val contentView = EmptyView(context)
@@ -151,7 +149,7 @@ class PhotoHelper(private val context: Context) {
       dialogParams: DialogParams,
       imageParams: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: PermissionInvoker? = null,
+      permissionInvoker: Params.PermissionInvoker? = null,
       authority: String? = null
   ) {
     when (context) {
@@ -194,7 +192,7 @@ class PhotoHelper(private val context: Context) {
       dialogParams: DialogParams,
       imageParams: ImageParams,
       requestCameraPermission: Boolean = false,
-      permissionInvoker: PermissionInvoker? = null,
+      permissionInvoker: Params.PermissionInvoker? = null,
       authority: String? = null
   ): PhotoDialogFragment {
     return PhotoDialogFragment.create(
@@ -212,7 +210,7 @@ class PhotoHelper(private val context: Context) {
       dialogParams: DialogParams,
       imageParams: ImageParams,
       requestCameraPermission: Boolean,
-      permissionInvoker: PermissionInvoker? = null,
+      permissionInvoker: Params.PermissionInvoker? = null,
       authority: String?
   ): PhotoDialog {
     return PhotoDialog.create(

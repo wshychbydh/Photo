@@ -2,12 +2,14 @@ package com.eye.cool.photo.utils
 
 import android.content.Context
 import android.content.Intent
+import android.hardware.Camera
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.Log
 import com.eye.cool.photo.BuildConfig
 import com.eye.cool.photo.R
+import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.CompatContext
 import com.eye.cool.photo.support.Constants.ADJUST_PHOTO
@@ -17,8 +19,9 @@ import com.eye.cool.photo.support.Constants.SELECT_ALBUM
 import com.eye.cool.photo.support.Constants.TAG
 import com.eye.cool.photo.support.Constants.TAKE_PHOTO
 import com.eye.cool.photo.support.OnActionListener
-import com.eye.cool.photo.support.OnClickListener
 import com.eye.cool.photo.view.PhotoPermissionActivity
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -29,39 +32,41 @@ internal class PhotoExecutor(
     private val params: Params
 ) : OnActionListener {
 
-  private var clickListener: OnClickListener? = null
+  private var clickListener: DialogParams.OnClickListener? = null
   private var outputFile: File? = null
   private var photoFile: File? = null
 
-  internal fun setOnClickListener(listener: OnClickListener) {
+  internal fun setOnClickListener(listener: DialogParams.OnClickListener) {
     clickListener = listener
   }
 
   fun onActivityResult(requestCode: Int, intent: Intent?) {
-    when (requestCode) {
-      TAKE_PHOTO -> {
-        val uri = ImageFileProvider.uriFromFile(
-            compatContext.context(),
-            params.authority,
-            photoFile ?: return
-        )
-        if (params.imageParams.cutAble) {
-          //After the photo is taken, crop the picture
-          cut(uri)
-        } else {
-          onPhotoReady(uri)
+    GlobalScope.launch {
+      when (requestCode) {
+        TAKE_PHOTO -> {
+          val uri = ImageFileProvider.uriFromFile(
+              compatContext.context(),
+              params.authority,
+              photoFile ?: return@launch
+          )
+          if (params.imageParams.cutAble) {
+            //After the photo is taken, crop the picture
+            cut(uri)
+          } else {
+            onPhotoReady(uri)
+          }
         }
-      }
-      SELECT_ALBUM -> {
-        val uri = intent?.data ?: return
-        if (params.imageParams.cutAble) {
-          cut(uri)
-        } else {
-          onPhotoReady(uri)
+        SELECT_ALBUM -> {
+          val uri = intent?.data ?: return@launch
+          if (params.imageParams.cutAble) {
+            cut(uri)
+          } else {
+            onPhotoReady(uri)
+          }
         }
-      }
-      ADJUST_PHOTO -> {
-        onPhotoReady(Uri.fromFile(outputFile ?: return))
+        ADJUST_PHOTO -> {
+          onPhotoReady(Uri.fromFile(outputFile ?: return@launch))
+        }
       }
     }
   }
@@ -119,7 +124,9 @@ internal class PhotoExecutor(
         params.permissionInvoker!!.request(permissions, invoker)
       }
     } else {
-      invoker.invoke(isCacheDirAvailable(compatContext.context()) && isExternalDirAvailable())
+      val checkStorage = isCacheDirAvailable(compatContext.context()) && isExternalDirAvailable(compatContext.context())
+      val checkCamera = if (params.requestCameraPermission) isCameraAvailable() else true
+      invoker.invoke(checkStorage && checkCamera)
     }
   }
 
@@ -128,16 +135,33 @@ internal class PhotoExecutor(
     return appFile.canWrite() && appFile.canRead()
   }
 
-  private fun isExternalDirAvailable(): Boolean {
-    val file = Environment.getExternalStorageDirectory()
+  private fun isExternalDirAvailable(context: Context): Boolean {
+    val file = context.getExternalFilesDir(Environment.DIRECTORY_DCIM)
     return file != null && file.canWrite() && file.canRead()
+  }
+
+  private fun isCameraAvailable(): Boolean {
+    var camera: Camera? = null
+    return try {
+      camera = Camera.open()
+      // setParameters is Used for MeiZu MX5.
+      camera!!.parameters = camera!!.parameters
+      true
+    } catch (e: Exception) {
+      false
+    } finally {
+      try {
+        camera?.release()
+      } catch (ignore: Exception) {
+      }
+    }
   }
 
   override fun onCancel() {
     clickListener?.onClick(CANCEL)
   }
 
-  private fun onPhotoReady(uri: Uri) {
+  private suspend fun onPhotoReady(uri: Uri) {
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUri : $uri")
     }

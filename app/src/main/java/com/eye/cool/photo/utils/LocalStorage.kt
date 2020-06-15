@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -22,8 +23,11 @@ internal object LocalStorage {
 
   // create image storage dir
   fun composePhotoImageDir(context: Context): StringBuilder {
+    val parent = context.externalCacheDir
+        ?: context.getExternalFilesDir(Environment.DIRECTORY_DCIM)
+        ?: throw IllegalStateException("Invalid storage path!")
     val sb = StringBuilder()
-    sb.append(context.externalCacheDir)
+    sb.append(parent.absolutePath)
     sb.append(File.separator)
     sb.append(PHOTO)
     return sb

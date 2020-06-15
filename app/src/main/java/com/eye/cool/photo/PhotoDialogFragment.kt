@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.*
@@ -64,7 +65,7 @@ class PhotoDialogFragment : DialogFragment() {
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    executor.setOnClickListener(object : OnClickListener {
+    executor.setOnClickListener(object : DialogParams.OnClickListener {
       override fun onClick(which: Int) {
         when (which) {
           Constants.ADJUST_PHOTO, Constants.SELECT_ALBUM -> playExitAnim()
@@ -123,7 +124,7 @@ class PhotoDialogFragment : DialogFragment() {
      * @return A instance of PhotoDialogFragment
      */
     @JvmStatic
-    fun create(onSelectListener: OnSelectListener): PhotoDialogFragment {
+    fun create(onSelectListener: ImageParams.OnSelectListener): PhotoDialogFragment {
       return create(
           ImageParams.Builder()
               .setOnSelectListener(onSelectListener)
@@ -153,9 +154,9 @@ class PhotoDialogFragment : DialogFragment() {
     @TargetApi(Build.VERSION_CODES.M)
     @JvmStatic
     fun create(
-        onSelectListener: OnSelectListener,
+        onSelectListener: ImageParams.OnSelectListener,
         requestCamera: Boolean = false,
-        permissionInvoker: PermissionInvoker? = null
+        permissionInvoker: Params.PermissionInvoker? = null
     ): PhotoDialogFragment {
       return create(
           ImageParams.Builder()
@@ -179,7 +180,7 @@ class PhotoDialogFragment : DialogFragment() {
     fun create(
         imageParams: ImageParams,
         requestCamera: Boolean = false,
-        permissionInvoker: PermissionInvoker? = null
+        permissionInvoker: Params.PermissionInvoker? = null
     ): PhotoDialogFragment {
       return create(
           Params.Builder()

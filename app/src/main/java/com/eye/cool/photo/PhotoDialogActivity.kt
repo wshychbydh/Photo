@@ -19,6 +19,7 @@ import android.view.WindowManager
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.*
@@ -62,7 +63,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
       }
     }
 
-    executor.setOnClickListener(object : OnClickListener {
+    executor.setOnClickListener(object : DialogParams.OnClickListener {
       override fun onClick(which: Int) {
         when (which) {
           Constants.ADJUST_PHOTO, Constants.SELECT_ALBUM -> playExitAnim(contentView)
@@ -133,9 +134,9 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
 
   private class OnSelectListenerWrapper(
       val activity: PhotoDialogActivity,
-      val listener: OnSelectListener?
-  ) : OnSelectListener {
-    override fun onSelect(path: String) {
+      val listener: ImageParams.OnSelectListener?
+  ) : ImageParams.OnSelectListener {
+    override suspend fun onSelect(path: String) {
       activity.dismiss()
       listener?.onSelect(path)
     }
@@ -172,7 +173,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * @param onSelectListener Image selection callback
      */
     @JvmStatic
-    fun setOnSelectListener(onSelectListener: OnSelectListener): Companion {
+    fun setOnSelectListener(onSelectListener: ImageParams.OnSelectListener): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.imageParams.onSelectListener = onSelectListener
       return this
@@ -196,7 +197,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * @param permissionInvoker Permission invoker callback after to request permissions
      */
     @TargetApi(Build.VERSION_CODES.M)
-    fun setPermissionInvoker(permissionInvoker: PermissionInvoker): Companion {
+    fun setPermissionInvoker(permissionInvoker: Params.PermissionInvoker): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.permissionInvoker = permissionInvoker
       return this

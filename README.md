@@ -32,7 +32,7 @@
 2、在项目的build.gradle中添加依赖
 ```
     dependencies {
-        implementation 'com.github.wshychbydh:photo:1.4.1'
+        implementation 'com.github.wshychbydh:photo:1.4.2'
     }
 ```
 
@@ -45,7 +45,7 @@
 报其他类似的重复错误时，添加方式同上。
 
 
-3、调用系统相机不需要Camera权限，请检查项目中是配置有**android.permission.CAMERA**权限，若存在请删除或设置requestCameraPermission（必须）
+3、调用系统相机不需要Camera权限，请检查项目中是配置有**android.permission.CAMERA**权限，若存在请删除或设置requestCameraPermission为true（必须）
 
 
 4、构建Params实例
