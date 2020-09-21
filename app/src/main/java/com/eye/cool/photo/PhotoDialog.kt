@@ -39,9 +39,16 @@ class PhotoDialog : AppCompatDialogFragment() {
     executor = PhotoExecutor(CompatContext(this), params)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      savedInstanceState: Bundle?
+  ): View? {
     val view = params.dialogParams.contentView ?: DefaultView(requireContext())
-    val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
+    val method = view.javaClass.getDeclaredMethod(
+        "setOnActionListener",
+        OnActionListener::class.java
+    )
     method.isAccessible = true
     method.invoke(view, executor)
     return view
@@ -67,8 +74,10 @@ class PhotoDialog : AppCompatDialogFragment() {
     executor.setOnClickListener(object : DialogParams.OnClickListener {
       override fun onClick(which: Int) {
         when (which) {
-          Constants.ADJUST_PHOTO, Constants.SELECT_ALBUM -> playExitAnim()
-          Constants.CANCEL, Constants.PERMISSION_FORBID -> dismissAllowingStateLoss()
+          Constants.ADJUST_PHOTO,
+          Constants.SELECT_ALBUM -> playExitAnim()
+          Constants.CANCEL,
+          Constants.PERMISSION_FORBID -> dismissAllowingStateLoss()
         }
         params.dialogParams.onClickListener?.onClick(which)
       }

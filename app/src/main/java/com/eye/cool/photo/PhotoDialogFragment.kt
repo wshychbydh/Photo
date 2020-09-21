@@ -68,8 +68,10 @@ class PhotoDialogFragment : DialogFragment() {
     executor.setOnClickListener(object : DialogParams.OnClickListener {
       override fun onClick(which: Int) {
         when (which) {
-          Constants.ADJUST_PHOTO, Constants.SELECT_ALBUM -> playExitAnim()
-          Constants.CANCEL, Constants.PERMISSION_FORBID -> dismissAllowingStateLoss()
+          Constants.ADJUST_PHOTO,
+          Constants.SELECT_ALBUM -> playExitAnim()
+          Constants.CANCEL,
+          Constants.PERMISSION_FORBID -> dismissAllowingStateLoss()
         }
         params.dialogParams.onClickListener?.onClick(which)
       }

@@ -42,8 +42,10 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     invasionStatusBar(this)
 
     executor = PhotoExecutor(CompatContext(this), params)
-    val selectListenerWrapper = OnSelectListenerWrapper(this, params.imageParams.onSelectListener)
-    params.imageParams.onSelectListener = selectListenerWrapper
+    params.imageParams.onSelectListener = OnSelectListenerWrapper(
+        this,
+        params.imageParams.onSelectListener
+    )
     window.setWindowAnimations(params.dialogParams.animStyle)
 
     val container = FrameLayout(this)
@@ -51,7 +53,10 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     val contentView = params.dialogParams.contentView ?: DefaultView(this)
     val layoutParams = FrameLayout.LayoutParams(-1, -2)
     layoutParams.gravity = Gravity.BOTTOM
-    val method = contentView.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
+    val method = contentView.javaClass.getDeclaredMethod(
+        "setOnActionListener",
+        OnActionListener::class.java
+    )
     method.isAccessible = true
     method.invoke(contentView, executor)
     container.addView(contentView, layoutParams)
