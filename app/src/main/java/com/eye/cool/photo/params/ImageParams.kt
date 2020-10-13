@@ -1,7 +1,5 @@
 package com.eye.cool.photo.params
 
-import androidx.annotation.WorkerThread
-
 /**
  *Created by ycb on 2019/8/8 0008
  */
@@ -57,10 +55,11 @@ class ImageParams private constructor() {
   interface OnSelectListener {
 
     /**
+     * UI Thread
+     *
      * callback when select image successful
      * @param path output image's local file path
      */
-    @WorkerThread
-    suspend fun onSelect(path: String)
+    fun onSelect(path: String)
   }
 }

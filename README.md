@@ -118,7 +118,23 @@
 ```
 **注**：使用PhotoDialogActivity时，DialogParams类的部分属性无效
 
-7、其他注意事项
+7、支持在协程中调用
+```
+
+    scope.launch {
+      val result = select(params)           //拍照or相册
+    }
+
+    scope.launch {
+      val result = selectAlbum(ImageParams) //相册
+    }
+
+    scope.launch {
+      val result = takePhoto(ImageParams)   //拍照
+    }
+```
+
+8、其他注意事项
 
    1）因为选择图片和拍照在6.0及以上需要运行时权限，该库包含默认权限请求，无需额外添加
 
@@ -132,7 +148,7 @@
     
 ##
 
-###### **欢迎fork，更希望你能贡献commit.** (*￣︶￣)    
+###### **欢迎fork，期待你的宝贵意见.** (*￣︶￣)
 
 ###### 联系方式 wshychbydh@gmail.com
 

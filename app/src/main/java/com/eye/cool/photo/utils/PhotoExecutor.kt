@@ -161,7 +161,7 @@ internal class PhotoExecutor(
     clickListener?.onClick(CANCEL)
   }
 
-  private suspend fun onPhotoReady(uri: Uri) {
+  private fun onPhotoReady(uri: Uri) {
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "outputFileUri : $uri")
     }
@@ -174,7 +174,9 @@ internal class PhotoExecutor(
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "convertUrl : $convertUrl")
       }
-      params.imageParams.onSelectListener?.onSelect(convertUrl)
+      compatContext.activity().runOnUiThread {
+        params.imageParams.onSelectListener?.onSelect(convertUrl)
+      }
     }
   }
 

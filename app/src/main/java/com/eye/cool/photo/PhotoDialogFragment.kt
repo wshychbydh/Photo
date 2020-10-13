@@ -40,7 +40,11 @@ class PhotoDialogFragment : DialogFragment() {
     executor = PhotoExecutor(CompatContext(this), params)
   }
 
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+  override fun onCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      savedInstanceState: Bundle?
+  ): View? {
     val view = params.dialogParams.contentView ?: DefaultView(activity)
     val method = view.javaClass.getDeclaredMethod("setOnActionListener", OnActionListener::class.java)
     method.isAccessible = true

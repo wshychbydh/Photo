@@ -141,7 +141,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
       val activity: PhotoDialogActivity,
       val listener: ImageParams.OnSelectListener?
   ) : ImageParams.OnSelectListener {
-    override suspend fun onSelect(path: String) {
+    override fun onSelect(path: String) {
       activity.dismiss()
       listener?.onSelect(path)
     }

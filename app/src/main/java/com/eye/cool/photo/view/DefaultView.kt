@@ -12,8 +12,11 @@ import com.eye.cool.photo.support.OnActionListener
 /**
  * Created by cool on 2018/6/12
  */
-internal class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
-    LinearLayout(context, attrs, defStyle), OnClickListener {
+internal class DefaultView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : LinearLayout(context, attrs, defStyle), OnClickListener {
 
   private var listener: OnActionListener? = null
 

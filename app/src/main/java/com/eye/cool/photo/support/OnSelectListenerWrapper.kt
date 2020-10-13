@@ -12,7 +12,7 @@ internal class OnSelectListenerWrapper(
     private val compatDialogFragment: AppCompatDialogFragment? = null,
     private val listener: ImageParams.OnSelectListener?
 ) : ImageParams.OnSelectListener {
-  override suspend fun onSelect(path: String) {
+  override fun onSelect(path: String) {
     dialogFragment?.dismissAllowingStateLoss()
     compatDialogFragment?.dismissAllowingStateLoss()
     listener?.onSelect(path)
