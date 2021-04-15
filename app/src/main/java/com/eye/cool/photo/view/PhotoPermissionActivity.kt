@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import com.eye.cool.photo.support.BuildVersion
 
 /**
  * Request permissions.
@@ -42,7 +43,7 @@ internal class PhotoPermissionActivity : Activity() {
       grantResults: IntArray
   ) {
     if (requestCode == REQUEST_PERMISSION_CODE) {
-      val denied = grantResults.filter { it == PackageManager.PERMISSION_DENIED }
+      val denied = grantResults.filter { it != PackageManager.PERMISSION_GRANTED }
       sRequestPermissionListener?.invoke(denied.isEmpty())
       finish()
     }
@@ -77,7 +78,7 @@ internal class PhotoPermissionActivity : Activity() {
      * Set the content layout full the StatusBar, but do not hide StatusBar.
      */
     private fun invasionStatusBar(activity: Activity) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (BuildVersion.isBuildOverLOLLIPOP()) {
         val window = activity.window
         val decorView = window.decorView
         decorView.systemUiVisibility = (

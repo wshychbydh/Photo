@@ -17,10 +17,7 @@ class DialogParams private constructor() {
    * Nonsupport for PhotoDialogActivity
    */
   @StyleRes
-  internal var dialogStyle: Int = R.style.photo_dialog
-
-  @StyleRes
-  internal var animStyle: Int = R.style.photo_anim_bottom
+  internal var themeStyle: Int? = R.style.photo_dialog
 
   internal var cancelable: Boolean = true
 
@@ -36,13 +33,31 @@ class DialogParams private constructor() {
    */
   internal var yPos = Resources.getSystem().displayMetrics.heightPixels
 
+  @StyleRes
+  internal var windowAnimations: Int? = R.style.photo_anim_bottom
+
+  internal var gravity: Int? = null
+
+  internal var width: Int? = null
+  internal var height: Int? = null
+
+
+  internal var dimAmount: Float? = null
+
+  internal var alpha: Float? = null
+
+  internal var horizontalMargin: Float? = null
+  internal var verticalMargin: Float? = null
+
+  internal var systemUiVisibility: Int? = null
+
+  internal var softInputMode: Int? = null
+
   internal var onShowListener: DialogInterface.OnShowListener? = null
 
   internal var onDismissListener: DialogInterface.OnDismissListener? = null
 
   internal var onCancelListener: DialogInterface.OnCancelListener? = null
-
-  internal var onClickListener: OnClickListener? = null
 
   class Builder {
 
@@ -51,9 +66,9 @@ class DialogParams private constructor() {
     /**
      * Dialog's contentView to be shown
      *
-     * @param view the shown view
+     * [view] the shown view, default[R.layout.photo_layout]
      */
-    fun setContentView(view: View): Builder {
+    fun contentView(view: View): Builder {
       params.contentView = view
       return this
     }
@@ -62,9 +77,9 @@ class DialogParams private constructor() {
      * Sets whether this dialog is cancelable with the
      * {@link KeyEvent#KEYCODE_BACK BACK} key.
      *
-     * @param cancelable
+     * [cancelable] default true
      */
-    fun setCancelable(cancelable: Boolean): Builder {
+    fun cancelable(cancelable: Boolean): Builder {
       params.cancelable = cancelable
       return this
     }
@@ -74,51 +89,31 @@ class DialogParams private constructor() {
      * bounds. If setting to true, the dialog is set to be cancelable if not
      * already set.
      *
-     * @param cancel Whether the dialog should be canceled when touched outside the window.
+     * [cancelable] Whether the dialog should be canceled when touched outside the window.
+     * default true
      */
-    fun setCanceledOnTouchOutside(cancel: Boolean): Builder {
-      params.canceledOnTouchOutside = cancel
+    fun canceledOnTouchOutside(cancelable: Boolean): Builder {
+      params.canceledOnTouchOutside = cancelable
       return this
     }
 
     /**
-     * Pop-up animation style，default from bottom
+     * A style resource describing the theme to use for the window,
+     * or {@code 0} to use the default dialog theme
      *
-     * @param animStyle
+     * [themeStyle] default [R.style.photo_dialog]
      */
-    fun setAnimStyle(animStyle: Int): Builder {
-      params.animStyle = animStyle
-      return this
-    }
-
-    /**
-     * A style resource describing the theme to use for the window, or {@code 0} to use the default dialog theme
-     *
-     * @param dialogStyle
-     */
-    fun setDialogStyle(dialogStyle: Int): Builder {
-      params.dialogStyle = dialogStyle
-      return this
-    }
-
-    /**
-     * Dialog popup location
-     *
-     * @param x
-     * @param y
-     */
-    fun setCoordinate(x: Int, y: Int): Builder {
-      params.xPos = x
-      params.yPos = y
+    fun themeStyle(themeStyle: Int): Builder {
+      params.themeStyle = themeStyle
       return this
     }
 
     /**
      * Sets a listener to be invoked when the dialog is shown.
      *
-     * @param listener The {@link DialogInterface.OnShowListener} to use.
+     * [listener] The {@link DialogInterface.OnShowListener} to use.
      */
-    fun setOnShowListener(listener: DialogInterface.OnShowListener): Builder {
+    fun onShowListener(listener: DialogInterface.OnShowListener): Builder {
       params.onShowListener = listener
       return this
     }
@@ -126,9 +121,9 @@ class DialogParams private constructor() {
     /**
      * Set a listener to be invoked when the dialog is dismissed.
      *
-     * @param listener The {@link DialogInterface.OnDismissListener} to use.
+     * [listener] The {@link DialogInterface.OnDismissListener} to use.
      */
-    fun setOnDismissListener(listener: DialogInterface.OnDismissListener): Builder {
+    fun onDismissListener(listener: DialogInterface.OnDismissListener): Builder {
       params.onDismissListener = listener
       return this
     }
@@ -142,40 +137,164 @@ class DialogParams private constructor() {
      * to know when a dialog is dismissed in general, use
      * {@link #setOnDismissListener}.</p>
      *
-     * @param listener The {@link DialogInterface.OnCancelListener} to use.
+     * [listener] The {@link DialogInterface.OnCancelListener} to use.
      */
-    fun setOnCancelListener(listener: DialogInterface.OnCancelListener): Builder {
+    fun onCancelListener(listener: DialogInterface.OnCancelListener): Builder {
       params.onCancelListener = listener
       return this
     }
 
     /**
-     * Set a listener to be invoked when the button is clicked.
-     * <p>
-     *   Only one of these button's {@link Constants#TAKE_PHOTO, SELECT_ALBUM, ADJUST_PHOTO} onclick will be invoked
-     * </p>
+     * Placement of window within the screen as per {@link Gravity}.  Both
+     * {@link Gravity#apply(int, int, int, android.graphics.Rect, int, int,
+     * android.graphics.Rect) Gravity.apply} and
+     * {@link Gravity#applyDisplay(int, android.graphics.Rect, android.graphics.Rect)
+     * Gravity.applyDisplay} are used during window layout, with this value
+     * given as the desired gravity.  For example you can specify
+     * {@link Gravity#DISPLAY_CLIP_HORIZONTAL Gravity.DISPLAY_CLIP_HORIZONTAL} and
+     * {@link Gravity#DISPLAY_CLIP_VERTICAL Gravity.DISPLAY_CLIP_VERTICAL} here
+     * to control the behavior of
+     * {@link Gravity#applyDisplay(int, android.graphics.Rect, android.graphics.Rect)
+     * Gravity.applyDisplay}.
      *
-     * @param listener
+     * [gravity] default null
      */
-    fun setOnClickListener(listener: OnClickListener): Builder {
-      params.onClickListener = listener
+    fun gravity(gravity: Int): Builder {
+      params.gravity = gravity
+      return this
+    }
+
+    /**
+     * When {@link #FLAG_DIM_BEHIND} is set, this is the amount of dimming
+     * to apply.  Range is from 1.0 for completely opaque to 0.0 for no dim.
+     *
+     * [dimAmount] default by themeStyle's config
+     */
+    fun dimAmount(dimAmount: Float): Builder {
+      params.dimAmount = dimAmount
+      return this
+    }
+
+    /**
+     * @see {WindowManager.horizontalMargin}
+     *
+     * [margin] default null
+     */
+    fun horizontalMargin(margin: Float): Builder {
+      params.horizontalMargin = margin
+      return this
+    }
+
+    /**
+     * @see {WindowManager.verticalMargin}
+     *
+     * [margin] default null
+     */
+    fun verticalMargin(margin: Float): Builder {
+      params.verticalMargin = margin
+      return this
+    }
+
+    /**
+     * @see {WindowManager.systemUiVisibility}
+     *
+     * [systemUiVisibility] default null
+     */
+    fun systemUiVisibility(systemUiVisibility: Int): Builder {
+      params.systemUiVisibility = systemUiVisibility
+      return this
+    }
+
+    /**
+     * @see {WindowManager.softInputMode}
+     *
+     * [softInputMode] default null
+     */
+    fun softInputMode(softInputMode: Int): Builder {
+      params.softInputMode = softInputMode
+      return this
+    }
+
+    /**
+     * Dialog popup location
+     *
+     * [x] default 0
+     * [y] default Resources.getSystem().displayMetrics.heightPixels
+     */
+    fun position(x: Int, y: Int): Builder {
+      params.xPos = x
+      params.yPos = y
+      return this
+    }
+
+    /**
+     * Dialog' alpha
+     *
+     * [alpha] default by themeStyle's config
+     */
+    fun alpha(alpha: Float): Builder {
+      params.alpha = alpha
+      return this
+    }
+
+    /**
+     * The ratio of the screen's width of the dialog
+     *
+     * [ratio] value range [0.0~1.0], not include
+     */
+    fun widthRatio(ratio: Float): Builder {
+      if (ratio <= 0.0 && ratio > 1.0) throw IllegalArgumentException("Invalid ratio")
+      val width = Resources.getSystem().displayMetrics.widthPixels
+      params.width = (width * ratio).toInt()
+      return this
+    }
+
+    /**
+     * The ratio of the screen's height of the dialog
+     *
+     * [ratio] value range [0.0~1.0], not include
+     */
+    fun heightRatio(ratio: Float): Builder {
+      if (ratio <= 0.0 && ratio > 1.0) throw IllegalArgumentException("Invalid ratio")
+      val height = Resources.getSystem().displayMetrics.heightPixels
+      params.height = (height * ratio).toInt()
+      return this
+    }
+
+    /**
+     * Information about how wide the view wants to be. Can be one of the
+     * constants FILL_PARENT (replaced by MATCH_PARENT
+     * in API Level 8) or WRAP_CONTENT, or an exact size.
+     *
+     * [width] dialog's width
+     */
+    fun width(width: Int): Builder {
+      params.width = width
+      return this
+    }
+
+    /**
+     * Information about how tall the view wants to be. Can be one of the
+     * constants FILL_PARENT (replaced by MATCH_PARENT
+     * in API Level 8) or WRAP_CONTENT, or an exact size.
+     *
+     * [height] dialog's height
+     */
+    fun height(height: Int): Builder {
+      params.height = height
+      return this
+    }
+
+    /**
+     * Pop-up animation style
+     *
+     * [anim] default [R.style.photo_anim_bottom]
+     */
+    fun windowAnimations(@StyleRes anim: Int?): Builder {
+      params.windowAnimations = anim
       return this
     }
 
     fun build() = params
-  }
-
-  interface OnClickListener {
-
-    /**
-     * @param which which the button that was clicked.
-     * {@link Constants
-     *        #TAKE_PHOTO,
-     *        #SELECT_ALBUM,
-     *        #CANCEL,
-     *        #PERMISSION_FORBID
-     * }
-     */
-    fun onClick(which: Int)
   }
 }

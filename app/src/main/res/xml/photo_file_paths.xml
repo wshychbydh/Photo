@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
 
-  <cache-path
-    name="cache_path_phone"
+  <external-path
+    name="external_path_photo"
     path="photo" />
 
-  <cache-path
-    name="cache_path_thumb"
+  <external-path
+    name="external_path_thumb"
     path="photo/thumb" />
 
   <external-cache-path
@@ -16,9 +16,5 @@
   <external-cache-path
     name="external_cache_path_thumb"
     path="photo/thumb" />
-
-  <external-path
-    name="external"
-    path="/" />
 
 </paths>

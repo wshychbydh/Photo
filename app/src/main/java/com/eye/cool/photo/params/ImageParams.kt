@@ -11,55 +11,32 @@ class ImageParams private constructor() {
 
   internal var outputH = 300
 
-  internal var onSelectListener: OnSelectListener? = null
-
   class Builder {
 
     private var params = ImageParams()
 
     /**
-     * Callback after image selection, callback in ui thread
-     *
-     * @param listener
-     */
-    fun setOnSelectListener(listener: OnSelectListener): Builder {
-      params.onSelectListener = listener
-      return this
-    }
-
-    /**
      *  Whether the selected picture needs to be cut，default true
      *
-     *  @param cutAble
+     *  [cutAble] default true
      */
-    fun setCutAble(cutAble: Boolean): Builder {
+    fun cutAble(cutAble: Boolean): Builder {
       params.cutAble = cutAble
       return this
     }
 
     /**
-     * Output the size of the image，default width:300,height:300
+     * Output the size of the image
      *
-     * @param outputW
-     * @param outputH
+     * [outputW] default 300
+     * [outputH] default 300
      */
-    fun setOutput(outputW: Int, outputH: Int): Builder {
+    fun output(outputW: Int, outputH: Int): Builder {
       params.outputW = outputW
       params.outputH = outputH
       return this
     }
 
     fun build() = params
-  }
-
-  interface OnSelectListener {
-
-    /**
-     * UI Thread
-     *
-     * callback when select image successful
-     * @param path output image's local file path
-     */
-    fun onSelect(path: String)
   }
 }

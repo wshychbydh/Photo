@@ -16,8 +16,8 @@ object ImageUtil {
   /**
    * Create rounded corner images
    *
-   * @param path The path of the rounded picture
-   * @param bitmapSize The output bitmap size
+   * [path] The path of the rounded picture
+   * [bitmapSize] The output bitmap size
    */
   @JvmStatic
   @WorkerThread
@@ -52,8 +52,8 @@ object ImageUtil {
   /**
    * Create rounded corner images
    *
-   * @param source The source of the rounded picture
-   * @param bitmapSize The output bitmap size
+   * [source] The source of the rounded picture
+   * [bitmapSize] The output bitmap size
    */
   @JvmStatic
   @WorkerThread
@@ -79,9 +79,9 @@ object ImageUtil {
    * Convert image to bitmap
    * If the width and height are smaller than the image itself, it will not compress
    *
-   * @param path The path of picture
-   * @param width output bitmap's width, default -1
-   * @param height output bitmap's height, default -1
+   * [path] The path of picture
+   * [width] output bitmap's width, default -1
+   * [height] output bitmap's height, default -1
    */
   @JvmStatic
   @WorkerThread

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import com.eye.cool.photo.R
-import com.eye.cool.photo.support.OnActionListener
+import com.eye.cool.photo.support.OnActionClickListener
 
 /**
  * Created by cool on 2018/6/12
@@ -18,10 +18,10 @@ internal class DefaultView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle), OnClickListener {
 
-  private var listener: OnActionListener? = null
+  private var listener: OnActionClickListener? = null
 
   //necessary
-  private fun setOnActionListener(listener: OnActionListener) {
+  private fun onActionListener(listener: OnActionClickListener) {
     this.listener = listener
   }
 

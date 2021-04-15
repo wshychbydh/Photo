@@ -10,7 +10,10 @@ import android.os.StrictMode
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
-import java.io.File
+import com.eye.cool.photo.support.BuildVersion
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.*
 
 /**
  * Created by cool on 2018/6/12
@@ -19,8 +22,8 @@ object ImageFileProvider {
   /**
    * Get the URI from the file
    *
-   * @param context
-   * @param file A {@link File} pointing to the filename for which you want a
+   * [context]
+   * [file] A {@link File} pointing to the filename for which you want a
    * <code>content</code> {@link Uri}.
    */
   @JvmStatic
@@ -31,15 +34,15 @@ object ImageFileProvider {
   /**
    * Get the URI from the file
    *
-   * @param context
-   * @param authority The authority of a {@link FileProvider} defined in a
+   * [context]
+   * [authority] The authority of a {@link FileProvider} defined in a
    *            {@code <provider>} element in your app's manifest.
-   * @param file A {@link File} pointing to the filename for which you want a
+   * [file] A {@link File} pointing to the filename for which you want a
    * <code>content</code> {@link Uri}.
    */
   @JvmStatic
   fun uriFromFile(context: Context, authority: String?, file: File): Uri {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    return if (BuildVersion.isBuildOverN()) {
       FileProvider.getUriForFile(context, authority ?: composeAuthority(context), file)
     } else {
       Uri.fromFile(file)
@@ -53,13 +56,13 @@ object ImageFileProvider {
   /**
    * Grant temporary access to files
    *
-   * @param context
-   * @param intent The intent to access the file
-   * @param uri
+   * [context]
+   * [intent] The intent to access the file
+   * [uri]
    */
   @JvmStatic
   fun grantUriPermission(context: Context, intent: Intent, uri: Uri): Uri {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    if (BuildVersion.isBuildOverN()) {
       val result = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
       result.forEach {
         context.grantUriPermission(it.activityInfo.packageName, uri,
@@ -72,9 +75,9 @@ object ImageFileProvider {
   /**
    * Grant temporary access to files
    *
-   * @param context
-   * @param intent The intent to access the file
-   * @param file access file
+   * [context]
+   * [intent] The intent to access the file
+   * [file] The file to be granted
    */
   @JvmStatic
   fun grantUriPermission(context: Context, intent: Intent, file: File): Uri {
@@ -85,15 +88,15 @@ object ImageFileProvider {
   /**
    * Sets the data and type of the Intent and gives the target temporary URI read and write permissions
    *
-   * @param context
-   * @param intent The intent to access the file
-   * @param type The MIME type of the data being handled by this intent.
-   * @param file
-   * @param writeAble Whether to grant permissions to writable uris
+   * [context]
+   * [intent] The intent to access the file
+   * [type] The MIME type of the data being handled by this intent.
+   * [file] The file to be granted
+   * [writeAble] Whether to grant permissions to writable uris
    */
   @JvmStatic
   fun setIntentDataAndType(context: Context, intent: Intent, type: String, file: File, writeAble: Boolean) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    if (BuildVersion.isBuildOverN()) {
       intent.setDataAndType(uriFromFile(context, file), type)
       //Temporarily grant read and write Uri permissions
       intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -108,14 +111,14 @@ object ImageFileProvider {
   /**
    * Sets the data and type of the Intent and gives the target temporary URI read and write permissions
    *
-   * @param intent
-   * @param type The MIME type of the data being handled by this intent.
-   * @param fileUri
-   * @param writeAble Whether to grant permissions to writable uris
+   * [intent]
+   * [type] The MIME type of the data being handled by this intent.
+   * [fileUri] The file's uri to be granted
+   * [writeAble] Whether to grant permissions to writable uris
    */
   @JvmStatic
   fun setIntentDataAndType(intent: Intent, type: String, fileUri: Uri, writeAble: Boolean) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    if (BuildVersion.isBuildOverN()) {
       intent.setDataAndType(fileUri, type)
       //Temporarily grant read and write Uri permissions
       intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -129,28 +132,26 @@ object ImageFileProvider {
 
   /**
    * Get the absolute path to the image based on its Uri (multiple apis have been adapted)
-   *
-   * @param context
-   * @param uri
-   * @return If the image corresponding to the Uri exists,
+   * If the image corresponding to the Uri exists,
    * then the absolute path to the image is returned,
    * otherwise null is returned
+   *
+   * [context]
+   * [uri] The file's uri to parse
+   *
    */
   @JvmStatic
   fun getPathFromUri(context: Context, uri: Uri): String? {
-    if (ContentResolver.SCHEME_FILE == uri.scheme) {
-      return uri.path
-    } else {
-      val sdkVersion = Build.VERSION.SDK_INT
-      if (sdkVersion < 11) {
-        // SDK < Api11
-        return getRealPathFromUriBelowApi11(context, uri)
+    return when {
+      ContentResolver.SCHEME_FILE == uri.scheme -> uri.path
+
+      BuildVersion.isBuildBelowH() -> {
+        return getRealPathFromUriBelowApi11(context, uri)   // SDK < Api11
       }
-      return if (sdkVersion < 19) {
-        // SDK > 11 && SDK < 19
-        getRealPathFromUriApi11To18(context, uri)
-      } else getRealPathFromUriAboveApi19(context, uri)
-      // SDK > 19
+      BuildVersion.isBuildBelowK() -> {
+        getRealPathFromUriApi11To18(context, uri) // SDK > 11 && SDK < 19
+      }
+      else -> getRealPathFromUriAboveApi19(context, uri) // SDK > 19
     }
   }
 
@@ -179,7 +180,7 @@ object ImageFileProvider {
           // Use ':' to split
           val id = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
 
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+          if (BuildVersion.isBuildOverQ()) {
             return getMediaPathAboveQ(id)
           }
 
@@ -284,7 +285,7 @@ object ImageFileProvider {
   fun detectFileUriExposure() {
     val builder = StrictMode.VmPolicy.Builder()
     StrictMode.setVmPolicy(builder.build())
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    if (BuildVersion.isBuildOverN()) {
       builder.detectFileUriExposure()
     }
   }

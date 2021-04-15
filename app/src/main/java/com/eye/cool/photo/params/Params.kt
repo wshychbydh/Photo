@@ -2,6 +2,7 @@ package com.eye.cool.photo.params
 
 import android.annotation.TargetApi
 import android.os.Build
+import com.eye.cool.photo.support.ActionDef
 
 class Params private constructor() {
 
@@ -15,6 +16,10 @@ class Params private constructor() {
 
   internal var authority: String? = null
 
+  internal var onSelectListener: OnSelectListener? = null
+
+  internal var onActionListener: OnActionListener? = null
+
   class Builder {
 
     private var params = Params()
@@ -22,9 +27,9 @@ class Params private constructor() {
     /**
      * The configure for selected image
      *
-     * @param imageParams
+     * [imageParams]
      */
-    fun setImageParams(imageParams: ImageParams): Builder {
+    fun imageParams(imageParams: ImageParams): Builder {
       params.imageParams = imageParams
       return this
     }
@@ -32,9 +37,9 @@ class Params private constructor() {
     /**
      * The configure for shown dialog
      *
-     * @param dialogParams
+     * [dialogParams]
      */
-    fun setDialogParams(dialogParams: DialogParams): Builder {
+    fun dialogParams(dialogParams: DialogParams): Builder {
       params.dialogParams = dialogParams
       return this
     }
@@ -42,10 +47,10 @@ class Params private constructor() {
     /**
      * Callback the request result after requesting permission
      *
-     * @param permissionInvoker Permission invoker callback after to request permissions
+     * [permissionInvoker] Permission invoker callback after to request permissions
      */
     @TargetApi(Build.VERSION_CODES.M)
-    fun setPermissionInvoker(permissionInvoker: PermissionInvoker?): Builder {
+    fun permissionInvoker(permissionInvoker: PermissionInvoker?): Builder {
       params.permissionInvoker = permissionInvoker
       return this
     }
@@ -54,7 +59,7 @@ class Params private constructor() {
      * If registered permission of 'android.permission.CAMERA' in manifest,
      * you must set it to true, default false
      *
-     * @param requestCameraPermission
+     * [requestCameraPermission]
      */
     @TargetApi(Build.VERSION_CODES.M)
     fun requestCameraPermission(requestCameraPermission: Boolean): Builder {
@@ -65,12 +70,37 @@ class Params private constructor() {
     /**
      * If you specify a custom image path, you may need to add a FileProvider above 7.0
      *
-     * @param authority The authority of a {@link FileProvider} defined in a
+     * [authority] The authority of a {@link FileProvider} defined in a
      *            {@code <provider>} element in your app's manifest.
      */
     @TargetApi(Build.VERSION_CODES.N)
-    fun setAuthority(authority: String?): Builder {
+    fun authority(authority: String?): Builder {
       params.authority = authority
+      return this
+    }
+
+    /**
+     * Callback after image selection, callback in ui thread
+     *
+     * [listener] must be set
+     */
+    fun onSelectListener(listener: OnSelectListener): Builder {
+      params.onSelectListener = listener
+      return this
+    }
+
+    /**
+     * Set a listener to be invoked when the action was happened.
+     *
+     * <p>
+     *   Only one of these actions
+     *   {@link Action#TAKE_PHOTO, SELECT_ALBUM, CANCEL, PERMISSION_FORBID}
+     * </p>
+     *
+     * [listener]
+     */
+    fun onActionListener(listener: OnActionListener?): Builder {
+      params.onActionListener = listener
       return this
     }
 
@@ -82,9 +112,40 @@ class Params private constructor() {
     /**
      * Permission invoker to request permissions.
      *
-     * @param permissions Permissions are need to be granted, include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
-     * @param invoker call on permission granted or denied
+     * [permissions] Permissions are need to be granted,
+     * include {@WRITE_EXTERNAL_STORAGE} and {@READ_EXTERNAL_STORAGE} and maybe {@CAMERA}
+     *
+     * [invoker] call on permission granted or denied
      */
     fun request(permissions: Array<String>, invoker: (Boolean) -> Unit)
+  }
+
+  interface OnSelectListener {
+
+    /**
+     * return on UI Thread
+     *
+     * Path maybe context.externalCacheDir or context.cacheDir
+     *
+     * callback when select image successful
+     *
+     * [path] output image's local file path
+     */
+    fun onSelect(path: String)
+  }
+
+  interface OnActionListener {
+
+    /**
+     * {@link Action
+     *    #TAKE_PHOTO,
+     *    #SELECT_ALBUM,
+     *    #CANCEL,
+     *    #PERMISSION_DENIED
+     * }
+     *
+     * [action] Which action that was happened.
+     */
+    fun onAction(@ActionDef action: Int)
   }
 }

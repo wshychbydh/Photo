@@ -1,6 +1,6 @@
 # Android图片选取/拍照适配
 
-解决6.0及7.0以上拍照，兼容6.0以下权限适配
+解决6.0及7.0以上拍照，兼容6.0以下权限适配，兼容11.0强制分区
 
 
 ### 功能介绍：
@@ -11,18 +11,19 @@
 
 3、提供拍照和选择图片功能调用
 
-4、支持自定义选择弹框
+4、支持自定义选择弹框和权限申请
 
 5、支持自定义临时授权FileProvider
+
+6、图片剪切支持11.0强制分区
 
 
 #### 使用方法：
 
 1、在root目录的build.gradle目录中添加
-```
+```groovy
     allprojects {
         repositories {
-            ...
             maven { url 'https://jitpack.io' }
         }
     }
@@ -30,14 +31,14 @@
 
 
 2、在项目的build.gradle中添加依赖
-```
+```groovy
     dependencies {
         implementation 'com.github.wshychbydh:photo:Tag'
     }
 ```
 
 **注**：如果编译的时候报重复的'META-INF/app_release.kotlin_module'时，在app的build.gradle文件的android下添加
-```
+```groovy
     packagingOptions {
         exclude 'META-INF/app_release.kotlin_module'
     }
@@ -49,32 +50,41 @@
 
 
 4、构建Params实例
-```
+```kotlin
      val imageParams = ImageParams.Builder()
-        .setOnSelectListener()          //图片选择后回调（必填）
-        .setOutput()                    //设置输出图片大小，默认300x300（可选）
-        .setCutAble()                   //是否剪切图片，默认true（可选）
+        .output()                    //设置输出图片大小，默认300x300（可选）
+        .cutAble()                   //是否剪切图片，默认true（可选）
         .build()
          
      val dialogParams = DialogParams.Builder()
-        .setContentView()               //自定义对话框视图（可选），注：自定义View必须拥有setOnActionListener(OnActionListener)方法
-        .setDialogStyle()               //自定义对话框的样式（可选）
-        .setAnimStyle()                 //自定义对话框的动画样式，默认无动画（可选）
-        .setCoordinate()                //设置对话框弹出的XY坐标，默认从底部弹出（可选）
-        .setCancelable()                //同dialog的setCancelable，默认false（可选）
-        .setCanceledOnTouchOutside()    //同dialog的setCanceledOnTouchOutside，默认false（可选）
-        .setOnCancelListener()          //同dialog的OnCancelListener（可选）
-        .setOnDismissListener()         //同dialog的setOnDismissListener（可选）
-        .setOnShowListener()            //同dialog的setOnShownListener（可选）
-        .setOnClickListener()           //按钮点击时回调，回调@link{Constants#TAKE_PHOTO | SELECT_ALBUM | CANCEL | PERMISSION_FORBID}（可选）
+        .contentView()               //自定义对话框视图（可选），注：自定义View必须拥有setOnActionListener(OnActionListener)方法
+        .themeStyle()                //自定义对话框的样式, 默认R.style.photo_dialog（可选）
+        .windowAnimations()          //自定义对话框的动画样式，默认R.style.photo_anim_bottom（可选）
+        .position()                  //设置对话框弹出的XY坐标，默认屏幕左下角（可选）
+        .gravity()                   //同dialog.window.layoutParams的gravity（可选）
+        .dimAmount()                 //同dialog.window.layoutParams的dimAmount（可选）
+        .horizontalMargin()          //同dialog.window.layoutParams的horizontalMargin（可选）
+        .verticalMargin()            //同dialog.window.layoutParams的verticalMargin（可选）
+        .width()                     //同dialog.window.layoutParams的width（可选）
+        .height()                    //同dialog.window.layoutParams的height（可选）
+        .systemUiVisibility()        //同dialog.window.layoutParams的systemUiVisibility（可选）
+        .softInputMode()             //同dialog.window.layoutParams的softInputMode（可选）
+        .alpha()                     //同dialog.window.layoutParams的alpha（可选）
+        .cancelable()                //同dialog的setCancelable，默认true（可选）
+        .canceledOnTouchOutside()    //同dialog的setCanceledOnTouchOutside，默认true（可选）
+        .onCancelListener()          //同dialog的OnCancelListener（可选）
+        .onDismissListener()         //同dialog的setOnDismissListener（可选）
+        .onShowListener()            //同dialog的setOnShownListener（可选）
         .build()
         
      val params = Params.Builder()
-        .setDialogParams(dialogParams)                   //对话框参数（可选）
-        .setImageParams(imageParams)                     //图片参数（可选）
-        .setPermissionInvoker(PermissionInvoker)         //自定义请求权限（可选）
-        .requestCameraPermission(false)                  //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
-        .setAuthority(String)                            //自定义的FileProvider，默认授权external目录
+        .onSelectListener()                   //图片选择后回调（必填）
+        .dialogParams(dialogParams)           //对话框参数（可选）
+        .imageParams(imageParams)             //图片参数（可选）
+        .permissionInvoker(PermissionInvoker) //自定义请求权限（可选）
+        .requestCameraPermission(false)       //是否请求相机权限（默认false），若Manifest中配置了Camera权限，需设置为true
+        .authority(String)                    //自定义的FileProvider，默认授权external目录
+        .onActionListener()                   //触发行为回调@link{Action#TAKE_PHOTO | SELECT_ALBUM | CANCEL | PERMISSION_DENIED}（可选）
         .build()
      
 ```
@@ -82,14 +92,10 @@
 
 5、若只需要调用拍照或选图片，可使用**PhotoHelper**，按需调用onTakePhoto()或onSelectAlbum()方法，如：
 
-```
+```kotlin
     helper.onTakePhoto(OnSelectListener)    //调用相册    
     
-    helper.onTakePhoto(ImageParams)         //调用相册
-    
     helper.onSelectAlbum(OnSelectListener)  //调用相机
-    
-    helper.onSelectAlbum(ImageParams)       //调用相机
 ```
 
 
@@ -101,36 +107,38 @@
 
    3）在**android.support.fragment**等其他环境中可调用**PhotoDialogActivity**
 
-```
-   PhotoDialog.create(onSelectListener)                                //不设置其他参数，简单调用
+```kotlin
    
-   PhotoDialog.create(imageParams)                                     //只设置图片返回参数
-   
-   PhotoDialog.create(params)                                          //设置所以可自定义的参数
-   
-   PhotoDialogActivity.resetParams()                                   //重置参数 (可选)
-                      .setDialogParams(dialogParams)                   //选择对话框参数（可选）
-                      .setImageParams(imageParams)                     //必须设置setOnSelectListener方法，否则无回调
-                      .setPermissionInvoker(PermissionInvoker)         //自定义请求权限（可选）
-                      .requestCameraPermission(boolean)                //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true
-                      .setAuthority(String)                            //自定义的FileProvider
-                      .show(context)                                   //启动对话框，在设置完参数后调用
+   //推荐
+   PhotoDialog.create(onSelectListener)                             //不设置其他参数，简单调用
+   PhotoDialog.create(params)                                       //自定义的参数
+
+   //不推荐
+   PhotoDialogActivity             
+      .reset()                                      //重置参数 (可选)
+      .onSelectListener()                           //图片选择后回调（必填）
+      .dialogParams(dialogParams)                   //选择对话框参数（可选）
+      .imageParams(imageParams)                     //图片参数（可选）
+      .permissionInvoker(PermissionInvoker)         //自定义请求权限（可选）
+      .requestCameraPermission(boolean)             //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true 可选）
+      .authority(String)                            //自定义的FileProvider 可选）
+      .onActionListener()                           //触发行为回调@link{Action#TAKE_PHOTO | SELECT_ALBUM | CANCEL | PERMISSION_DENIED}（可选）
+      .show(context)                                //启动对话框，在设置完参数后调用 可选）
 ```
 **注**：使用PhotoDialogActivity时，DialogParams类的部分属性无效
 
 7、支持在协程中调用
-```
-
+```kotlin
     scope.launch {
-      val result = select(params)           //拍照or相册
+      val result = select(context)      //选择拍照or相册
     }
 
     scope.launch {
-      val result = selectAlbum(ImageParams) //相册
+      val result = selectAlbum(context) //相册
     }
 
     scope.launch {
-      val result = takePhoto(ImageParams)   //拍照
+      val result = takePhoto(context)   //拍照
     }
 ```
 
@@ -138,9 +146,9 @@
 
    1）因为选择图片和拍照在6.0及以上需要运行时权限，该库包含默认权限请求，无需额外添加
 
-   2）切记检查Manifest是否配置了Camera权限，并做相应权限请求，否则可能会出现调用相机crash  
+   2）切记检查Manifest是否配置了Camera权限，并做相应权限请求，否则会调用相机失败
    
-   3）为了适配7.0以上文件权限，仅添加了external-path及必要的临时权限目录，若所需其他目录的临时权限则需自行添加
+   3）为了适配7.0以上文件权限，仅添加了external-path中的Pictures目录的临时权限，若所需其他目录的临时权限则需自行添加
    
 #####   
  

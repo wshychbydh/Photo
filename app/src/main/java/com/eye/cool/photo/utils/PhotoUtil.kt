@@ -1,11 +1,10 @@
 package com.eye.cool.photo.utils
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import com.eye.cool.photo.support.Action
 import com.eye.cool.photo.support.CompatContext
-import com.eye.cool.photo.support.Constants
 import java.io.File
 
 
@@ -16,8 +15,8 @@ internal object PhotoUtil {
 
   /**
    * take a photo
-   * @param wrapper
-   * @param outputFile The path for photo output
+   * [wrapper] context
+   * [outputFile] The path for photo output
    */
   @JvmStatic
   fun takePhoto(wrapper: CompatContext, authority: String?, outputFile: File) {
@@ -26,12 +25,12 @@ internal object PhotoUtil {
     intent.addCategory("android.intent.category.DEFAULT")
     val uri = ImageFileProvider.uriFromFile(wrapper.context(), authority, outputFile)
     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-    wrapper.startActivityForResult(intent, Constants.TAKE_PHOTO)
+    wrapper.startActivityForResult(intent, Action.TAKE_PHOTO)
   }
 
   /**
    * select image from album
-   *@param wrapper
+   * [wrapper] context
    */
   @JvmStatic
   fun takeAlbum(wrapper: CompatContext) {
@@ -40,16 +39,16 @@ internal object PhotoUtil {
     intent.action = Intent.ACTION_PICK
     intent.data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     intent.addCategory("android.intent.category.DEFAULT")
-    wrapper.startActivityForResult(intent, Constants.SELECT_ALBUM)
+    wrapper.startActivityForResult(intent, Action.SELECT_ALBUM)
   }
 
   /**
    * Shear pictures
-   * @param wrapper
-   * @param uri    The image uri to be clipped
-   * @param outputFile The path for clipped image output
-   * @param outputW output width, default 300px
-   * @param outputH output height, default 300px
+   * [wrapper] context
+   * [uri] The image uri to be clipped
+   * [outputFile] The path for clipped image output
+   * [outputW] output width, default 300px
+   * [outputH] output height, default 300px
    */
   @JvmStatic
   fun cut(wrapper: CompatContext, uri: Uri, outputFile: File, outputW: Int = 300, outputH: Int = 300) {
@@ -65,8 +64,7 @@ internal object PhotoUtil {
     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outputFile))
     intent.putExtra("return-data", false)
 
-    intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
     intent.putExtra("noFaceDetection", true)
-    wrapper.startActivityForResult(intent, Constants.ADJUST_PHOTO)
+    wrapper.startActivityForResult(intent, Action.ADJUST_PHOTO)
   }
 }

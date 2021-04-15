@@ -5,6 +5,5 @@
 
   <string name="photo_cancel">取消</string>
 
-  <string name="photo_permission_storage">请授予访问存储权限</string>
-  <string name="photo_permission_storage_and_camera">请授予访问存储和相机权限</string>
+  <string name="photo_permission_denied">缺少相应权限</string>
 </resources>

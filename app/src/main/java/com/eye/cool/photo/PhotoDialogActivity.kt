@@ -19,10 +19,13 @@ import android.view.WindowManager
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.*
+import com.eye.cool.photo.support.BuildVersion
+import com.eye.cool.photo.support.CompatContext
+import com.eye.cool.photo.support.Constants
+import com.eye.cool.photo.support.IWindowConfig
 import com.eye.cool.photo.utils.PhotoExecutor
 import com.eye.cool.photo.view.DefaultView
 
@@ -31,7 +34,7 @@ import com.eye.cool.photo.view.DefaultView
  *
  *Created by ycb on 2019/8/16 0016
  */
-class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
+class PhotoDialogActivity : AppCompatActivity(), DialogInterface, IWindowConfig {
 
   private val params = PhotoDialogActivity.params ?: Params.Builder().build()
 
@@ -42,23 +45,20 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     invasionStatusBar(this)
 
     executor = PhotoExecutor(CompatContext(this), params)
-    params.imageParams.onSelectListener = OnSelectListenerWrapper(
+    params.onSelectListener = OnSelectListenerWrapper(
         this,
-        params.imageParams.onSelectListener
+        params.onSelectListener
     )
-    window.setWindowAnimations(params.dialogParams.animStyle)
+
+    val lp = configLayoutParams(params.dialogParams, window)
+    onWindowAttributesChanged(lp)
 
     val container = FrameLayout(this)
     container.layoutParams = ViewGroup.LayoutParams(-1, -1)
     val contentView = params.dialogParams.contentView ?: DefaultView(this)
     val layoutParams = FrameLayout.LayoutParams(-1, -2)
     layoutParams.gravity = Gravity.BOTTOM
-    val method = contentView.javaClass.getDeclaredMethod(
-        "setOnActionListener",
-        OnActionListener::class.java
-    )
-    method.isAccessible = true
-    method.invoke(contentView, executor)
+    bindActionListener(contentView, executor)
     container.addView(contentView, layoutParams)
     setContentView(container)
 
@@ -68,13 +68,15 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
       }
     }
 
-    executor.setOnClickListener(object : DialogParams.OnClickListener {
-      override fun onClick(which: Int) {
-        when (which) {
-          Constants.ADJUST_PHOTO, Constants.SELECT_ALBUM -> playExitAnim(contentView)
-          Constants.CANCEL, Constants.PERMISSION_FORBID -> dismiss()
+    executor.onActionClickListener(object : Params.OnActionListener {
+      override fun onAction(action: Int) {
+        when (action) {
+          Action.ADJUST_PHOTO,
+          Action.SELECT_ALBUM -> playExitAnim(window, contentView)
+          Action.CANCEL,
+          Action.PERMISSION_DENIED -> dismiss()
         }
-        params.dialogParams.onClickListener?.onClick(which)
+        params.onActionListener?.onAction(action)
       }
     })
 
@@ -99,27 +101,6 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     }
   }
 
-  private fun playExitAnim(view: View) {
-    val animator1 = ObjectAnimator.ofFloat(
-        view,
-        "translationY",
-        0f,
-        view.height.toFloat()
-    )
-    val animator2 = ValueAnimator.ofFloat(window.attributes.dimAmount, 0f)
-    animator2.addUpdateListener {
-      val dim = it.animatedValue as Float
-      val lp = window.attributes
-      lp.dimAmount = dim
-      window.attributes = lp
-    }
-    val set = AnimatorSet()
-    set.interpolator = LinearInterpolator()
-    set.duration = 150
-    set.playTogether(animator1, animator2)
-    set.start()
-  }
-
   override fun onDestroy() {
     super.onDestroy()
     PhotoDialogActivity.params = null
@@ -139,8 +120,8 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
 
   private class OnSelectListenerWrapper(
       val activity: PhotoDialogActivity,
-      val listener: ImageParams.OnSelectListener?
-  ) : ImageParams.OnSelectListener {
+      val listener: Params.OnSelectListener?
+  ) : Params.OnSelectListener {
     override fun onSelect(path: String) {
       activity.dismiss()
       listener?.onSelect(path)
@@ -156,7 +137,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * Clear old params
      */
     @JvmStatic
-    fun resetParams(): Companion {
+    fun reset(): Companion {
       this.params = null
       return this
     }
@@ -164,10 +145,10 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     /**
      * All settings for this call
      *
-     * @param params
+     * [params]
      */
     @JvmStatic
-    fun setParams(params: Params): Companion {
+    fun params(params: Params): Companion {
       this.params = params
       return this
     }
@@ -175,22 +156,37 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     /**
      * If you only want to get the returned image, set it
      *
-     * @param onSelectListener Image selection callback
+     * [onSelectListener] Image selection callback
      */
     @JvmStatic
-    fun setOnSelectListener(onSelectListener: ImageParams.OnSelectListener): Companion {
+    fun onSelectListener(onSelectListener: Params.OnSelectListener): Companion {
       if (params == null) params = Params.Builder().build()
-      params!!.imageParams.onSelectListener = onSelectListener
+      params!!.onSelectListener = onSelectListener
+      return this
+    }
+
+    /**
+     * Set a listener to be invoked when the action was happened.
+     *
+     * <p>
+     *   Only one of these actions
+     *   {@link Action#TAKE_PHOTO, SELECT_ALBUM, CANCEL, PERMISSION_FORBID}
+     * </p>
+     *
+     * [listener]
+     */
+    fun onActionListener(listener: Params.OnActionListener?): Companion {
+      params!!.onActionListener = listener
       return this
     }
 
     /**
      * The params for selected image
      *
-     * @param imageParams
+     * [imageParams]
      */
     @JvmStatic
-    fun setImageParams(imageParams: ImageParams): Companion {
+    fun imageParams(imageParams: ImageParams): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.imageParams = imageParams
       return this
@@ -199,10 +195,10 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     /**
      * Callback the request result after requesting permission
      *
-     * @param permissionInvoker Permission invoker callback after to request permissions
+     * [permissionInvoker] Permission invoker callback after to request permissions
      */
     @TargetApi(Build.VERSION_CODES.M)
-    fun setPermissionInvoker(permissionInvoker: Params.PermissionInvoker): Companion {
+    fun permissionInvoker(permissionInvoker: Params.PermissionInvoker): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.permissionInvoker = permissionInvoker
       return this
@@ -211,7 +207,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     /**
      * If registered permission of 'android.permission.CAMERA' in manifest, you must set it to true.
      *
-     * @param requestCameraPermission default false
+     * [requestCameraPermission] default false
      */
     @JvmStatic
     @TargetApi(Build.VERSION_CODES.M)
@@ -224,12 +220,12 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
     /**
      * If you specify a custom image path, you need to add a FileProvider above 7.0
      *
-     * @param authority The authority of a {@link FileProvider} defined in a
+     * [authority] The authority of a {@link FileProvider} defined in a
      *            {@code <provider>} element in your app's manifest.
      */
     @TargetApi(Build.VERSION_CODES.N)
     @JvmStatic
-    fun setAuthority(authority: String): Companion {
+    fun authority(authority: String): Companion {
       if (params == null) params = Params.Builder().build()
       params!!.authority = authority
       return this
@@ -247,7 +243,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface {
      * Set the content layout full the StatusBar, but do not hide StatusBar.
      */
     private fun invasionStatusBar(activity: Activity) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (BuildVersion.isBuildOverLOLLIPOP()) {
         val window = activity.window
         val decorView = window.decorView
         decorView.systemUiVisibility = (

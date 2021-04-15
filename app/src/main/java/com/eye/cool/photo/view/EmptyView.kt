@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.eye.cool.photo.support.OnActionListener
+import com.eye.cool.photo.support.OnActionClickListener
 
 /**
  *Created by ycb on 2019/8/14 0014
@@ -17,10 +17,10 @@ internal class EmptyView @JvmOverloads constructor(
     layoutParams = ViewGroup.LayoutParams(1, 1)
   }
 
-  private var listener: OnActionListener? = null
+  private var listener: OnActionClickListener? = null
 
   //necessary
-  private fun setOnActionListener(listener: OnActionListener) {
+  private fun onActionListener(listener: OnActionClickListener) {
     this.listener = listener
   }
 
