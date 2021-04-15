@@ -1,8 +1,5 @@
 package com.eye.cool.photo
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
@@ -16,16 +13,11 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.*
-import com.eye.cool.photo.support.BuildVersion
-import com.eye.cool.photo.support.CompatContext
-import com.eye.cool.photo.support.Constants
-import com.eye.cool.photo.support.IWindowConfig
 import com.eye.cool.photo.utils.PhotoExecutor
 import com.eye.cool.photo.view.DefaultView
 

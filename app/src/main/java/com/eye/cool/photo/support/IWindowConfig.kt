@@ -1,8 +1,6 @@
 package com.eye.cool.photo.support
 
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.app.Dialog
 import android.content.Context
 import android.view.View

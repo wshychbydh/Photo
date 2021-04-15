@@ -8,17 +8,17 @@ import android.util.Log
 import com.eye.cool.photo.BuildConfig
 import com.eye.cool.photo.R
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.*
+import com.eye.cool.photo.support.Action
 import com.eye.cool.photo.support.Action.ADJUST_PHOTO
 import com.eye.cool.photo.support.Action.CANCEL
 import com.eye.cool.photo.support.Action.SELECT_ALBUM
 import com.eye.cool.photo.support.Action.TAKE_PHOTO
+import com.eye.cool.photo.support.BuildVersion
+import com.eye.cool.photo.support.CompatContext
 import com.eye.cool.photo.support.Constants.TAG
+import com.eye.cool.photo.support.OnActionClickListener
 import com.eye.cool.photo.view.PhotoPermissionActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.File
-import java.nio.file.Path
 
 /**
  *Created by cool on 2018/6/12
