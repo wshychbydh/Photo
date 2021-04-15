@@ -93,9 +93,9 @@
 5、若只需要调用拍照或选图片，可使用**PhotoHelper**，按需调用onTakePhoto()或onSelectAlbum()方法，如：
 
 ```kotlin
-    helper.onTakePhoto(OnSelectListener)    //调用相册    
+    helper.onTakePhoto(OnSelectListener)     //调用相册    
     
-    helper.onSelectAlbum(OnSelectListener)  //调用相机
+    helper.onSelectAlbum(OnSelectListener)   //调用相机
 ```
 
 
@@ -103,29 +103,28 @@
    
    1）PhotoDialog对应的包为androidx.appcompat.app.AppCompatDialogFragment
    
-   2）PhotoDialogFragment对应的包为android.app.DialogFragment（Deprecated）
+   2）PhotoDialogFragment对应的包为android.app.DialogFragment（Deprecated）（不推荐）
 
-   3）在**android.support.fragment**等其他环境中可调用**PhotoDialogActivity**
+   3）在**android.support.fragment**等其他环境中可调用**PhotoDialogActivity**（不推荐）
 
 ```kotlin
    
    //推荐
-   PhotoDialog.create(onSelectListener)                             //不设置其他参数，简单调用
-   PhotoDialog.create(params)                                       //自定义的参数
+   PhotoDialog.create(onSelectListener)      //默认参数，简单调用
+   PhotoDialog.create(params)                //自定义的参数
 
    //不推荐
    PhotoDialogActivity             
-      .reset()                                      //重置参数 (可选)
-      .onSelectListener()                           //图片选择后回调（必填）
-      .dialogParams(dialogParams)                   //选择对话框参数（可选）
-      .imageParams(imageParams)                     //图片参数（可选）
-      .permissionInvoker(PermissionInvoker)         //自定义请求权限（可选）
-      .requestCameraPermission(boolean)             //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true 可选）
-      .authority(String)                            //自定义的FileProvider 可选）
-      .onActionListener()                           //触发行为回调@link{Action#TAKE_PHOTO | SELECT_ALBUM | CANCEL | PERMISSION_DENIED}（可选）
-      .show(context)                                //启动对话框，在设置完参数后调用 可选）
+      .reset()                               //重置参数 (可选)
+      .onSelectListener()                    //图片选择后回调（必填）
+      .dialogParams(dialogParams)            //选择对话框参数（可选）
+      .imageParams(imageParams)              //图片参数（可选）
+      .permissionInvoker(PermissionInvoker)  //自定义请求权限（可选）
+      .requestCameraPermission(boolean)      //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true 可选）
+      .authority(String)                     //自定义的FileProvider 可选）
+      .onActionListener()                    //触发行为回调@link{Action#TAKE_PHOTO | SELECT_ALBUM | CANCEL | PERMISSION_DENIED}（可选）
+      .show(context)                         //启动对话框，在设置完参数后调用 可选）
 ```
-**注**：使用PhotoDialogActivity时，DialogParams类的部分属性无效
 
 7、支持在协程中调用
 ```kotlin
