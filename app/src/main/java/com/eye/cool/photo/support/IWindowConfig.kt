@@ -2,36 +2,26 @@ package com.eye.cool.photo.support
 
 import android.animation.ObjectAnimator
 import android.app.Dialog
-import android.content.Context
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.LinearInterpolator
-import androidx.appcompat.app.AppCompatDialog
 import com.eye.cool.photo.BuildConfig
 import com.eye.cool.photo.params.DialogParams
-import com.eye.cool.photo.params.Params
 
 /**
  * Created by cool on 18-3-9
  */
 internal interface IWindowConfig {
 
-  fun createDialog(
-      context: Context,
-      params: Params
-  ): Dialog {
-    val dialogParams = params.dialogParams
-    val dialog = AppCompatDialog(context, dialogParams.themeStyle ?: 0)
-    dialog.setCancelable(dialogParams.cancelable)
-    dialog.setCanceledOnTouchOutside(dialogParams.canceledOnTouchOutside)
-    dialog.setOnShowListener(dialogParams.onShowListener)
-    dialog.setOnDismissListener(dialogParams.onDismissListener)
-    dialog.setOnCancelListener(dialogParams.onCancelListener)
-    val window = dialog.window ?: return dialog
-    val layoutParams = configLayoutParams(params.dialogParams, window)
-    dialog.onWindowAttributesChanged(layoutParams)
-    return dialog
+  fun setupDialog(params: DialogParams, dialog: Dialog) {
+    dialog.setCancelable(params.cancelable)
+    dialog.setCanceledOnTouchOutside(params.canceledOnTouchOutside)
+
+    dialog.setOnShowListener(params.onShowListener)
+    dialog.setOnKeyListener(params.onKeyListener)
+
+    dialog.onWindowAttributesChanged(configLayoutParams(params, dialog.window ?: return))
   }
 
   fun configLayoutParams(
@@ -81,8 +71,8 @@ internal interface IWindowConfig {
   }
 
   fun bindActionListener(view: View, listener: OnActionClickListener) {
-    val result = bindActionListener(view, "onActionListener", listener)
-    if (!result) bindActionListener(view, "setOnActionListener", listener)
+    val result = bindActionListener(view, "onActionClickListener", listener)
+    if (!result) bindActionListener(view, "setOnActionClickListener", listener)
   }
 
   private fun bindActionListener(

@@ -1,21 +1,15 @@
 package com.eye.cool.photo
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.*
 import com.eye.cool.photo.utils.PhotoExecutor
@@ -26,6 +20,7 @@ import com.eye.cool.photo.view.DefaultView
  *
  *Created by ycb on 2019/8/16 0016
  */
+@Deprecated("Use @{PhotoDialog} instead")
 class PhotoDialogActivity : AppCompatActivity(), DialogInterface, IWindowConfig {
 
   private val params = PhotoDialogActivity.params ?: Params.Builder().build()
@@ -63,7 +58,7 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface, IWindowConfig 
     executor.onActionClickListener(object : Params.OnActionListener {
       override fun onAction(action: Int) {
         when (action) {
-          Action.ADJUST_PHOTO,
+          Action.TAKE_PHOTO,
           Action.SELECT_ALBUM -> playExitAnim(window, contentView)
           Action.CANCEL,
           Action.PERMISSION_DENIED -> dismiss()
@@ -73,6 +68,11 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface, IWindowConfig 
     })
 
     params.dialogParams.onShowListener?.onShow(this)
+  }
+
+  override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+    val handled = params.dialogParams.onKeyListener?.onKey(this, keyCode, event)
+    return handled ?: super.onKeyDown(keyCode, event)
   }
 
   override fun cancel() {
@@ -125,107 +125,14 @@ class PhotoDialogActivity : AppCompatActivity(), DialogInterface, IWindowConfig 
     @Volatile
     private var params: Params? = null
 
-    /**
-     * Clear old params
-     */
-    @JvmStatic
-    fun reset(): Companion {
-      this.params = null
-      return this
-    }
-
-    /**
-     * All settings for this call
-     *
-     * [params]
-     */
-    @JvmStatic
-    fun params(params: Params): Companion {
-      this.params = params
-      return this
-    }
-
-    /**
-     * If you only want to get the returned image, set it
-     *
-     * [onSelectListener] Image selection callback
-     */
-    @JvmStatic
-    fun onSelectListener(onSelectListener: Params.OnSelectListener): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.onSelectListener = onSelectListener
-      return this
-    }
-
-    /**
-     * Set a listener to be invoked when the action was happened.
-     *
-     * <p>
-     *   Only one of these actions
-     *   {@link Action#TAKE_PHOTO, SELECT_ALBUM, CANCEL, PERMISSION_FORBID}
-     * </p>
-     *
-     * [listener]
-     */
-    fun onActionListener(listener: Params.OnActionListener?): Companion {
-      params!!.onActionListener = listener
-      return this
-    }
-
-    /**
-     * The params for selected image
-     *
-     * [imageParams]
-     */
-    @JvmStatic
-    fun imageParams(imageParams: ImageParams): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.imageParams = imageParams
-      return this
-    }
-
-    /**
-     * Callback the request result after requesting permission
-     *
-     * [permissionInvoker] Permission invoker callback after to request permissions
-     */
-    @TargetApi(Build.VERSION_CODES.M)
-    fun permissionInvoker(permissionInvoker: Params.PermissionInvoker): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.permissionInvoker = permissionInvoker
-      return this
-    }
-
-    /**
-     * If registered permission of 'android.permission.CAMERA' in manifest, you must set it to true.
-     *
-     * [requestCameraPermission] default false
-     */
-    @JvmStatic
-    @TargetApi(Build.VERSION_CODES.M)
-    fun requestCameraPermission(requestCameraPermission: Boolean): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.requestCameraPermission = requestCameraPermission
-      return this
-    }
-
-    /**
-     * If you specify a custom image path, you need to add a FileProvider above 7.0
-     *
-     * [authority] The authority of a {@link FileProvider} defined in a
-     *            {@code <provider>} element in your app's manifest.
-     */
-    @TargetApi(Build.VERSION_CODES.N)
-    @JvmStatic
-    fun authority(authority: String): Companion {
-      if (params == null) params = Params.Builder().build()
-      params!!.authority = authority
-      return this
-    }
-
     @JvmStatic
     fun show(context: Context) {
-      if (params == null) params = Params.Builder().build()
+      show(context, Params.Builder().build())
+    }
+
+    @JvmStatic
+    fun show(context: Context, params: Params) {
+      this.params = params
       val intent = Intent(context, PhotoDialogActivity::class.java)
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       context.startActivity(intent)

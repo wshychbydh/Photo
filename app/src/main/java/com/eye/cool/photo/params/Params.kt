@@ -4,45 +4,43 @@ import android.annotation.TargetApi
 import android.os.Build
 import com.eye.cool.photo.support.ActionDef
 
-class Params private constructor() {
+class Params private constructor(
+    internal val requestCameraPermission: Boolean,
+    internal var onSelectListener: OnSelectListener?,
+    internal val onActionListener: OnActionListener?,
+    internal val authority: String?,
+    internal val permissionInvoker: PermissionInvoker?,
+    internal val imageParams: ImageParams,
+    internal val dialogParams: DialogParams
+) {
 
-  internal var imageParams: ImageParams = ImageParams.Builder().build()
+  companion object {
+    inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
+  }
 
-  internal var dialogParams: DialogParams = DialogParams.Builder().build()
-
-  internal var permissionInvoker: PermissionInvoker? = null
-
-  internal var requestCameraPermission = false
-
-  internal var authority: String? = null
-
-  internal var onSelectListener: OnSelectListener? = null
-
-  internal var onActionListener: OnActionListener? = null
-
-  class Builder {
-
-    private var params = Params()
+  class Builder(
+      var requestCameraPermission: Boolean = false,
+      var onSelectListener: OnSelectListener? = null,
+      var onActionListener: OnActionListener? = null,
+      var authority: String? = null,
+      var permissionInvoker: PermissionInvoker? = null,
+      var imageParams: ImageParams = ImageParams.Builder().build(),
+      var dialogParams: DialogParams = DialogParams.Builder().build()
+  ) {
 
     /**
      * The configure for selected image
      *
      * [imageParams]
      */
-    fun imageParams(imageParams: ImageParams): Builder {
-      params.imageParams = imageParams
-      return this
-    }
+    fun imageParams(imageParams: ImageParams) = apply { this.imageParams = imageParams }
 
     /**
      * The configure for shown dialog
      *
      * [dialogParams]
      */
-    fun dialogParams(dialogParams: DialogParams): Builder {
-      params.dialogParams = dialogParams
-      return this
-    }
+    fun dialogParams(dialogParams: DialogParams) = apply { this.dialogParams = dialogParams }
 
     /**
      * Callback the request result after requesting permission
@@ -50,9 +48,8 @@ class Params private constructor() {
      * [permissionInvoker] Permission invoker callback after to request permissions
      */
     @TargetApi(Build.VERSION_CODES.M)
-    fun permissionInvoker(permissionInvoker: PermissionInvoker?): Builder {
-      params.permissionInvoker = permissionInvoker
-      return this
+    fun permissionInvoker(permissionInvoker: PermissionInvoker?) = apply {
+      this.permissionInvoker = permissionInvoker
     }
 
     /**
@@ -62,9 +59,8 @@ class Params private constructor() {
      * [requestCameraPermission]
      */
     @TargetApi(Build.VERSION_CODES.M)
-    fun requestCameraPermission(requestCameraPermission: Boolean): Builder {
-      params.requestCameraPermission = requestCameraPermission
-      return this
+    fun requestCameraPermission(requestCameraPermission: Boolean) = apply {
+      this.requestCameraPermission = requestCameraPermission
     }
 
     /**
@@ -74,20 +70,14 @@ class Params private constructor() {
      *            {@code <provider>} element in your app's manifest.
      */
     @TargetApi(Build.VERSION_CODES.N)
-    fun authority(authority: String?): Builder {
-      params.authority = authority
-      return this
-    }
+    fun authority(authority: String?) = apply { this.authority = authority }
 
     /**
      * Callback after image selection, callback in ui thread
      *
      * [listener] must be set
      */
-    fun onSelectListener(listener: OnSelectListener): Builder {
-      params.onSelectListener = listener
-      return this
-    }
+    fun onSelectListener(listener: OnSelectListener) = apply { this.onSelectListener = listener }
 
     /**
      * Set a listener to be invoked when the action was happened.
@@ -99,12 +89,17 @@ class Params private constructor() {
      *
      * [listener]
      */
-    fun onActionListener(listener: OnActionListener?): Builder {
-      params.onActionListener = listener
-      return this
-    }
+    fun onActionListener(listener: OnActionListener?) = apply { this.onActionListener = listener }
 
-    fun build() = params
+    fun build() = Params(
+        requestCameraPermission = requestCameraPermission,
+        onSelectListener = onSelectListener,
+        onActionListener = onActionListener,
+        authority = authority,
+        permissionInvoker = permissionInvoker,
+        imageParams = imageParams,
+        dialogParams = dialogParams
+    )
   }
 
   interface PermissionInvoker {

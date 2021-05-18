@@ -76,27 +76,28 @@ object Photo {
       dialogParams: DialogParams = DialogParams.Builder().build(),
       requestCameraPermission: Boolean = false,
       permissionInvoker: Params.PermissionInvoker? = null,
-      onActionClickListener: Params.OnActionListener? = null,
+      onActionListener: Params.OnActionListener? = null,
       authority: String? = null
   ) = suspendCancellableCoroutine<String> {
     runOnUiThread(context) {
-      val params = Params.Builder()
-          .onSelectListener(object : Params.OnSelectListener {
-            override fun onSelect(path: String) {
-              it.complete(path)
-            }
-          })
-          .imageParams(imageParams)
-          .dialogParams(dialogParams)
-          .requestCameraPermission(requestCameraPermission)
-          .permissionInvoker(permissionInvoker)
-          .onActionListener(onActionClickListener)
-          .authority(authority)
-          .build()
+      val params = Params.build {
+        onSelectListener = object : Params.OnSelectListener {
+          override fun onSelect(path: String) {
+            it.complete(path)
+          }
+        }
+        this.imageParams = imageParams
+        this.dialogParams = dialogParams
+        this.requestCameraPermission = requestCameraPermission
+        this.permissionInvoker = permissionInvoker
+        this.onActionListener = onActionListener
+        this.authority = authority
+      }
+
       if (context is FragmentActivity) {
         PhotoDialog.create(params).show(context.supportFragmentManager)
       } else {
-        PhotoDialogActivity.params(params).show(context)
+        PhotoDialogActivity.show(context, params)
       }
     }
   }

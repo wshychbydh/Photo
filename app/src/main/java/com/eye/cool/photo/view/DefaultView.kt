@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import com.eye.cool.photo.R
 import com.eye.cool.photo.support.OnActionClickListener
@@ -16,12 +15,12 @@ internal class DefaultView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
-) : LinearLayout(context, attrs, defStyle), OnClickListener {
+) : LinearLayout(context, attrs, defStyle), View.OnClickListener {
 
   private var listener: OnActionClickListener? = null
 
   //necessary
-  private fun onActionListener(listener: OnActionClickListener) {
+  private fun onActionClickListener(listener: OnActionClickListener) {
     this.listener = listener
   }
 

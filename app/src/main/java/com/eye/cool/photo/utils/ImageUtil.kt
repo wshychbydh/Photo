@@ -2,8 +2,6 @@ package com.eye.cool.photo.utils
 
 import android.graphics.*
 import androidx.annotation.WorkerThread
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -24,29 +22,6 @@ object ImageUtil {
   fun createCircleImage(path: String, bitmapSize: Float): Bitmap {
     val source = getBitmapFromFile(path, bitmapSize.toInt(), bitmapSize.toInt())
     return createCircleImage(source, bitmapSize)
-  }
-
-  /**
-   * @param callback result in ui thread
-   */
-  @JvmStatic
-  suspend fun createCircleImage(path: String, bitmapSize: Float, callback: (Bitmap) -> Unit) {
-    val source = getBitmapFromFile(path, bitmapSize.toInt(), bitmapSize.toInt())
-    val result = createCircleImage(source, bitmapSize)
-    withContext(Dispatchers.Main) {
-      callback.invoke(result)
-    }
-  }
-
-  /**
-   * @param callback result in ui thread
-   */
-  @JvmStatic
-  suspend fun createCircleImage(source: Bitmap, bitmapSize: Float, callback: (Bitmap) -> Unit) {
-    val result = createCircleImage(source, bitmapSize)
-    withContext(Dispatchers.Main) {
-      callback.invoke(result)
-    }
   }
 
   /**
@@ -97,18 +72,11 @@ object ImageUtil {
     return BitmapFactory.decodeFile(path, options)
   }
 
-  /**
-   * @param callback result in ui thread
-   */
-  @JvmStatic
-  suspend fun getBitmapFromFile(path: String, width: Int = -1, height: Int = -1, callback: (Bitmap) -> Unit) {
-    val result = getBitmapFromFile(path, width, height)
-    withContext(Dispatchers.Main) {
-      callback.invoke(result)
-    }
-  }
-
-  private fun getBitmapInSampleSize(reqWidth: Int, reqHeight: Int, options: BitmapFactory.Options): Int {
+  private fun getBitmapInSampleSize(
+      reqWidth: Int,
+      reqHeight: Int,
+      options: BitmapFactory.Options
+  ): Int {
     var inSampleSize = 1
     if (options.outWidth > reqWidth || options.outHeight > reqHeight) {
       val widthRatio = (options.outWidth.toFloat() / reqWidth.toFloat()).roundToInt()

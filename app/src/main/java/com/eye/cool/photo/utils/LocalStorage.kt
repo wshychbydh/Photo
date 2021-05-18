@@ -36,7 +36,6 @@ internal object LocalStorage {
   }
 
   fun createCachedFile(context: Context, path: String): String {
-    println("==createCachedFile==>>${getCacheDir(context).absolutePath}")
     if (path.startsWith(getCacheDir(context).absolutePath)) return path
     val file = File(path)
     return try {

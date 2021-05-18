@@ -9,69 +9,85 @@ import com.eye.cool.photo.R
 /**
  *Created by ycb on 2019/8/8 0008
  */
-class DialogParams private constructor() {
+class DialogParams private constructor(
+    internal val contentView: View?,
 
-  internal var contentView: View? = null
+    @StyleRes
+    internal val themeStyle: Int?,
 
-  /**
-   * Nonsupport for PhotoDialogActivity
-   */
-  @StyleRes
-  internal var themeStyle: Int? = R.style.photo_dialog
+    internal val cancelable: Boolean,
+    internal val canceledOnTouchOutside: Boolean,
 
-  internal var cancelable: Boolean = true
+    internal val xPos: Int,
+    internal val yPos: Int,
 
-  internal var canceledOnTouchOutside: Boolean = true
+    @StyleRes
+    internal val windowAnimations: Int?,
 
-  /**
-   * Nonsupport for PhotoDialogActivity
-   */
-  internal var xPos = 0
+    internal val gravity: Int?,
+    internal val width: Int?,
+    internal val height: Int?,
 
-  /**
-   * Nonsupport for PhotoDialogActivity
-   */
-  internal var yPos = Resources.getSystem().displayMetrics.heightPixels
+    internal val dimAmount: Float?,
+    internal val alpha: Float?,
 
-  @StyleRes
-  internal var windowAnimations: Int? = R.style.photo_anim_bottom
+    internal val horizontalMargin: Float?,
+    internal val verticalMargin: Float?,
 
-  internal var gravity: Int? = null
+    internal val systemUiVisibility: Int?,
+    internal val softInputMode: Int?,
 
-  internal var width: Int? = null
-  internal var height: Int? = null
+    internal val onShowListener: DialogInterface.OnShowListener?,
+    internal val onDismissListener: DialogInterface.OnDismissListener?,
+    internal val onCancelListener: DialogInterface.OnCancelListener?,
+    internal val onKeyListener: DialogInterface.OnKeyListener?
+) {
 
+  companion object {
+    inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
+  }
 
-  internal var dimAmount: Float? = null
+  data class Builder(
+      var contentView: View? = null,
 
-  internal var alpha: Float? = null
+      @StyleRes
+      var themeStyle: Int? = R.style.photo_dialog,
 
-  internal var horizontalMargin: Float? = null
-  internal var verticalMargin: Float? = null
+      var cancelable: Boolean = true,
+      var canceledOnTouchOutside: Boolean = true,
 
-  internal var systemUiVisibility: Int? = null
+      var xPos: Int = 0,
+      var yPos: Int = Resources.getSystem().displayMetrics.heightPixels,
 
-  internal var softInputMode: Int? = null
+      @StyleRes
+      var windowAnimations: Int? = R.style.photo_anim_bottom,
 
-  internal var onShowListener: DialogInterface.OnShowListener? = null
+      var gravity: Int? = null,
+      var width: Int? = null,
+      var height: Int? = null,
 
-  internal var onDismissListener: DialogInterface.OnDismissListener? = null
+      var dimAmount: Float? = null,
+      var alpha: Float? = null,
 
-  internal var onCancelListener: DialogInterface.OnCancelListener? = null
+      var horizontalMargin: Float? = null,
+      var verticalMargin: Float? = null,
 
-  class Builder {
+      var systemUiVisibility: Int? = null,
+      var softInputMode: Int? = null,
 
-    private var params = DialogParams()
+      var onShowListener: DialogInterface.OnShowListener? = null,
+      var onDismissListener: DialogInterface.OnDismissListener? = null,
+      var onCancelListener: DialogInterface.OnCancelListener? = null,
+      var onKeyListener: DialogInterface.OnKeyListener? = null
+  ) {
 
     /**
      * Dialog's contentView to be shown
+     * The view must have an {onActionClickListener(OnActionClickListener)} method
      *
      * [view] the shown view, default[R.layout.photo_layout]
      */
-    fun contentView(view: View): Builder {
-      params.contentView = view
-      return this
-    }
+    fun contentView(view: View) = apply { this.contentView = view }
 
     /**
      * Sets whether this dialog is cancelable with the
@@ -79,10 +95,7 @@ class DialogParams private constructor() {
      *
      * [cancelable] default true
      */
-    fun cancelable(cancelable: Boolean): Builder {
-      params.cancelable = cancelable
-      return this
-    }
+    fun cancelable(cancelable: Boolean) = apply { this.cancelable = cancelable }
 
     /**
      * Sets whether this dialog is canceled when touched outside the window's
@@ -92,9 +105,8 @@ class DialogParams private constructor() {
      * [cancelable] Whether the dialog should be canceled when touched outside the window.
      * default true
      */
-    fun canceledOnTouchOutside(cancelable: Boolean): Builder {
-      params.canceledOnTouchOutside = cancelable
-      return this
+    fun canceledOnTouchOutside(cancelable: Boolean) = apply {
+      this.canceledOnTouchOutside = cancelable
     }
 
     /**
@@ -103,19 +115,15 @@ class DialogParams private constructor() {
      *
      * [themeStyle] default [R.style.photo_dialog]
      */
-    fun themeStyle(themeStyle: Int): Builder {
-      params.themeStyle = themeStyle
-      return this
-    }
+    fun themeStyle(themeStyle: Int) = apply { this.themeStyle = themeStyle }
 
     /**
      * Sets a listener to be invoked when the dialog is shown.
      *
      * [listener] The {@link DialogInterface.OnShowListener} to use.
      */
-    fun onShowListener(listener: DialogInterface.OnShowListener): Builder {
-      params.onShowListener = listener
-      return this
+    fun onShowListener(listener: DialogInterface.OnShowListener) = apply {
+      this.onShowListener = listener
     }
 
     /**
@@ -123,9 +131,8 @@ class DialogParams private constructor() {
      *
      * [listener] The {@link DialogInterface.OnDismissListener} to use.
      */
-    fun onDismissListener(listener: DialogInterface.OnDismissListener): Builder {
-      params.onDismissListener = listener
-      return this
+    fun onDismissListener(listener: DialogInterface.OnDismissListener) = apply {
+      this.onDismissListener = listener
     }
 
     /**
@@ -139,9 +146,12 @@ class DialogParams private constructor() {
      *
      * [listener] The {@link DialogInterface.OnCancelListener} to use.
      */
-    fun onCancelListener(listener: DialogInterface.OnCancelListener): Builder {
-      params.onCancelListener = listener
-      return this
+    fun onCancelListener(listener: DialogInterface.OnCancelListener) = apply {
+      this.onCancelListener = listener
+    }
+
+    fun onKeyListener(listener: DialogInterface.OnKeyListener) = apply {
+      this.onKeyListener = listener
     }
 
     /**
@@ -159,10 +169,7 @@ class DialogParams private constructor() {
      *
      * [gravity] default null
      */
-    fun gravity(gravity: Int): Builder {
-      params.gravity = gravity
-      return this
-    }
+    fun gravity(gravity: Int) = apply { this.gravity = gravity }
 
     /**
      * When {@link #FLAG_DIM_BEHIND} is set, this is the amount of dimming
@@ -170,39 +177,29 @@ class DialogParams private constructor() {
      *
      * [dimAmount] default by themeStyle's config
      */
-    fun dimAmount(dimAmount: Float): Builder {
-      params.dimAmount = dimAmount
-      return this
-    }
+    fun dimAmount(dimAmount: Float) = apply { this.dimAmount = dimAmount }
 
     /**
      * @see {WindowManager.horizontalMargin}
      *
      * [margin] default null
      */
-    fun horizontalMargin(margin: Float): Builder {
-      params.horizontalMargin = margin
-      return this
-    }
+    fun horizontalMargin(margin: Float) = apply { this.horizontalMargin = margin }
 
     /**
      * @see {WindowManager.verticalMargin}
      *
      * [margin] default null
      */
-    fun verticalMargin(margin: Float): Builder {
-      params.verticalMargin = margin
-      return this
-    }
+    fun verticalMargin(margin: Float) = apply { this.verticalMargin = margin }
 
     /**
      * @see {WindowManager.systemUiVisibility}
      *
      * [systemUiVisibility] default null
      */
-    fun systemUiVisibility(systemUiVisibility: Int): Builder {
-      params.systemUiVisibility = systemUiVisibility
-      return this
+    fun systemUiVisibility(systemUiVisibility: Int) = apply {
+      this.systemUiVisibility = systemUiVisibility
     }
 
     /**
@@ -210,10 +207,7 @@ class DialogParams private constructor() {
      *
      * [softInputMode] default null
      */
-    fun softInputMode(softInputMode: Int): Builder {
-      params.softInputMode = softInputMode
-      return this
-    }
+    fun softInputMode(softInputMode: Int) = apply { this.softInputMode = softInputMode }
 
     /**
      * Dialog popup location
@@ -221,10 +215,9 @@ class DialogParams private constructor() {
      * [x] default 0
      * [y] default Resources.getSystem().displayMetrics.heightPixels
      */
-    fun position(x: Int, y: Int): Builder {
-      params.xPos = x
-      params.yPos = y
-      return this
+    fun position(x: Int, y: Int) = apply {
+      this.xPos = x
+      this.yPos = y
     }
 
     /**
@@ -232,21 +225,17 @@ class DialogParams private constructor() {
      *
      * [alpha] default by themeStyle's config
      */
-    fun alpha(alpha: Float): Builder {
-      params.alpha = alpha
-      return this
-    }
+    fun alpha(alpha: Float) = apply { this.alpha = alpha }
 
     /**
      * The ratio of the screen's width of the dialog
      *
      * [ratio] value range [0.0~1.0], not include
      */
-    fun widthRatio(ratio: Float): Builder {
+    fun widthRatio(ratio: Float) = apply {
       if (ratio <= 0.0 && ratio > 1.0) throw IllegalArgumentException("Invalid ratio")
       val width = Resources.getSystem().displayMetrics.widthPixels
-      params.width = (width * ratio).toInt()
-      return this
+      this.width = (width * ratio).toInt()
     }
 
     /**
@@ -254,10 +243,10 @@ class DialogParams private constructor() {
      *
      * [ratio] value range [0.0~1.0], not include
      */
-    fun heightRatio(ratio: Float): Builder {
+    fun heightRatio(ratio: Float) = apply {
       if (ratio <= 0.0 && ratio > 1.0) throw IllegalArgumentException("Invalid ratio")
       val height = Resources.getSystem().displayMetrics.heightPixels
-      params.height = (height * ratio).toInt()
+      this.height = (height * ratio).toInt()
       return this
     }
 
@@ -268,10 +257,7 @@ class DialogParams private constructor() {
      *
      * [width] dialog's width
      */
-    fun width(width: Int): Builder {
-      params.width = width
-      return this
-    }
+    fun width(width: Int) = apply { this.width = width }
 
     /**
      * Information about how tall the view wants to be. Can be one of the
@@ -280,21 +266,36 @@ class DialogParams private constructor() {
      *
      * [height] dialog's height
      */
-    fun height(height: Int): Builder {
-      params.height = height
-      return this
-    }
+    fun height(height: Int) = apply { this.height = height }
 
     /**
      * Pop-up animation style
      *
      * [anim] default [R.style.photo_anim_bottom]
      */
-    fun windowAnimations(@StyleRes anim: Int?): Builder {
-      params.windowAnimations = anim
-      return this
-    }
+    fun windowAnimations(@StyleRes anim: Int?) = apply { this.windowAnimations = anim }
 
-    fun build() = params
+    fun build() = DialogParams(
+        contentView = contentView,
+        themeStyle = themeStyle,
+        cancelable = cancelable,
+        canceledOnTouchOutside = canceledOnTouchOutside,
+        xPos = xPos,
+        yPos = yPos,
+        windowAnimations = windowAnimations,
+        gravity = gravity,
+        width = width,
+        height = height,
+        dimAmount = dimAmount,
+        alpha = alpha,
+        horizontalMargin = horizontalMargin,
+        verticalMargin = verticalMargin,
+        systemUiVisibility = systemUiVisibility,
+        softInputMode = softInputMode,
+        onShowListener = onShowListener,
+        onDismissListener = onDismissListener,
+        onCancelListener = onCancelListener,
+        onKeyListener = onKeyListener
+    )
   }
 }

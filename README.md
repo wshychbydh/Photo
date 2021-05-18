@@ -57,7 +57,7 @@
         .build()
          
      val dialogParams = DialogParams.Builder()
-        .contentView()               //自定义对话框视图（可选），注：自定义View必须拥有setOnActionListener(OnActionListener)方法
+        .contentView()               //自定义对话框视图（可选），注：自定义View必须拥有onActionClickListener(OnActionClickListener)方法
         .themeStyle()                //自定义对话框的样式, 默认R.style.photo_dialog（可选）
         .windowAnimations()          //自定义对话框的动画样式，默认R.style.photo_anim_bottom（可选）
         .position()                  //设置对话框弹出的XY坐标，默认屏幕左下角（可选）

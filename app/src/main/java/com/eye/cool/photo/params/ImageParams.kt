@@ -3,27 +3,28 @@ package com.eye.cool.photo.params
 /**
  *Created by ycb on 2019/8/8 0008
  */
-class ImageParams private constructor() {
+class ImageParams private constructor(
+    internal val cutAble: Boolean,
+    internal val outputW: Int,
+    internal val outputH: Int
+) {
 
-  internal var cutAble = true
+  companion object {
+    inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
+  }
 
-  internal var outputW = 300
-
-  internal var outputH = 300
-
-  class Builder {
-
-    private var params = ImageParams()
+  data class Builder(
+      var cutAble: Boolean = true,
+      var outputW: Int = 300,
+      var outputH: Int = 300
+  ) {
 
     /**
      *  Whether the selected picture needs to be cut，default true
      *
      *  [cutAble] default true
      */
-    fun cutAble(cutAble: Boolean): Builder {
-      params.cutAble = cutAble
-      return this
-    }
+    fun cutAble(cutAble: Boolean) = apply { this.cutAble = cutAble }
 
     /**
      * Output the size of the image
@@ -31,12 +32,16 @@ class ImageParams private constructor() {
      * [outputW] default 300
      * [outputH] default 300
      */
-    fun output(outputW: Int, outputH: Int): Builder {
-      params.outputW = outputW
-      params.outputH = outputH
+    fun output(outputW: Int, outputH: Int) = apply {
+      this.outputW = outputW
+      this.outputH = outputH
       return this
     }
 
-    fun build() = params
+    fun build() = ImageParams(
+        cutAble = cutAble,
+        outputW = outputW,
+        outputH = outputH
+    )
   }
 }

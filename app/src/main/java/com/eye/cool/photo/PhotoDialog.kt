@@ -2,13 +2,16 @@ package com.eye.cool.photo
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.eye.cool.photo.params.Params
 import com.eye.cool.photo.support.Action
@@ -27,10 +30,21 @@ class PhotoDialog : AppCompatDialogFragment(), IWindowConfig {
   private lateinit var params: Params
   private var createByBuilder = false
 
-  override fun onAttach(context: Context) {
+  override fun onCreate(savedInstanceState: Bundle?) {
     check(createByBuilder) { "You must create it by PhotoDialog.create()!" }
-    super.onAttach(context)
+    super.onCreate(savedInstanceState)
     executor = PhotoExecutor(CompatContext(this), params)
+    executor.onActionClickListener(object : Params.OnActionListener {
+      override fun onAction(action: Int) {
+        when (action) {
+          Action.TAKE_PHOTO,
+          Action.SELECT_ALBUM -> playExitAnim(dialog?.window, view)
+          Action.CANCEL,
+          Action.PERMISSION_DENIED -> dismissAllowingStateLoss()
+        }
+        params.onActionListener?.onAction(action)
+      }
+    })
   }
 
   override fun onCreateView(
@@ -44,22 +58,23 @@ class PhotoDialog : AppCompatDialogFragment(), IWindowConfig {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return createDialog(requireContext(), params)
+    val window = params.dialogParams
+    return AppCompatDialog(context, window.themeStyle ?: 0)
   }
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    executor.onActionClickListener(object : Params.OnActionListener {
-      override fun onAction(action: Int) {
-        when (action) {
-          Action.ADJUST_PHOTO,
-          Action.SELECT_ALBUM -> playExitAnim(dialog?.window, view)
-          Action.CANCEL,
-          Action.PERMISSION_DENIED -> dismissAllowingStateLoss()
-        }
-        params.onActionListener?.onAction(action)
-      }
-    })
+    setupDialog(params.dialogParams, dialog ?: return)
+  }
+
+  override fun onDismiss(dialog: DialogInterface) {
+    super.onDismiss(dialog)
+    params.dialogParams?.onDismissListener?.onDismiss(dialog)
+  }
+
+  override fun onCancel(dialog: DialogInterface) {
+    super.onCancel(dialog)
+    params.dialogParams?.onCancelListener?.onCancel(dialog)
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -71,11 +86,33 @@ class PhotoDialog : AppCompatDialogFragment(), IWindowConfig {
     }
   }
 
+  fun show(activity: FragmentActivity) {
+    show(activity.supportFragmentManager)
+  }
+
+  fun show(fragment: Fragment) {
+    show(fragment.childFragmentManager)
+  }
+
   fun show(manager: FragmentManager) {
+    val current = System.currentTimeMillis()
+    if (current - lastShownTime < SHOWN_INTERVAL) return
+    lastShownTime = current
     show(manager, javaClass.simpleName)
   }
 
+  override fun onDestroy() {
+    super.onDestroy()
+    lastShownTime = 0L
+  }
+
+
   companion object {
+
+    @Volatile
+    private var lastShownTime = 0L
+
+    private const val SHOWN_INTERVAL = 800L
 
     /**
      * Create a photo dialog with listener

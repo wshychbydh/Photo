@@ -69,7 +69,7 @@ class PhotoHelper(private val context: Context) {
       imageParams: ImageParams = ImageParams.Builder().build(),
       requestCameraPermission: Boolean = false,
       permissionInvoker: Params.PermissionInvoker? = null,
-      onActionClickListener: Params.OnActionListener? = null,
+      onActionListener: Params.OnActionListener? = null,
       authority: String? = null
   ) {
     val contentView = EmptyView(context)
@@ -83,7 +83,7 @@ class PhotoHelper(private val context: Context) {
         imageParams,
         requestCameraPermission,
         permissionInvoker,
-        onActionClickListener,
+        onActionListener,
         authority
     )
   }
@@ -102,7 +102,7 @@ class PhotoHelper(private val context: Context) {
       imageParams: ImageParams,
       requestCameraPermission: Boolean = false,
       permissionInvoker: Params.PermissionInvoker? = null,
-      onActionClickListener: Params.OnActionListener? = null,
+      onActionListener: Params.OnActionListener? = null,
       authority: String? = null
   ) {
     when (context) {
@@ -113,7 +113,7 @@ class PhotoHelper(private val context: Context) {
             imageParams,
             requestCameraPermission,
             permissionInvoker,
-            onActionClickListener,
+            onActionListener,
             authority
         ).show(context.supportFragmentManager)
       }
@@ -124,24 +124,20 @@ class PhotoHelper(private val context: Context) {
             imageParams,
             requestCameraPermission,
             permissionInvoker,
-            onActionClickListener,
+            onActionListener,
             authority
         ).show(context.fragmentManager)
       }
       else -> {
-        PhotoDialogActivity
-            .reset()
-            .params(
-                Params.Builder()
-                    .imageParams(imageParams)
-                    .dialogParams(dialogParams)
-                    .authority(authority)
-                    .requestCameraPermission(requestCameraPermission)
-                    .permissionInvoker(permissionInvoker)
-                    .onActionListener(onActionClickListener)
-                    .build()
-            )
-            .show(context)
+        val params = Params.build {
+          this.imageParams = imageParams
+          this.dialogParams = dialogParams
+          this.authority = authority
+          this.requestCameraPermission = requestCameraPermission
+          this.permissionInvoker = permissionInvoker
+          this.onActionListener = onActionListener
+        }
+        PhotoDialogActivity.show(context, params)
       }
     }
   }
@@ -152,19 +148,19 @@ class PhotoHelper(private val context: Context) {
       imageParams: ImageParams,
       requestCameraPermission: Boolean = false,
       permissionInvoker: Params.PermissionInvoker? = null,
-      onActionClickListener: Params.OnActionListener? = null,
+      onActionListener: Params.OnActionListener? = null,
       authority: String? = null
   ): PhotoDialogFragment {
     return PhotoDialogFragment.create(
-        Params.Builder()
-            .onSelectListener(onSelectListener)
-            .dialogParams(dialogParams)
-            .imageParams(imageParams)
-            .requestCameraPermission(requestCameraPermission)
-            .permissionInvoker(permissionInvoker)
-            .onActionListener(onActionClickListener)
-            .authority(authority)
-            .build()
+        Params.build {
+          this.onSelectListener = onSelectListener
+          this.dialogParams = dialogParams
+          this.imageParams = imageParams
+          this.requestCameraPermission = requestCameraPermission
+          this.permissionInvoker = permissionInvoker
+          this.onActionListener = onActionListener
+          this.authority = authority
+        }
     )
   }
 
@@ -174,19 +170,19 @@ class PhotoHelper(private val context: Context) {
       imageParams: ImageParams,
       requestCameraPermission: Boolean,
       permissionInvoker: Params.PermissionInvoker? = null,
-      onActionClickListener: Params.OnActionListener? = null,
+      onActionListener: Params.OnActionListener? = null,
       authority: String?
   ): PhotoDialog {
     return PhotoDialog.create(
-        Params.Builder()
-            .onSelectListener(onSelectListener)
-            .dialogParams(dialogParams)
-            .imageParams(imageParams)
-            .requestCameraPermission(requestCameraPermission)
-            .permissionInvoker(permissionInvoker)
-            .onActionListener(onActionClickListener)
-            .authority(authority)
-            .build()
+        Params.build {
+          this.onSelectListener = onSelectListener
+          this.dialogParams = dialogParams
+          this.imageParams = imageParams
+          this.requestCameraPermission = requestCameraPermission
+          this.permissionInvoker = permissionInvoker
+          this.onActionListener = onActionListener
+          this.authority = authority
+        }
     )
   }
 }
