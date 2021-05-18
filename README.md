@@ -51,11 +51,13 @@
 
 4、构建Params实例
 ```kotlin
+     //kotlin使用 val imageParams = ImageParams.build{} （推荐）
      val imageParams = ImageParams.Builder()
         .output()                    //设置输出图片大小，默认300x300（可选）
         .cutAble()                   //是否剪切图片，默认true（可选）
         .build()
-         
+
+     //kotlin使用 val dialogParams = DialogParams.build{} （推荐）
      val dialogParams = DialogParams.Builder()
         .contentView()               //自定义对话框视图（可选），注：自定义View必须拥有onActionClickListener(OnActionClickListener)方法
         .themeStyle()                //自定义对话框的样式, 默认R.style.photo_dialog（可选）
@@ -76,7 +78,8 @@
         .onDismissListener()         //同dialog的setOnDismissListener（可选）
         .onShowListener()            //同dialog的setOnShownListener（可选）
         .build()
-        
+
+     //kotlin使用 val params = Params.build{} （推荐）
      val params = Params.Builder()
         .onSelectListener()                   //图片选择后回调（必填）
         .dialogParams(dialogParams)           //对话框参数（可选）
@@ -114,16 +117,7 @@
    PhotoDialog.create(params)                //自定义的参数
 
    //不推荐
-   PhotoDialogActivity             
-      .reset()                               //重置参数 (可选)
-      .onSelectListener()                    //图片选择后回调（必填）
-      .dialogParams(dialogParams)            //选择对话框参数（可选）
-      .imageParams(imageParams)              //图片参数（可选）
-      .permissionInvoker(PermissionInvoker)  //自定义请求权限（可选）
-      .requestCameraPermission(boolean)      //是否请求相机权限（默认false），若Manifest中配置了Camera权限，则必须主动设置为true 可选）
-      .authority(String)                     //自定义的FileProvider 可选）
-      .onActionListener()                    //触发行为回调@link{Action#TAKE_PHOTO | SELECT_ALBUM | CANCEL | PERMISSION_DENIED}（可选）
-      .show(context)                         //启动对话框，在设置完参数后调用 可选）
+   PhotoDialogActivity.show(context, params) //启动对话框，参数可选
 ```
 
 7、支持在协程中调用
