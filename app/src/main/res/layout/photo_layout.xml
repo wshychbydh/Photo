@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
 
   <Button
-    android:id="@+id/albumBtn"
+    android:id="@+id/album_btn"
     style="@style/photo_button"
+    android:tag="album"
     android:text="@string/photo_select_album"
     android:textColor="#333333"
     android:textSize="16sp" />
@@ -14,17 +18,18 @@
     android:background="#dcdcdc" />
 
   <Button
-    android:id="@+id/photoBtn"
+    android:id="@+id/photo_btn"
     style="@style/photo_button"
+    android:tag="photo"
     android:text="@string/photo_select_photo"
     android:textColor="#333333"
     android:textSize="16sp" />
 
-
   <Button
-    android:id="@+id/cancelBtn"
+    android:id="@+id/cancel_btn"
     style="@style/photo_button"
-    android:layout_marginTop="20dp"
+    android:layout_marginTop="8dp"
+    android:tag="cancel"
     android:text="@string/photo_cancel"
     android:textColor="#333333" />
-</merge>
+</LinearLayout>

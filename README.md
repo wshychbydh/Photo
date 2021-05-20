@@ -60,23 +60,9 @@
      //kotlin使用 val dialogParams = DialogParams.build{} （推荐）
      val dialogParams = DialogParams.Builder()
         .contentView()               //自定义对话框视图（可选），注：自定义View必须拥有onActionClickListener(OnActionClickListener)方法
+        .contentLayoutId()           //自定义布局（可选），注：布局中需对view设置对应的Tag: @{album，photo，cancel}，如android:tag="album"
         .themeStyle()                //自定义对话框的样式, 默认R.style.photo_dialog（可选）
-        .windowAnimations()          //自定义对话框的动画样式，默认R.style.photo_anim_bottom（可选）
-        .position()                  //设置对话框弹出的XY坐标，默认屏幕左下角（可选）
-        .gravity()                   //同dialog.window.layoutParams的gravity（可选）
-        .dimAmount()                 //同dialog.window.layoutParams的dimAmount（可选）
-        .horizontalMargin()          //同dialog.window.layoutParams的horizontalMargin（可选）
-        .verticalMargin()            //同dialog.window.layoutParams的verticalMargin（可选）
-        .width()                     //同dialog.window.layoutParams的width（可选）
-        .height()                    //同dialog.window.layoutParams的height（可选）
-        .systemUiVisibility()        //同dialog.window.layoutParams的systemUiVisibility（可选）
-        .softInputMode()             //同dialog.window.layoutParams的softInputMode（可选）
-        .alpha()                     //同dialog.window.layoutParams的alpha（可选）
-        .cancelable()                //同dialog的setCancelable，默认true（可选）
-        .canceledOnTouchOutside()    //同dialog的setCanceledOnTouchOutside，默认true（可选）
-        .onCancelListener()          //同dialog的OnCancelListener（可选）
-        .onDismissListener()         //同dialog的setOnDismissListener（可选）
-        .onShowListener()            //同dialog的setOnShownListener（可选）
+        .windowParams()              //弹框窗体设置（可选）
         .build()
 
      //kotlin使用 val params = Params.build{} （推荐）
@@ -122,15 +108,15 @@
 
 7、支持在协程中调用
 ```kotlin
-    scope.launch {
+    launch {
       val result = select(context)      //选择拍照or相册
     }
 
-    scope.launch {
+    launch {
       val result = selectAlbum(context) //相册
     }
 
-    scope.launch {
+    launch {
       val result = takePhoto(context)   //拍照
     }
 ```

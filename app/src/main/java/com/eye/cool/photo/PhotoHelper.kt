@@ -3,12 +3,14 @@ package com.eye.cool.photo
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Build
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.eye.cool.photo.params.DialogParams
 import com.eye.cool.photo.params.ImageParams
 import com.eye.cool.photo.params.Params
+import com.eye.cool.photo.params.WindowParams
 import com.eye.cool.photo.view.EmptyView
 
 /**
@@ -37,13 +39,12 @@ class PhotoHelper(private val context: Context) {
       authority: String? = null
   ) {
     val contentView = EmptyView(context)
-    val builder = createDefaultDialogParams(contentView)
-    builder.onShowListener {
+    val dialogParams = createDefaultDialogParams(contentView) {
       contentView.onTakePhoto()
     }
     execute(
         onSelectListener,
-        builder.build(),
+        dialogParams,
         imageParams,
         requestCameraPermission,
         permissionInvoker,
@@ -73,13 +74,12 @@ class PhotoHelper(private val context: Context) {
       authority: String? = null
   ) {
     val contentView = EmptyView(context)
-    val builder = createDefaultDialogParams(contentView)
-    builder.onShowListener {
+    val dialogParams = createDefaultDialogParams(contentView) {
       contentView.onSelectAlbum()
     }
     execute(
         onSelectListener,
-        builder.build(),
+        dialogParams,
         imageParams,
         requestCameraPermission,
         permissionInvoker,
@@ -88,12 +88,19 @@ class PhotoHelper(private val context: Context) {
     )
   }
 
-  private fun createDefaultDialogParams(contentView: View): DialogParams.Builder {
-    return DialogParams.Builder()
-        .themeStyle(R.style.photo_dialog_translucent)
-        .cancelable(false)
-        .canceledOnTouchOutside(false)
-        .contentView(contentView)
+  private fun createDefaultDialogParams(
+      contentView: View,
+      onShowListener: DialogInterface.OnShowListener
+  ): DialogParams {
+    return DialogParams.build {
+      themeStyle = R.style.photo_dialog_translucent
+      windowParams = WindowParams.build {
+        cancelable = false
+        canceledOnTouchOutside = false
+        this.onShowListener = onShowListener
+      }
+      this.contentView = contentView
+    }
   }
 
   private fun execute(

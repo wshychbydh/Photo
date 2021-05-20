@@ -14,17 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.eye.cool.photo.params.Params
-import com.eye.cool.photo.support.Action
-import com.eye.cool.photo.support.CompatContext
-import com.eye.cool.photo.support.IWindowConfig
-import com.eye.cool.photo.support.OnSelectListenerWrapper
+import com.eye.cool.photo.support.*
 import com.eye.cool.photo.utils.PhotoExecutor
 import com.eye.cool.photo.view.DefaultView
 
 /**
  * Created by cool on 18-3-9
  */
-class PhotoDialog : AppCompatDialogFragment(), IWindowConfig {
+class PhotoDialog : AppCompatDialogFragment(), IActionConfig, IWindowConfig {
 
   private lateinit var executor: PhotoExecutor
   private lateinit var params: Params
@@ -52,8 +49,13 @@ class PhotoDialog : AppCompatDialogFragment(), IWindowConfig {
       container: ViewGroup?,
       savedInstanceState: Bundle?
   ): View? {
-    val view = params.dialogParams.contentView ?: DefaultView(requireContext())
-    bindActionListener(view, executor)
+    val dpm = params.dialogParams
+    val view = when {
+      dpm.contentView != null -> dpm.contentView
+      dpm.contentLayoutId != null -> inflater.inflate(dpm.contentLayoutId, container)
+      else -> DefaultView(requireContext()).view
+    }
+    bindViewAction(view, executor)
     return view
   }
 
@@ -64,17 +66,17 @@ class PhotoDialog : AppCompatDialogFragment(), IWindowConfig {
 
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
-    setupDialog(params.dialogParams, dialog ?: return)
+    configDialog(params.dialogParams.windowParams ?: return, dialog ?: return)
   }
 
   override fun onDismiss(dialog: DialogInterface) {
     super.onDismiss(dialog)
-    params.dialogParams?.onDismissListener?.onDismiss(dialog)
+    params.dialogParams?.windowParams?.onDismissListener?.onDismiss(dialog)
   }
 
   override fun onCancel(dialog: DialogInterface) {
     super.onCancel(dialog)
-    params.dialogParams?.onCancelListener?.onCancel(dialog)
+    params.dialogParams?.windowParams?.onCancelListener?.onCancel(dialog)
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

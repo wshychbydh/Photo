@@ -1,23 +1,19 @@
 package com.eye.cool.photo.view
 
 import android.content.Context
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import com.eye.cool.photo.R
 import com.eye.cool.photo.support.OnActionClickListener
 
 /**
  * Created by cool on 2018/6/12
  */
-internal class DefaultView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = 0
-) : LinearLayout(context, attrs, defStyle), View.OnClickListener {
+internal class DefaultView(context: Context) : View.OnClickListener {
 
   private var listener: OnActionClickListener? = null
+
+  val view: View = LayoutInflater.from(context).inflate(R.layout.photo_layout, null)
 
   //necessary
   private fun onActionClickListener(listener: OnActionClickListener) {
@@ -25,21 +21,16 @@ internal class DefaultView @JvmOverloads constructor(
   }
 
   init {
-    orientation = VERTICAL
-    val padding = (context.resources.displayMetrics.density * 20f).toInt()
-    setPadding(padding, padding, padding, padding)
-    layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-    val view = LayoutInflater.from(context).inflate(R.layout.photo_layout, this, true)
-    view.findViewById<View>(R.id.albumBtn).setOnClickListener(this)
-    view.findViewById<View>(R.id.photoBtn).setOnClickListener(this)
-    view.findViewById<View>(R.id.cancelBtn).setOnClickListener(this)
+    view.findViewById<View>(R.id.album_btn).setOnClickListener(this)
+    view.findViewById<View>(R.id.photo_btn).setOnClickListener(this)
+    view.findViewById<View>(R.id.cancel_btn).setOnClickListener(this)
   }
 
   override fun onClick(v: View) {
     when (v.id) {
-      R.id.albumBtn -> listener?.onSelectAlbum()
-      R.id.photoBtn -> listener?.onTakePhoto()
-      R.id.cancelBtn -> listener?.onCancel()
+      R.id.album_btn -> listener?.onSelectAlbum()
+      R.id.photo_btn -> listener?.onTakePhoto()
+      R.id.cancel_btn -> listener?.onCancel()
     }
   }
 }
