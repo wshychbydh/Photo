@@ -41,17 +41,15 @@ class PhotoDialogActivity : DialogActivity(), IActionConfig {
     setContentView(contentView)
 
 
-    executor.onActionClickListener(object : Params.OnActionListener {
-      override fun onAction(action: Int) {
-        when (action) {
-          Action.TAKE_PHOTO,
-          Action.SELECT_ALBUM -> playExitAnim(window, contentView)
-          Action.CANCEL,
-          Action.PERMISSION_DENIED -> dismiss()
-        }
-        params.onActionListener?.onAction(action)
+    executor.onActionClickListener { action ->
+      when (action) {
+        Action.TAKE_PHOTO,
+        Action.SELECT_ALBUM -> playExitAnim(window, contentView)
+        Action.CANCEL,
+        Action.PERMISSION_DENIED -> dismiss()
       }
-    })
+      params.onActionListener?.onAction(action)
+    }
   }
 
   private fun createContentView(): View {

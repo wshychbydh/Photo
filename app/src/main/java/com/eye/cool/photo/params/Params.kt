@@ -102,7 +102,7 @@ class Params private constructor(
     )
   }
 
-  interface PermissionInvoker {
+  fun interface PermissionInvoker {
 
     /**
      * Permission invoker to request permissions.
@@ -115,7 +115,7 @@ class Params private constructor(
     fun request(permissions: Array<String>, invoker: (Boolean) -> Unit)
   }
 
-  interface OnSelectListener {
+  fun interface OnSelectListener {
 
     /**
      * return on UI Thread
@@ -129,7 +129,7 @@ class Params private constructor(
     fun onSelect(path: String)
   }
 
-  interface OnActionListener {
+  fun interface OnActionListener {
 
     /**
      * {@link Action

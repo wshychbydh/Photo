@@ -29,11 +29,7 @@ object Photo {
       authority: String? = null
   ) = suspendCancellableCoroutine<String> {
     runOnUiThread(context) {
-      val onSelectListener = object : Params.OnSelectListener {
-        override fun onSelect(path: String) {
-          it.complete(path)
-        }
-      }
+      val onSelectListener = Params.OnSelectListener { path -> it.complete(path) }
       PhotoHelper(context).onTakePhoto(
           onSelectListener,
           imageParams,
@@ -54,11 +50,7 @@ object Photo {
       authority: String? = null
   ) = suspendCancellableCoroutine<String> {
     runOnUiThread(context) {
-      val onSelectListener = object : Params.OnSelectListener {
-        override fun onSelect(path: String) {
-          it.complete(path)
-        }
-      }
+      val onSelectListener = Params.OnSelectListener { path -> it.complete(path) }
       PhotoHelper(context).onSelectAlbum(
           onSelectListener,
           imageParams,
@@ -81,11 +73,7 @@ object Photo {
   ) = suspendCancellableCoroutine<String> {
     runOnUiThread(context) {
       val params = Params.build {
-        onSelectListener = object : Params.OnSelectListener {
-          override fun onSelect(path: String) {
-            it.complete(path)
-          }
-        }
+        onSelectListener = Params.OnSelectListener { path -> it.complete(path) }
         this.imageParams = imageParams
         this.dialogParams = dialogParams
         this.requestCameraPermission = requestCameraPermission

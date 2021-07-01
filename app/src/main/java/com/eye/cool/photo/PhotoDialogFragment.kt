@@ -31,17 +31,15 @@ class PhotoDialogFragment : DialogFragment(), IActionConfig, IWindowConfig {
       throw IllegalStateException("You must create it by PhotoDialogFragment.create()!")
     super.onCreate(savedInstanceState)
     executor = PhotoExecutor(CompatContext(this), params)
-    executor.onActionClickListener(object : Params.OnActionListener {
-      override fun onAction(action: Int) {
-        when (action) {
-          Action.TAKE_PHOTO,
-          Action.SELECT_ALBUM -> playExitAnim(dialog.window, view)
-          Action.CANCEL,
-          Action.PERMISSION_DENIED -> dismissAllowingStateLoss()
-        }
-        params.onActionListener?.onAction(action)
+    executor.onActionClickListener { action ->
+      when (action) {
+        Action.TAKE_PHOTO,
+        Action.SELECT_ALBUM -> playExitAnim(dialog.window, view)
+        Action.CANCEL,
+        Action.PERMISSION_DENIED -> dismissAllowingStateLoss()
       }
-    })
+      params.onActionListener?.onAction(action)
+    }
   }
 
   override fun onCreateView(
